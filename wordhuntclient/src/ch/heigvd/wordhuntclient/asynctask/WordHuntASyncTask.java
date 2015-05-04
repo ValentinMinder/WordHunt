@@ -10,6 +10,8 @@ import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
+import protocol.ActualRequest;
+
 import android.os.AsyncTask;
 
 /**
@@ -30,7 +32,7 @@ public class WordHuntASyncTask
 	private String dstAddress;
 	private int port;
 
-	public WordHuntASyncTask(String dstAddress, int port) throws IOException {
+	public WordHuntASyncTask(String dstAddress, int port) {
 		this.dstAddress = dstAddress;
 		this.port = port;
 	}
@@ -56,20 +58,9 @@ public class WordHuntASyncTask
 			out.flush();
 			
 			// waiting for a response
-			StringBuilder sb = new StringBuilder();
-			String tmp;
-			try {
-				while (!(tmp = in.readLine()).equals("")) {
-					sb.append(tmp);
-					sb.append("\n");
-				}
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-				return  "null";
-			}
-			System.out.println("Received back in asynctask: " + sb);
-			return sb;
+			ActualRequest ar = ActualRequest.readCommand(in);
+			System.out.println("Received back in asynctask: " + ar);
+			return ar;
 		} catch (UnknownHostException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();

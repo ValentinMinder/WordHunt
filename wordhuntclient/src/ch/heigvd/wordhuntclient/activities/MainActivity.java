@@ -1,8 +1,9 @@
 package ch.heigvd.wordhuntclient.activities;
 
-import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 
+import protocol.Ping;
+import protocol.Protocol.Request;
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -30,30 +31,22 @@ public class MainActivity extends Activity {
 	}
 	
 	private void testPing () {
+		String host = "192.168.0.18"; //"10.192.94.246";
+		int port = 1234;
+		WordHuntASyncTask iotask = new WordHuntASyncTask(host, port);
+		System.out.println("Scheduling future iotask.");
+		// test ping.
+		iotask.execute(Request.PING, new Ping(0, "From client."));
 		try {
-			String host = "localhost"; //"10.192.94.246";
-			int port = 1234;
-			WordHuntASyncTask iotask = new WordHuntASyncTask(host, port);
-			System.out.println("Scheduling future iotask.");
-			// test ping.
-			iotask.execute("PING from client");
-			try {
-				// blocking on response.
-				Object received = iotask.get();
-				System.out.println("Receiving back in GUI: " + received);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (ExecutionException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			
-			
-		} catch (IOException e) {
+			// blocking on response.
+			Object received = iotask.get();
+			System.out.println("Receiving back in GUI: " + received);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ExecutionException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
-
 }

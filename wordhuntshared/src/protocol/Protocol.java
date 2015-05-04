@@ -19,7 +19,7 @@ package protocol;
  */
 public class Protocol {
 
-	enum Request {
+	public enum Request {
 		PING, // ping from client
 		PING_REPLY, // reply to a ping from server
 		GRID_GET, // client ask for a grid
@@ -48,19 +48,19 @@ public class Protocol {
 
 	}
 
-	enum Langage {
+	public enum Langage {
 		FRENCH, // french/francais - only
 		ENGLISH, // english/anglais - only
 		FRENGLISH // both langages are accepted.
 	}
 
-	enum GameType {
+	public enum GameType {
 		TRAINING, // only for fun
 		CHALLENGE, // 1 vs. all in asynchronous way ( previous players)
 		COMPETITION // all vs. all in real-time
 	}
 
-	enum PointsType {
+	public enum PointsType {
 		WORD, // 1 word = 1 point
 		LENGTH, // 1 word of x letter = x points
 		LENGTH_SQUARE, // 1 word of x letter = (x-2)(x-2) points

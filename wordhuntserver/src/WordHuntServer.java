@@ -1,7 +1,16 @@
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
+import java.net.InetAddress;
+import java.net.NetworkInterface;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.ArrayList;
+import java.util.Enumeration;
+
+import protocol.ActualRequest;
+import protocol.Protocol;
 
 /**
  * Created by Karim Ghozlani on 29.04.2015.
@@ -15,11 +24,11 @@ public class WordHuntServer implements Runnable {
     private PrintWriter writer = null;
     //private ArrayList<Socket> clientSockets;
 
-    private StringBuilder handleClient(StringBuilder clientCommand){
+    private ActualRequest handleClient(ActualRequest clientCommand){
         // do stuff
-        System.out.println("Data received from client: "+ clientCommand);
+        System.out.println("RECV: "+ clientCommand);        
 
-        return clientCommand.insert(clientCommand.length()-1," has been read by the server");
+        return new ActualRequest(Protocol.Request.PING_REPLY, clientCommand.getPayload() + " - has been read by the server");
     }
 
     public WordHuntServer(int port) throws  IOException{
@@ -40,19 +49,24 @@ public class WordHuntServer implements Runnable {
         while(true){
             try {
                 //ClientWorkers to implement, just ping test
+            	System.out.println("Hello. I'm listening on one of these IP");
+            	Enumeration e = NetworkInterface.getNetworkInterfaces();
+            	while(e.hasMoreElements())
+            	{
+            	    NetworkInterface n = (NetworkInterface) e.nextElement();
+            	    Enumeration ee = n.getInetAddresses();
+            	    while (ee.hasMoreElements())
+            	    {
+            	        InetAddress i = (InetAddress) ee.nextElement();
+            	        System.out.println(i.getHostAddress() + "-" + i.getCanonicalHostName());
+            	    }
+            	}
                 clientSocket = serverSocket.accept();
                 reader = new BufferedReader(new InputStreamReader (clientSocket.getInputStream()));
                 writer = new PrintWriter(new OutputStreamWriter(clientSocket.getOutputStream()));
 
-                StringBuilder sb = new StringBuilder();
-                String tmp;
-                    while(!((tmp = reader.readLine()).equals(""))) {
-                        sb.append(tmp);
-                        sb.append("\n");
-                    }
-                writer.println(handleClient(sb));
-                writer.println();
-                writer.flush();
+                ActualRequest ar = ActualRequest.readCommand(reader);
+                ActualRequest.writeCommand(writer, handleClient(ar));
 
             } catch (IOException e) {
                 e.printStackTrace();
