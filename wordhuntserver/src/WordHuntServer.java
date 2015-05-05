@@ -10,6 +10,8 @@ import java.net.Socket;
 import java.util.Enumeration;
 
 import whprotocol.ActualRequest;
+import whprotocol.WHMessageContent;
+import whprotocol.WHPing;
 import whprotocol.WHProtocol;
 
 /**
@@ -18,60 +20,64 @@ import whprotocol.WHProtocol;
 
 public class WordHuntServer implements Runnable {
 
-    private ServerSocket serverSocket = null;
-    private Socket clientSocket = null;
-    private BufferedReader reader = null;
-    private PrintWriter writer = null;
-    //private ArrayList<Socket> clientSockets;
+	private ServerSocket serverSocket = null;
+	private Socket clientSocket = null;
+	private BufferedReader reader = null;
+	private PrintWriter writer = null;
 
-    private ActualRequest handleClient(ActualRequest clientCommand){
-        // do stuff
-        System.out.println("RECV: "+ clientCommand);        
+	// private ArrayList<Socket> clientSockets;
 
-        return new ActualRequest(WHProtocol.WHRequest.PING_REPLY, clientCommand.getPayload() + " - has been read by the server");
-    }
+	private ActualRequest handleClient(ActualRequest clientCommand) {
+		// do stuff
+		System.out.println("RECV: " + clientCommand);
 
-    public WordHuntServer(int port) throws  IOException{
-        serverSocket = new ServerSocket(port);
-    }
+		return new ActualRequest(WHProtocol.WHMessageHeader.PING_REPLY,
+				new WHPing(0, clientCommand.toString()
+						+ " - has been read by the server"));
+	}
 
-    public static void main(String[] args){
-        try {
-            WordHuntServer wordHuntServer = new WordHuntServer(1234);
-            new Thread(wordHuntServer).start();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
+	public WordHuntServer(int port) throws IOException {
+		serverSocket = new ServerSocket(port);
+	}
 
-    @Override
-    public void run() {
-        while(true){
-            try {
-                //ClientWorkers to implement, just ping test
-            	System.out.println("Hello. I'm listening on one of these IP");
-            	Enumeration e = NetworkInterface.getNetworkInterfaces();
-            	while(e.hasMoreElements())
-            	{
-            	    NetworkInterface n = (NetworkInterface) e.nextElement();
-            	    Enumeration ee = n.getInetAddresses();
-            	    while (ee.hasMoreElements())
-            	    {
-            	        InetAddress i = (InetAddress) ee.nextElement();
-            	        System.out.println(i.getHostAddress() + "-" + i.getCanonicalHostName());
-            	    }
-            	}
-                clientSocket = serverSocket.accept();
-                reader = new BufferedReader(new InputStreamReader (clientSocket.getInputStream()));
-                writer = new PrintWriter(new OutputStreamWriter(clientSocket.getOutputStream()));
+	public static void main(String[] args) {
+		try {
+			WordHuntServer wordHuntServer = new WordHuntServer(1234);
+			new Thread(wordHuntServer).start();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
 
-                ActualRequest ar = ActualRequest.readCommand(reader);
-                ActualRequest.writeCommand(writer, handleClient(ar));
+	@Override
+	public void run() {
+		while (true) {
+			try {
+				// ClientWorkers to implement, just ping test
+				System.out.println("Hello. I'm listening on one of these IP");
+				Enumeration e = NetworkInterface.getNetworkInterfaces();
+				while (e.hasMoreElements()) {
+					NetworkInterface n = (NetworkInterface) e.nextElement();
+					Enumeration ee = n.getInetAddresses();
+					while (ee.hasMoreElements()) {
+						InetAddress i = (InetAddress) ee.nextElement();
+						System.out.println(i.getHostAddress() + "-"
+								+ i.getCanonicalHostName());
+					}
+				}
+				clientSocket = serverSocket.accept();
+				reader = new BufferedReader(new InputStreamReader(
+						clientSocket.getInputStream()));
+				writer = new PrintWriter(new OutputStreamWriter(
+						clientSocket.getOutputStream()));
 
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+				ActualRequest ar = ActualRequest.readCommand(reader);
+				ActualRequest.writeCommand(writer, handleClient(ar));
 
-        }
-    }
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+
+		}
+	}
 }

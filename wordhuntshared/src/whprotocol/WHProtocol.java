@@ -19,7 +19,7 @@ package whprotocol;
  */
 public class WHProtocol {
 
-	public enum WHRequest {
+	public enum WHMessageHeader {
 		PING, // ping from client
 		PING_REPLY, // reply to a ping from server
 		GRID_GET, // client ask for a grid
