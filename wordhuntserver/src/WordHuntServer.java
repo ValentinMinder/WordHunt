@@ -71,8 +71,8 @@ public class WordHuntServer implements Runnable {
 				writer = new PrintWriter(new OutputStreamWriter(
 						clientSocket.getOutputStream()));
 
-				WHMessage ar = WHMessage.readCommand(reader);
-				WHMessage.writeCommand(writer, handleClient(ar));
+				WHMessage ar = WHMessage.readMessage(reader);
+				WHMessage.writeMessage(writer, handleClient(ar));
 
 			} catch (IOException e) {
 				e.printStackTrace();

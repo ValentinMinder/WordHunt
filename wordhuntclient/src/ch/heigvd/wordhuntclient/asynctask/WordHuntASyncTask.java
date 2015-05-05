@@ -56,7 +56,7 @@ public class WordHuntASyncTask extends AsyncTask<Object, Object, Object> {
 			out.flush();
 
 			// waiting for a response
-			WHMessage ar = WHMessage.readCommand(in);
+			WHMessage ar = WHMessage.readMessage(in);
 			System.out.println("Received back in asynctask: " + ar);
 			return ar;
 		} catch (UnknownHostException e1) {

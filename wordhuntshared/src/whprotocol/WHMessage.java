@@ -7,21 +7,62 @@ import java.io.PrintWriter;
 import whprotocol.WHProtocol.WHMessageHeader;
 
 /**
- * Represent a generic request (a keyword as a header and a content payload
- * depending on this header)
+ * Represent a generic message than can me exchanged in both ways. Offers method
+ * of manipulation of an existing message, and read/write operations on streams.
+ * <p>
+ * A message consist of: <br>
+ * - a header, which is a keyword defined in {@link WHMessageHeader} <br>
+ * - a content payload, which depending on this header, defined in
+ * {@link WHMessageContent} <br>
  */
 public class WHMessage {
+	/**
+	 * Header of the message.
+	 * 
+	 * @see WHMessageHeader
+	 */
 	private WHMessageHeader header;
+	/**
+	 * Content of the message.
+	 * 
+	 * @see WHMessageContent
+	 */
 	private WHMessageContent content;
 
-	public WHMessage(WHProtocol.WHMessageHeader header,
-			WHMessageContent content) {
+	/**
+	 * Constructor.
+	 * 
+	 * @param header
+	 *            the header
+	 * @param content
+	 *            the content
+	 */
+	public WHMessage(WHProtocol.WHMessageHeader header, WHMessageContent content) {
 		super();
 		this.header = header;
 		this.content = content;
 	}
 
-	public static WHMessage validateRequest(String data) {
+	/**
+	 * To string method.
+	 * 
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		return "WHMessage [header=" + header + ", content=" + content + "]";
+	}
+
+	/**
+	 * Construct a valid WHMessage from a string input. Validate that the given
+	 * input respects the protocol and return its WHMessage correspondence, of
+	 * null if anything broke the protocol.
+	 * 
+	 * @param data
+	 *            the input
+	 * @return a valid WHMessage or null if any protocol break.
+	 */
+	public static WHMessage validateMessage(String data) {
 		int idx = data.indexOf("\n");
 		if (idx == -1) { // data should contain a \n
 			return null;
@@ -56,15 +97,15 @@ public class WHMessage {
 		return new WHMessage(header, content);
 	}
 
-	/* (non-Javadoc)
-	 * @see java.lang.Object#toString()
+	/**
+	 * Read a message from a stream.
+	 * 
+	 * @param reader
+	 *            the stream to read from
+	 * @return the message read, or null if protocol error.
+	 * @throws IOException
 	 */
-	@Override
-	public String toString() {
-		return "WHMessage [header=" + header + ", content=" + content + "]";
-	}
-
-	public static WHMessage readCommand(BufferedReader reader)
+	public static WHMessage readMessage(BufferedReader reader)
 			throws IOException {
 		StringBuilder sb = new StringBuilder();
 		String tmp;
@@ -72,10 +113,17 @@ public class WHMessage {
 			sb.append(tmp);
 			sb.append("\n");
 		}
-		return validateRequest(sb.toString());
+		return validateMessage(sb.toString());
 	}
 
-	public void writeCommand(PrintWriter writer) {
+	/**
+	 * Write a message to a stream.
+	 * 
+	 * @param writer
+	 *            the stream to write
+	 * @throws IOException
+	 */
+	public void writeMessage(PrintWriter writer) {
 		writer.println(header.name());
 		// TODO: true serialize
 		writer.println(content);
@@ -83,7 +131,14 @@ public class WHMessage {
 		writer.flush();
 	}
 
-	public static void writeCommand(PrintWriter writer, WHMessage request) {
+	/**
+	 * Write a message to a stream.
+	 * 
+	 * @param writer
+	 *            the stream to write
+	 * @throws IOException
+	 */
+	public static void writeMessage(PrintWriter writer, WHMessage request) {
 		writer.println(request.header.name());
 		// TODO: true serialize
 		writer.println(request.content);
