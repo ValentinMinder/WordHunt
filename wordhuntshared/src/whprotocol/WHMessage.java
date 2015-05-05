@@ -3,8 +3,6 @@ package whprotocol;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.Collection;
 
 import whprotocol.WHProtocol.WHMessageHeader;
 
@@ -12,18 +10,18 @@ import whprotocol.WHProtocol.WHMessageHeader;
  * Represent a generic request (a keyword as a header and a content payload
  * depending on this header)
  */
-public class ActualRequest {
+public class WHMessage {
 	private WHMessageHeader header;
 	private WHMessageContent content;
 
-	public ActualRequest(WHProtocol.WHMessageHeader header,
+	public WHMessage(WHProtocol.WHMessageHeader header,
 			WHMessageContent content) {
 		super();
 		this.header = header;
 		this.content = content;
 	}
 
-	public static ActualRequest validateRequest(String data) {
+	public static WHMessage validateRequest(String data) {
 		int idx = data.indexOf("\n");
 		if (idx == -1) { // data should contain a \n
 			return null;
@@ -55,7 +53,7 @@ public class ActualRequest {
 			System.out.println("def");
 			return null;
 		}
-		return new ActualRequest(header, content);
+		return new WHMessage(header, content);
 	}
 
 	/* (non-Javadoc)
@@ -63,10 +61,10 @@ public class ActualRequest {
 	 */
 	@Override
 	public String toString() {
-		return "ActualRequest [header=" + header + ", content=" + content + "]";
+		return "WHMessage [header=" + header + ", content=" + content + "]";
 	}
 
-	public static ActualRequest readCommand(BufferedReader reader)
+	public static WHMessage readCommand(BufferedReader reader)
 			throws IOException {
 		StringBuilder sb = new StringBuilder();
 		String tmp;
@@ -85,7 +83,7 @@ public class ActualRequest {
 		writer.flush();
 	}
 
-	public static void writeCommand(PrintWriter writer, ActualRequest request) {
+	public static void writeCommand(PrintWriter writer, WHMessage request) {
 		writer.println(request.header.name());
 		// TODO: true serialize
 		writer.println(request.content);

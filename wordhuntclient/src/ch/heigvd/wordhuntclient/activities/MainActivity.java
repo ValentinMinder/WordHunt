@@ -2,7 +2,7 @@ package ch.heigvd.wordhuntclient.activities;
 
 import java.util.concurrent.ExecutionException;
 
-import whprotocol.ActualRequest;
+import whprotocol.WHMessage;
 import whprotocol.WHPing;
 import whprotocol.WHProtocol.WHMessageHeader;
 import android.app.Activity;
@@ -64,7 +64,7 @@ public class MainActivity extends Activity {
 		try {
 			// blocking on response.
 			Object received = iotask.get();
-			ActualRequest actual = (ActualRequest) received;
+			WHMessage actual = (WHMessage) received;
 			System.out.println("Receiving back in GUI: " + actual);
 			return actual.toString();
 		} catch (InterruptedException e) {

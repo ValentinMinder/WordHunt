@@ -8,7 +8,7 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
-import whprotocol.ActualRequest;
+import whprotocol.WHMessage;
 import android.os.AsyncTask;
 
 /**
@@ -56,7 +56,7 @@ public class WordHuntASyncTask extends AsyncTask<Object, Object, Object> {
 			out.flush();
 
 			// waiting for a response
-			ActualRequest ar = ActualRequest.readCommand(in);
+			WHMessage ar = WHMessage.readCommand(in);
 			System.out.println("Received back in asynctask: " + ar);
 			return ar;
 		} catch (UnknownHostException e1) {

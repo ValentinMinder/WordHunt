@@ -9,7 +9,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Enumeration;
 
-import whprotocol.ActualRequest;
+import whprotocol.WHMessage;
 import whprotocol.WHMessageContent;
 import whprotocol.WHPing;
 import whprotocol.WHProtocol;
@@ -27,11 +27,11 @@ public class WordHuntServer implements Runnable {
 
 	// private ArrayList<Socket> clientSockets;
 
-	private ActualRequest handleClient(ActualRequest clientCommand) {
+	private WHMessage handleClient(WHMessage clientCommand) {
 		// do stuff
 		System.out.println("RECV: " + clientCommand);
 
-		return new ActualRequest(WHProtocol.WHMessageHeader.PING_REPLY,
+		return new WHMessage(WHProtocol.WHMessageHeader.PING_REPLY,
 				new WHPing(0, clientCommand.toString()
 						+ " - has been read by the server"));
 	}
@@ -71,8 +71,8 @@ public class WordHuntServer implements Runnable {
 				writer = new PrintWriter(new OutputStreamWriter(
 						clientSocket.getOutputStream()));
 
-				ActualRequest ar = ActualRequest.readCommand(reader);
-				ActualRequest.writeCommand(writer, handleClient(ar));
+				WHMessage ar = WHMessage.readCommand(reader);
+				WHMessage.writeCommand(writer, handleClient(ar));
 
 			} catch (IOException e) {
 				e.printStackTrace();
