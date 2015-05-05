@@ -4,5 +4,6 @@
     <string name="app_name">WordHunt</string>
     <string name="action_settings">Settings</string>
     <string name="hello_world">Welcome to WordHunt!</string>
+    <string name="button_test_ping_txt">TEST PING!</string>
 
 </resources>
