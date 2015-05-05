@@ -1,4 +1,4 @@
-package protocol;
+package whprotocol;
 
 /**
  * This class aims to represent a "PING" and "PING_REPLY" structure.

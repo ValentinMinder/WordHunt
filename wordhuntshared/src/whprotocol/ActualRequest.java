@@ -1,4 +1,4 @@
-package protocol;
+package whprotocol;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -13,10 +13,10 @@ public class ActualRequest {
 	private String command;
 	private String payload;
 
-	private static Collection<Protocol.Request> requests = new ArrayList<Protocol.Request>();
+	private static Collection<WHProtocol.WHRequest> requests = new ArrayList<WHProtocol.WHRequest>();
 	{
-		Protocol.Request[] values = Protocol.Request.values();
-		for (Protocol.Request request : values) {
+		WHProtocol.WHRequest[] values = WHProtocol.WHRequest.values();
+		for (WHProtocol.WHRequest request : values) {
 			requests.add(request);
 		}
 	}
@@ -27,7 +27,7 @@ public class ActualRequest {
 		this.payload = payload;
 	}
 
-	public ActualRequest(Protocol.Request command, String payload) {
+	public ActualRequest(WHProtocol.WHRequest command, String payload) {
 		super();
 		this.command = command.name();
 		this.payload = payload;

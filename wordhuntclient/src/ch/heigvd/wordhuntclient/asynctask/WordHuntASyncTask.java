@@ -10,7 +10,7 @@ import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
-import protocol.ActualRequest;
+import whprotocol.ActualRequest;
 
 import android.os.AsyncTask;
 

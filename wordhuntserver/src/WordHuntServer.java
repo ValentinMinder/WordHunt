@@ -9,8 +9,8 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Enumeration;
 
-import protocol.ActualRequest;
-import protocol.Protocol;
+import whprotocol.ActualRequest;
+import whprotocol.WHProtocol;
 
 /**
  * Created by Karim Ghozlani on 29.04.2015.
@@ -28,7 +28,7 @@ public class WordHuntServer implements Runnable {
         // do stuff
         System.out.println("RECV: "+ clientCommand);        
 
-        return new ActualRequest(Protocol.Request.PING_REPLY, clientCommand.getPayload() + " - has been read by the server");
+        return new ActualRequest(WHProtocol.WHRequest.PING_REPLY, clientCommand.getPayload() + " - has been read by the server");
     }
 
     public WordHuntServer(int port) throws  IOException{

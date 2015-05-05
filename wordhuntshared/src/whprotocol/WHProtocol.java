@@ -1,25 +1,25 @@
-package protocol;
+package whprotocol;
 
 /**
  * This class aims to represent common data for communication between server and
  * clients.
  * <p>
  * 
- * The protocol works this way: <br>
+ * The whprotocol works this way: <br>
  * - The FIRST line is a "KEYWORD", for example "PING", that defines what is to
  * expect. <br>
  * - The SECOND line is a JSON object, associated with the keyword.<br>
  * - It's followed by TWO return line (\n).
  * <p>
  * 
- * ANY misbehavior should immediately yield a protocol error (on server side:
+ * ANY misbehavior should immediately yield a whprotocol error (on server side:
  * send back a "BAD_REQUEST", on client side: a warning message).
  * 
  * @author Valentin MINDER
  */
-public class Protocol {
+public class WHProtocol {
 
-	public enum Request {
+	public enum WHRequest {
 		PING, // ping from client
 		PING_REPLY, // reply to a ping from server
 		GRID_GET, // client ask for a grid
@@ -48,19 +48,19 @@ public class Protocol {
 
 	}
 
-	public enum Langage {
+	public enum WHLangage {
 		FRENCH, // french/francais - only
 		ENGLISH, // english/anglais - only
 		FRENGLISH // both langages are accepted.
 	}
 
-	public enum GameType {
+	public enum WHGameType {
 		TRAINING, // only for fun
 		CHALLENGE, // 1 vs. all in asynchronous way ( previous players)
 		COMPETITION // all vs. all in real-time
 	}
 
-	public enum PointsType {
+	public enum WHPointsType {
 		WORD, // 1 word = 1 point
 		LENGTH, // 1 word of x letter = x points
 		LENGTH_SQUARE, // 1 word of x letter = (x-2)(x-2) points

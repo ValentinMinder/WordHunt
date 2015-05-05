@@ -2,8 +2,8 @@ package ch.heigvd.wordhuntclient.activities;
 
 import java.util.concurrent.ExecutionException;
 
-import protocol.Ping;
-import protocol.Protocol.Request;
+import whprotocol.Ping;
+import whprotocol.WHProtocol.WHRequest;
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -51,7 +51,7 @@ public class MainActivity extends Activity {
 		WordHuntASyncTask iotask = new WordHuntASyncTask(host, port);
 		System.out.println("Scheduling future iotask.");
 		// test ping.
-		iotask.execute(Request.PING, new Ping(0, "From client."));
+		iotask.execute(WHRequest.PING, new Ping(0, "From client."));
 		try {
 			// blocking on response.
 			Object received = iotask.get();
