@@ -10,6 +10,7 @@ import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.EditText;
 import ch.heigvd.gen.wordhuntclient.R;
 import ch.heigvd.wordhuntclient.asynctask.WordHuntASyncTask;
 
@@ -41,7 +42,7 @@ public class MainActivity extends Activity {
 
 	private String testPing() {
 		String host = "10.192.94.186"; // "10.192.94.246";
-		final Button b = (Button) findViewById(R.id.button_test_ping);
+		final EditText b = (EditText) findViewById(R.id.btn_IP);
 		String t = b.getText().toString();
 		if (t != null && !t.equals("")) {
 			host = t;
