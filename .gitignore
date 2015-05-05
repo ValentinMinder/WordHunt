@@ -25,8 +25,8 @@ proguard/
 # Log Files
 *.log
 *.iml
-.idea/*
-.classpath
-.project
 
-wordhuntclient/.classpath
+#added manually
+.idea/*
+*.classpath
+.project
