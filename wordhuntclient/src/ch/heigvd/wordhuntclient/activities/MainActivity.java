@@ -3,7 +3,7 @@ package ch.heigvd.wordhuntclient.activities;
 import java.util.concurrent.ExecutionException;
 
 import whprotocol.WHMessage;
-import whprotocol.WHPing;
+import whprotocol.WHSimpleMessage;
 import whprotocol.WHProtocol.WHMessageHeader;
 import android.app.Activity;
 import android.os.Bundle;
@@ -60,7 +60,7 @@ public class MainActivity extends Activity {
 		WordHuntASyncTask iotask = new WordHuntASyncTask(host, port);
 		System.out.println("Scheduling future iotask.");
 		// test ping.
-		iotask.execute(WHMessageHeader.PING, new WHPing(0, "Ping from client."));
+		iotask.execute(WHMessageHeader.PING, new WHSimpleMessage(0, "Ping from client."));
 		try {
 			// blocking on response.
 			Object received = iotask.get();

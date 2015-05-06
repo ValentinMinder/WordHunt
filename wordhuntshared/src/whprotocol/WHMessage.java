@@ -84,11 +84,11 @@ public class WHMessage {
 		switch (header) {
 		case PING:
 			// TODO: true deserialize
-			content = new WHPing(0, payload);
+			content = new WHSimpleMessage(0, payload);
 			break;
 		case PING_REPLY:
 			// TODO: true deserialize
-			content = new WHPing(0, payload);
+			content = new WHSimpleMessage(0, payload);
 			break;
 		default:
 			System.out.println("def");

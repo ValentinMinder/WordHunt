@@ -6,11 +6,11 @@ package whprotocol;
  * 
  * @author Valentin MINDER
  */
-public class WHPing extends WHMessageContent {
+public class WHSimpleMessage extends WHMessageContent {
 
 	private String payload;
 
-	public WHPing(int status, String payload) {
+	public WHSimpleMessage(int status, String payload) {
 		super(status);
 		this.payload = payload;
 	}
@@ -37,7 +37,7 @@ public class WHPing extends WHMessageContent {
 	 */
 	@Override
 	public String toString() {
-		return "WHPing [payload=" + payload + "]";
+		return "WHSimpleMessage [payload=" + payload + "]";
 	}
 
 }

@@ -11,7 +11,7 @@ import java.util.Enumeration;
 
 import whprotocol.WHMessage;
 import whprotocol.WHMessageContent;
-import whprotocol.WHPing;
+import whprotocol.WHSimpleMessage;
 import whprotocol.WHProtocol;
 
 /**
@@ -32,7 +32,7 @@ public class WordHuntServer implements Runnable {
 		System.out.println("RECV: " + clientCommand);
 
 		return new WHMessage(WHProtocol.WHMessageHeader.PING_REPLY,
-				new WHPing(0, clientCommand.toString()
+				new WHSimpleMessage(0, clientCommand.toString()
 						+ " - has been read by the server"));
 	}
 
