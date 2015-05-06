@@ -1,8 +1,11 @@
 package whprotocol;
 
+import com.google.gson.Gson;
+
 public abstract class WHMessageContent {
 
 	private int status;
+	private static Gson gson = new Gson();
 
 	public WHMessageContent(int status) {
 		super();
@@ -31,6 +34,6 @@ public abstract class WHMessageContent {
 	 */
 	@Override
 	public String toString() {
-		return "WHMessageContent [status=" + status + "]";
+		return gson.toJson(this);
 	}
 }

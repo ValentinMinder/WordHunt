@@ -6,6 +6,9 @@ import java.io.PrintWriter;
 
 import whprotocol.WHProtocol.WHMessageHeader;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
+
 /**
  * Represent a generic message than can me exchanged in both ways. Offers method
  * of manipulation of an existing message, and read/write operations on streams.
@@ -29,6 +32,8 @@ public class WHMessage {
 	 */
 	private WHMessageContent content;
 
+	private static Gson gson = new Gson();
+
 	/**
 	 * Constructor.
 	 * 
@@ -37,10 +42,38 @@ public class WHMessage {
 	 * @param content
 	 *            the content
 	 */
-	public WHMessage(WHProtocol.WHMessageHeader header, WHMessageContent content) {
+	public WHMessage(WHMessageHeader header, WHMessageContent content) {
 		super();
 		this.header = header;
 		this.content = content;
+	}
+
+	/**
+	 * Constructor for a WHSimpleMessage with given string as content.
+	 * 
+	 * @param header
+	 *            the header
+	 * @param payload
+	 *            the payload
+	 */
+	public WHMessage(WHMessageHeader header, String payload) {
+		super();
+		this.header = header;
+		this.content = new WHSimpleMessage(0, payload);
+	}
+
+	/**
+	 * @return the header
+	 */
+	public WHMessageHeader getHeader() {
+		return header;
+	}
+
+	/**
+	 * @return the content
+	 */
+	public WHMessageContent getContent() {
+		return content;
 	}
 
 	/**
@@ -81,17 +114,27 @@ public class WHMessage {
 
 		String payload = data.substring(idx + 1, idxEnd);
 		WHMessageContent content = null;
-		switch (header) {
-		case PING:
-			// TODO: true deserialize
-			content = new WHSimpleMessage(0, payload);
-			break;
-		case PING_REPLY:
-			// TODO: true deserialize
-			content = new WHSimpleMessage(0, payload);
-			break;
-		default:
-			System.out.println("def");
+		try {
+			switch (header) {
+			case PING:
+			case PING_REPLY:
+			case CHEATING_WARNING_400:
+			case CHEATING_BANNED_400:
+			case AUTHENTICATE_BAD_CREDENTIALS:
+			case REGISTER_ACCOUNT_CREATED_201:
+			case SCHEDULE_COMPET_ACK:
+			case SERVER_ERROR_500:
+			case BAD_REQUEST_400:
+			case AUTH_REQUIRED_403:
+				content = gson.fromJson(payload, WHSimpleMessage.class);
+				break;
+			default:
+				System.err.println("not implemented yet.");
+				return null;
+			}
+		} catch (JsonSyntaxException e) {
+			e.printStackTrace();
+			System.err.println("json error.");
 			return null;
 		}
 		return new WHMessage(header, content);
@@ -125,7 +168,6 @@ public class WHMessage {
 	 */
 	public void writeMessage(PrintWriter writer) {
 		writer.println(header.name());
-		// TODO: true serialize
 		writer.println(content);
 		writer.println();
 		writer.flush();
@@ -140,7 +182,6 @@ public class WHMessage {
 	 */
 	public static void writeMessage(PrintWriter writer, WHMessage request) {
 		writer.println(request.header.name());
-		// TODO: true serialize
 		writer.println(request.content);
 		writer.println();
 		writer.flush();
