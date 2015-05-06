@@ -28,3 +28,13 @@ proguard/
 .idea/*
 .classpath
 .project
+
+# Android studio Project
+*/.idea/
+wordhuntclient/app/
+wordhuntclient/build.gradle
+wordhuntclient/gradle/
+wordhuntclient/gradlew
+wordhuntclient/gradlew.bat
+wordhuntclient/import-summary.txt
+wordhuntclient/settings.gradle
