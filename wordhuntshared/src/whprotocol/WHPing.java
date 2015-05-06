@@ -6,29 +6,13 @@ package whprotocol;
  * 
  * @author Valentin MINDER
  */
-public class Ping {
-	private int status;
+public class WHPing extends WHMessageContent {
+
 	private String payload;
 
-	public Ping(int status, String payload) {
-		super();
-		this.status = status;
+	public WHPing(int status, String payload) {
+		super(status);
 		this.payload = payload;
-	}
-
-	/**
-	 * @return the status
-	 */
-	public int getStatus() {
-		return status;
-	}
-
-	/**
-	 * @param status
-	 *            the status to set
-	 */
-	public void setStatus(int status) {
-		this.status = status;
 	}
 
 	/**
@@ -44,6 +28,16 @@ public class Ping {
 	 */
 	public void setPayload(String payload) {
 		this.payload = payload;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		return "WHPing [payload=" + payload + "]";
 	}
 
 }

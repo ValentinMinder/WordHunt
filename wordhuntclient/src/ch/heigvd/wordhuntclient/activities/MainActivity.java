@@ -2,8 +2,9 @@ package ch.heigvd.wordhuntclient.activities;
 
 import java.util.concurrent.ExecutionException;
 
-import whprotocol.Ping;
-import whprotocol.WHProtocol.WHRequest;
+import whprotocol.WHMessage;
+import whprotocol.WHPing;
+import whprotocol.WHProtocol.WHMessageHeader;
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -28,7 +29,15 @@ public class MainActivity extends Activity {
 
 			@Override
 			public void onClick(View v) {
-				b.setText(testPing());
+				b.setClickable(false);
+				b.setText("Processing...");
+				String reply = testPing();
+				if (reply != null) {
+					b.setText(reply);
+				} else {
+					b.setText("Error. Try again?");
+				}
+				b.setClickable(true);
 			}
 		});
 	}
@@ -51,16 +60,21 @@ public class MainActivity extends Activity {
 		WordHuntASyncTask iotask = new WordHuntASyncTask(host, port);
 		System.out.println("Scheduling future iotask.");
 		// test ping.
-		iotask.execute(WHRequest.PING, new Ping(0, "From client."));
+		iotask.execute(WHMessageHeader.PING, new WHPing(0, "Ping from client."));
 		try {
 			// blocking on response.
 			Object received = iotask.get();
-			System.out.println("Receiving back in GUI: " + received);
-			return received.toString();
+			WHMessage actual = (WHMessage) received;
+			System.out.println("Receiving back in GUI: " + actual);
+			return actual.toString();
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (ExecutionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		catch (ClassCastException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
