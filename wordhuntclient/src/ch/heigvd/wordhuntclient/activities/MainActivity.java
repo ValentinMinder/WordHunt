@@ -11,9 +11,7 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.Menu;
-import android.view.MotionEvent;
 import android.view.View;
-import android.view.View.OnTouchListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
@@ -25,7 +23,6 @@ public class MainActivity extends Activity implements IWHView {
 
 	private Logger logger = Logger.getLogger(getClass().getName());
 
-	private WordHuntASyncTask iotask;
 	public static SharedPreferences preferences;
 
 	public static final String prefLocation = "ch.heigvd.wordhuntclient.PREFERENCES";
@@ -44,7 +41,6 @@ public class MainActivity extends Activity implements IWHView {
 
 		// init preferences
 		preferences = getSharedPreferences(prefLocation, Context.MODE_PRIVATE);
-		iotask = new WordHuntASyncTask(this);
 
 		// check for last ip.
 		if (preferences.contains(prefLastIP)) {
@@ -101,7 +97,8 @@ public class MainActivity extends Activity implements IWHView {
 		b.setClickable(false);
 		b.setText("Processing...");
 		logger.info("Scheduling PING test");
-		iotask.execute(new WHMessage(WHMessageHeader.PING, "Ping from client."));
+		new WordHuntASyncTask(this).execute(new WHMessage(WHMessageHeader.PING,
+				"Ping from client."));
 	}
 
 	// ---- IO TASK REPLY ---- //
