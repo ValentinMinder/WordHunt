@@ -23,6 +23,13 @@ public class Grid {
         }
     }
 
+    /**
+	 * @return the content
+	 */
+	public char[][] getContent() {
+		return content;
+	}
+
     public String printGrid() {
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < content.length; i++) {
