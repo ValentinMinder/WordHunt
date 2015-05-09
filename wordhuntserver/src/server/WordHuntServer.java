@@ -1,10 +1,14 @@
 package server;
+
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.ServerSocket;
+import java.net.Socket;
 import java.net.SocketException;
 import java.util.Enumeration;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import clienthandler.ClientHandler;
 
@@ -16,8 +20,17 @@ public class WordHuntServer implements Runnable {
 
 	private ServerSocket serverSocket = null;
 
+	private Logger logger = Logger.getLogger(WordHuntServer.class.getName());
+
 	public WordHuntServer(int port) throws IOException {
-		serverSocket = new ServerSocket(port);
+		try {
+			serverSocket = new ServerSocket(port);
+			logger.setLevel(Level.ALL);
+			logger.log(Level.INFO, "INIT: Server initialized.");
+		} catch (IOException e) {
+			logger.log(Level.SEVERE, "FATAL: Cannot bind server.");
+			throw e;
+		}
 	}
 
 	public static void main(String[] args) {
@@ -31,8 +44,7 @@ public class WordHuntServer implements Runnable {
 
 	@Override
 	public void run() {
-		// ClientWorkers to implement, just ping test
-		System.out.println("Hello. I'm listening on one of these IP");
+		logger.log(Level.INFO, "CONFIG: Listing all available IP on server.");
 		try {
 			Enumeration e = NetworkInterface.getNetworkInterfaces();
 			while (e.hasMoreElements()) {
@@ -40,18 +52,27 @@ public class WordHuntServer implements Runnable {
 				Enumeration ee = n.getInetAddresses();
 				while (ee.hasMoreElements()) {
 					InetAddress i = (InetAddress) ee.nextElement();
-					System.out.println(i.getHostAddress() + "-"
-							+ i.getCanonicalHostName());
+					logger.log(Level.INFO,
+							"CONFIG: Host: " + i.getHostAddress() + " - Name: "
+									+ i.getCanonicalHostName());
 				}
 			}
 		} catch (SocketException e1) {
+			logger.log(Level.WARNING,
+					"FAILED: Listing all available IP on server.");
 			e1.printStackTrace();
 		}
 
 		while (true) {
 			try {
-				new Thread(new ClientHandler(serverSocket.accept())).start();
+				logger.log(Level.INFO, "RUN: Waiting for new client.");
+				Socket client = serverSocket.accept();
+				new Thread(new ClientHandler(client)).start();
+				logger.log(Level.INFO, "RUN: New client arrived from: "
+						+ client.getInetAddress());
 			} catch (IOException e) {
+				logger.log(Level.SEVERE,
+						"FAILED: failure on new client arrived: skipping.");
 				e.printStackTrace();
 			}
 		}
