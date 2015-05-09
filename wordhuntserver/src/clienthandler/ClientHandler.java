@@ -6,12 +6,15 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.logging.Logger;
 
 import whprotocol.WHMessage;
 import whprotocol.WHProtocol.WHMessageHeader;
 import whprotocol.WHSimpleMessage;
 
 public class ClientHandler implements Runnable {
+
+	private Logger logger = Logger.getLogger(this.getClass().getName());
 
 	private Socket clientSocket = null;
 	private BufferedReader reader = null;
@@ -22,8 +25,8 @@ public class ClientHandler implements Runnable {
 		try {
 			init();
 		} catch (IOException e) {
+			logger.severe("FAIL: client cannot be binded / init with reader/writer.");
 			e.printStackTrace();
-			// TODO log.
 		}
 	}
 
@@ -35,24 +38,45 @@ public class ClientHandler implements Runnable {
 	}
 
 	public void run() {
-		WHMessage ar;
+
 		try {
-			ar = WHMessage.readMessage(reader);
-			WHMessage.writeMessage(writer, handleClient(ar));
+			logger.fine("Reading query from client");
+			WHMessage query = WHMessage.readMessage(reader);
+			logger.finest(query.toString());
+
+			WHMessage reply = handleClient(query);
+			logger.fine("Reply ready to send to client");
+			logger.finest(reply.toString());
+
+			boolean result = reply.writeMessage(writer);
+			if (result) {
+				logger.fine("Reply sent to client");
+			} else {
+				logger.warning("Couldn't send to reply to the client");
+			}
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
+			logger.severe("FAIL: I/O ex when reading message");
 			e.printStackTrace();
-			WHMessage.writeMessage(writer,
-					handleClient(new WHMessage(
+			boolean result = WHMessage
+					.writeMessage(writer, new WHMessage(
 							WHMessageHeader.SERVER_ERROR_500,
-							"Internal Server Error.")));
+							"Internal Server Error."));
+			if (!result) {
+				logger.warning("Couldn't send error message to the client");
+			}
 		}
 
 	}
 
+	/**
+	 * Handles a query and produce the appropriate answer.
+	 * 
+	 * @param clientCommand
+	 * @return
+	 */
 	private WHMessage handleClient(WHMessage clientCommand) {
-		// do stuff
-		System.out.println("RECV: " + clientCommand);
+		logger.finer("RECV: recived query " + clientCommand.getHeader());
+		logger.finest(clientCommand.toString());
 
 		switch (clientCommand.getHeader()) {
 		case PING:
@@ -61,18 +85,23 @@ public class ClientHandler implements Runnable {
 					.getContent();
 			return new WHMessage(WHMessageHeader.PING_REPLY,
 					simple.getPayload() + " - read by the server.");
-		case ANSWERS_GET:
-			break;
-		case AUTH_POST:
-			break;
 		case GRID_GET:
-			break;
+			// TODO IMPLEMENT
+		case ANSWERS_GET:
+			// TODO IMPLEMENT
+		case AUTH_POST:
+			// TODO IMPLEMENT
 		case REGISTER:
-			break;
+			// TODO IMPLEMENT
 		case SCHEDULE_COMPET:
-			break;
+			// TODO IMPLEMENT
 		case SUBMIT_POST:
-			break;
+			// TODO IMPLEMENT
+			// not implemented yet
+			logger.warning("WARN: client issued bad request with NOT IMPLEMENTED command:"
+					+ clientCommand.getHeader());
+			return new WHMessage(WHMessageHeader.BAD_REQUEST_400,
+					"NOT IMPLEMENTS YET " + clientCommand.getHeader());
 		case PING_REPLY:
 		case ANSWERS_REPLY:
 		case AUTH_TOKEN:
@@ -86,15 +115,20 @@ public class ClientHandler implements Runnable {
 		case BAD_REQUEST_400:
 		case AUTH_REQUIRED_403:
 		case SUBMIT_VALIDATE:
-		default:
 			// forbidden command
+			logger.info("WARN: client issued bad request with forbidden command:"
+					+ clientCommand.getHeader());
 			return new WHMessage(WHMessageHeader.BAD_REQUEST_400,
-					"Request not acceptable from client: "
+					"Request NOT ACCEPTABLE FROM client: "
 							+ clientCommand.getHeader());
+		default:
+			// WTF command ?!?
+			logger.info("WARN: client issued bad request with NOT UNDERSTOOD command:"
+					+ clientCommand.getHeader());
+			return new WHMessage(WHMessageHeader.BAD_REQUEST_400,
+					"Request NOT UNDERSTOOD from client: "
+							+ clientCommand.getHeader());
+
 		}
-
-		// should never arise.
-		return null;
 	}
-
 }
