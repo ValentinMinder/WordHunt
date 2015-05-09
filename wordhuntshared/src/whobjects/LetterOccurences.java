@@ -12,8 +12,6 @@ public class LetterOccurences {
 
     private double[] languageOccurences;
 
-
-
     private static final int nbOfLetters = 26;
     public static enum language {FR, EN};
     private String OccurenceFile ; //here we set the languages

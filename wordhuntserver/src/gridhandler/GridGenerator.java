@@ -2,7 +2,8 @@ package gridhandler;
 import java.io.*;
 import java.util.Random;
 
-import whobjects.Grid;
+import whobjects.*;
+
 
 /**
  * Created by Karim Ghozlani on 08.05.2015.
@@ -32,17 +33,19 @@ public class GridGenerator {
 
     private void initGenerator() {
         random = new Random();
-        languageOccurences = new double[nbOfLetters];
-        try {
-            BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(frenchOccurenceFile)));
-            for (int i = 0; i < nbOfLetters; i++) {
-                languageOccurences[i] = Double.valueOf(br.readLine());
-            }
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        languageOccurences = new double[LetterOccurences.getNbOfLetters()];
+        languageOccurences = LetterOccurences.getInstance(LetterOccurences.language.FR).getLanguageOccurences();
+
+//        try {
+//            BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(frenchOccurenceFile)));
+//            for (int i = 0; i < nbOfLetters; i++) {
+//                languageOccurences[i] = Double.valueOf(br.readLine());
+//            }
+//        } catch (FileNotFoundException e) {
+//            e.printStackTrace();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
     }
 
     private int findCorrespondingLetterIndex(double letter) {
