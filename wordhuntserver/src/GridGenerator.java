@@ -1,6 +1,8 @@
 import java.io.*;
 import java.util.Random;
 
+import whobjects.Grid;
+
 /**
  * Created by Karim Ghozlani on 08.05.2015.
  */
