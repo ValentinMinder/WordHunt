@@ -7,9 +7,15 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.logging.Logger;
 
 import whprotocol.WHMessage;
+import whprotocol.WHProtocol.WHMessageHeader;
 import android.os.AsyncTask;
+import android.widget.EditText;
+import ch.heigvd.gen.wordhuntclient.R;
+import ch.heigvd.wordhuntclient.activities.IWHView;
+import ch.heigvd.wordhuntclient.activities.MainActivity;
 
 /**
  * <code>WordHuntASyncTask</code>
@@ -18,22 +24,26 @@ import android.os.AsyncTask;
  * 
  */
 
-public class WordHuntASyncTask extends AsyncTask<Object, Object, Object> {
+public class WordHuntASyncTask extends AsyncTask<WHMessage, Object, WHMessage> {
 
 	private Socket socket;
 	private PrintWriter out;
 	private BufferedReader in;
 	final String charset = "UTF-8";
+	private IWHView caller;
 
-	private String dstAddress;
-	private int port;
+	private Logger logger = Logger.getLogger(getClass().getName());
 
-	public WordHuntASyncTask(String dstAddress, int port) {
-		this.dstAddress = dstAddress;
-		this.port = port;
+	public WordHuntASyncTask(IWHView caller) {
+		this.caller = caller;
 	}
 
 	private void init() throws UnknownHostException, IOException {
+		logger.info("Initialization of IO task.");
+
+		String dstAddress = MainActivity.preferences.getString(
+				MainActivity.prefLastIP, "localhost");
+		int port = MainActivity.preferences.getInt("SERVER_PORT", 1234);
 		socket = new Socket(dstAddress, port);
 		out = new PrintWriter(new OutputStreamWriter(socket.getOutputStream(),
 				charset));
@@ -42,31 +52,61 @@ public class WordHuntASyncTask extends AsyncTask<Object, Object, Object> {
 	}
 
 	@Override
-	protected Object doInBackground(Object... params) {
-		try {
-			if (socket == null) {
+	protected void onPostExecute(WHMessage reply) {
+		logger.info("IOTask recieved a reply");
+		logger.finest(reply.toString());
+		caller.reply(reply);
+	}
+
+	/**
+	 * /!\ ONLY FIRST OBJECT IS SENT <br>
+	 * ONE QUERY <=> ONE REPLY.
+	 */
+	@Override
+	protected WHMessage doInBackground(WHMessage... params) {
+		if (null == socket) {
+			try {
 				init();
+			} catch (UnknownHostException e) {
+				logger.severe("FAIL IOTASK - host not found");
+				e.printStackTrace();
+				return new WHMessage(WHMessageHeader.NETWORK_ERROR,
+						"Network error.");
+			} catch (IOException e) {
+				logger.warning("IO error in IOTask INIT");
+				e.printStackTrace();
+				return new WHMessage(WHMessageHeader.NETWORK_ERROR,
+						"Network error.");
 			}
-			// sending everyting to server
-			for (Object object : params) {
-				out.println(object);
-				System.out.println("Sending: " + object);
-			}
-			out.println();
-			out.flush();
-
-			// waiting for a response
-			WHMessage ar = WHMessage.readMessage(in);
-			System.out.println("Received back in asynctask: " + ar);
-			return ar;
-		} catch (UnknownHostException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		} catch (IOException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
 		}
-		return "null";
+		logger.info("IOTask sending data.");
+		// only first object is sent !!!
+		if (params.length > 1) {
+			return new WHMessage(WHMessageHeader.BAD_REQUEST_400,
+					"Too many arguments provided: max one query at a time.");
+		}
+		for (WHMessage object : params) {
+			logger.finest("Sending:" + object.toString());
+			boolean result = object.writeMessage(out);
+			if (result) {
+				try {
+					WHMessage reply = WHMessage.readMessage(in);
+					logger.fine("IOTask recieved a reply.");
+					logger.finest("Recieving:" + reply.toString());
+					return reply;
+				} catch (IOException e) {
+					logger.warning("IO error in IOTask - when reading.");
+					e.printStackTrace();
+				}
 
+			} else {
+				logger.warning("error in IOTask - when sending: "
+						+ object.toString());
+			}
+			return new WHMessage(WHMessageHeader.NETWORK_ERROR,
+					"Network error.");
+		}
+		return new WHMessage(WHMessageHeader.BAD_REQUEST_400,
+				"No arguments provided");
 	}
 }
