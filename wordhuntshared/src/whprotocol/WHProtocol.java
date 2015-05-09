@@ -20,6 +20,7 @@ package whprotocol;
 public class WHProtocol {
 
 	public enum WHMessageHeader {
+		NETWORK_ERROR, // in case of IO errors.
 		PING, // ping from client
 		PING_REPLY, // reply to a ping from server
 		GRID_GET, // client ask for a grid
