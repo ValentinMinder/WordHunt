@@ -164,13 +164,13 @@ public class WHMessage {
 	 * 
 	 * @param writer
 	 *            the stream to write
-	 * @throws IOException
 	 */
-	public void writeMessage(PrintWriter writer) {
+	public boolean writeMessage(PrintWriter writer) {
 		writer.println(header.name());
 		writer.println(content);
 		writer.println();
-		writer.flush();
+		// same as flush with verification
+		return writer.checkError();
 	}
 
 	/**
@@ -178,12 +178,12 @@ public class WHMessage {
 	 * 
 	 * @param writer
 	 *            the stream to write
-	 * @throws IOException
 	 */
-	public static void writeMessage(PrintWriter writer, WHMessage request) {
+	public static boolean writeMessage(PrintWriter writer, WHMessage request) {
 		writer.println(request.header.name());
 		writer.println(request.content);
 		writer.println();
-		writer.flush();
+		// same as flush with verification
+		return writer.checkError();
 	}
 }
