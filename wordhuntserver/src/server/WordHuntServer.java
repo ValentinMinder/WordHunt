@@ -10,6 +10,8 @@ import java.util.Enumeration;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import whproperties.WHProperties;
+
 import clienthandler.ClientHandler;
 
 /**
@@ -22,11 +24,15 @@ public class WordHuntServer implements Runnable {
 
 	private Logger logger = Logger.getLogger(WordHuntServer.class.getName());
 
-	public WordHuntServer(int port) throws IOException {
+	private WHProperties serverProperties;
+
+	public WordHuntServer() throws IOException {
 		try {
+			serverProperties = new WHProperties("server.properties");
+			int port = serverProperties.getInteger("PORT");
 			serverSocket = new ServerSocket(port);
 			logger.setLevel(Level.ALL);
-			logger.log(Level.INFO, "INIT: Server initialized.");
+			logger.log(Level.INFO, "INIT: Server initialized on port: " + port);
 		} catch (IOException e) {
 			logger.log(Level.SEVERE, "FATAL: Cannot bind server.");
 			throw e;
@@ -35,7 +41,7 @@ public class WordHuntServer implements Runnable {
 
 	public static void main(String[] args) {
 		try {
-			WordHuntServer wordHuntServer = new WordHuntServer(1234);
+			WordHuntServer wordHuntServer = new WordHuntServer();
 			new Thread(wordHuntServer).start();
 		} catch (IOException e) {
 			e.printStackTrace();
