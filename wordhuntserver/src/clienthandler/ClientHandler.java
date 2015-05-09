@@ -1,5 +1,7 @@
 package clienthandler;
 
+import gridhandler.GridHandler;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -8,6 +10,8 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.logging.Logger;
 
+import whobjects.Grid;
+import whprotocol.WHGridReplyMessage;
 import whprotocol.WHMessage;
 import whprotocol.WHProtocol.WHMessageHeader;
 import whprotocol.WHSimpleMessage;
@@ -86,7 +90,10 @@ public class ClientHandler implements Runnable {
 			return new WHMessage(WHMessageHeader.PING_REPLY,
 					simple.getPayload() + " - read by the server.");
 		case GRID_GET:
-			// TODO IMPLEMENT
+			WHGridReplyMessage reply;
+			Grid grid = GridHandler.getInstance().getGrid();
+			reply = new WHGridReplyMessage(0, grid);
+			return new WHMessage(WHMessageHeader.GRID_REPLY, reply);
 		case ANSWERS_GET:
 			// TODO IMPLEMENT
 		case AUTH_POST:
