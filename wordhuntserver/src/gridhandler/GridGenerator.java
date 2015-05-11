@@ -6,6 +6,7 @@ import java.util.Random;
 import java.util.Set;
 import java.util.TreeSet;
 
+import whobjects.LetterOccurences;
 import whobjects.Grid;
 import whproperties.WHProperties;
 
@@ -47,6 +48,11 @@ public class GridGenerator {
             String currentChar = String.valueOf((char) ('A' + i));
             languageOccurences[i] = gridProperties.getDouble(currentChar.concat("_FR"));
         }
+
+        // TODO: check Karim/David !
+//        languageOccurences = new double[LetterOccurences.getNbOfLetters()];
+//        languageOccurences = LetterOccurences.getInstance(LetterOccurences.language.FR).getLanguageOccurences();
+
     }
 
     private int findCorrespondingLetterIndex(double letter) {
