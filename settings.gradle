@@ -1,0 +1,3 @@
+include ':wordhuntshared'
+include ':wordhuntclient'
+include ':wordhuntserver'
