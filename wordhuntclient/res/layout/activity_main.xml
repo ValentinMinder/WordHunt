@@ -8,9 +8,146 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".MainActivity" >
 
-    <TextView
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/hello_world" />
+        android:orientation="vertical" >
+
+        <ScrollView
+            android:id="@+id/scrollView1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical" >
+
+                <!-- Login options -->
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:visibility="gone" >
+
+                    <Button
+                        android:id="@+id/button_login"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/button_login" />
+                </LinearLayout>
+
+                <!-- Game option -->
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical" >
+
+                    <Button
+                        android:id="@+id/button_grid_training"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/button_grid_training" />
+                </LinearLayout>
+
+                <!-- Tests -->
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical" >
+
+                    <TextView
+                        android:id="@+id/btn_hello_world"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="8dp"
+                        android:text="@string/hello_world" />
+
+                    <Button
+                        android:id="@+id/button_test_ping"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:onClick="onTestPing"
+                        android:text="@string/button_test_ping_txt" />
+
+                    <!-- Choose IP -->
+
+                    <RadioGroup
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:onClick="onIPpreset"
+                        android:orientation="vertical" >
+
+                        <!-- Last Used IP -->
+
+                        <RadioButton
+                            android:id="@+id/IP_last_used"
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:onClick="onIPpreset"
+                            android:text="@string/IP_last_used"
+                            android:textAppearance="?android:attr/textAppearanceSmall"
+                            android:textColor="@android:color/black"
+                            android:visibility="gone" />
+
+                        <!-- Localhost -->
+
+                        <RadioButton
+                            android:id="@+id/IP_localhost"
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:onClick="onIPpreset"
+                            android:text="@string/IP_localhost"
+                            android:textAppearance="?android:attr/textAppearanceSmall"
+                            android:textColor="@android:color/black" />
+
+                        <!-- IP Local -->
+
+                        <RadioButton
+                            android:id="@+id/IP_local_192_0"
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:onClick="onIPpreset"
+                            android:text="@string/IP_local_192_0"
+                            android:textAppearance="?android:attr/textAppearanceSmall"
+                            android:textColor="@android:color/black" />
+
+                        <!-- IP Local -->
+
+                        <RadioButton
+                            android:id="@+id/IP_local_192_1"
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:onClick="onIPpreset"
+                            android:text="@string/IP_local_192_1"
+                            android:textAppearance="?android:attr/textAppearanceSmall"
+                            android:textColor="@android:color/black" />
+
+                        <!-- IP HEIG -->
+
+                        <RadioButton
+                            android:id="@+id/IP_HEIG"
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:onClick="onIPpreset"
+                            android:text="@string/IP_HEIG"
+                            android:textAppearance="?android:attr/textAppearanceSmall"
+                            android:textColor="@android:color/black" />
+                    </RadioGroup>
+
+                    <EditText
+                        android:id="@+id/btn_IP"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/IP_address"
+                        android:visibility="gone" >
+                    </EditText>
+                </LinearLayout>
+            </LinearLayout>
+        </ScrollView>
+    </LinearLayout>
 
 </RelativeLayout>

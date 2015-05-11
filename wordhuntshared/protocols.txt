@@ -1,0 +1,44 @@
+    WHMessageHeader   |  WHMessageContent
+-------------------------------------------
+PING                    WHSimpleMessage
+PING_REPLY              WHSimpleMessage
+
+GRID_GET                (WHGameType,WHLanguage,AuthToken?)
+GRID_REPLY              (Grid)
+
+ANSWERS_GET             (GridID,AuthToken)
+ANSWERS_REPLY           (Answers)
+
+SUBMIT_POST             (GridID?,UserSolutions,AuthToken)
+SUBMIT_VALIDATE         (Score)
+
+CHEATING_WARNING_400    WHSimpleMessage
+CHEATING_BANNED_400     WHSimpleMessage
+
+AUTH_POST               (Username,HashedPW)
+AUTH_TOKEN              (AuthToken)
+AUTHENTICATE_BAD_...    WHSimpleMessage
+
+REGISTER                (Username,HashedPW)
+REGISTER_ACCOUNT_...    WHSimpleMessage
+
+SCHEDULE_COMPET         (WHLanguage,WHPointsType,StartTime,AuthToken)
+SCHEDULE_COMPET_ACK     WHSimpleMessage
+
+SERVER_ERROR_500        WHSimpleMessage
+BAD_REQUEST_400         WHSimpleMessage
+AUTH_REQUIRED_403       WHSimpleMessage
+
+WHAuthMessage
+    - GRID_GET          (WHGameType,WHLanguage)
+    - ANSWERS_GET       (GridID)
+    - SUBMIT_POST       (GridID/+UserSolutions)
+    - AUTH_TOKEN        /
+    - SCHEDULE_COMPET   (WHLanguage,WHPointsType,StartTime)
+    
+Other
+    - GRID_REPLY
+    - ANSWERS_REPLY
+    - SUBMIT_VALIDATE
+    - AUTH_POST
+    - REGISTER
