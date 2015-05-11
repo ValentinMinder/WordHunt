@@ -27,6 +27,7 @@ proguard/
 *.iml
 
 #added manually
+*.idea*
 .idea/*
 *.classpath
 .project
