@@ -1,19 +1,24 @@
 package gridhandler;
+
 import java.io.*;
+import java.util.HashMap;
 import java.util.Random;
+import java.util.Set;
+import java.util.TreeSet;
 
 import whobjects.Grid;
+import whproperties.WHProperties;
 
 /**
  * Created by Karim Ghozlani on 08.05.2015.
  */
 public class GridGenerator {
 
-    private static int size = 4;
-    private static final int nbOfLetters = 26;
-    private static final int indexOfFirstLetter = 65;
+    private static int size;
+    private static int nbOfLetters;
+    private static int indexOfFirstLetter;
     private double[] languageOccurences; // array of letter occurences,
-    private String frenchOccurenceFile = "frenchOccurencesToParse.txt"; //here we set the language
+    private WHProperties gridProperties;
     private Random random;
     private static GridGenerator instance = null;
 
@@ -32,16 +37,15 @@ public class GridGenerator {
 
     private void initGenerator() {
         random = new Random();
+        gridProperties = new WHProperties("frenchGrid.properties");
+        size = gridProperties.getInteger("SIZE");
+        nbOfLetters = gridProperties.getInteger("NBOFLETTERS");
+        indexOfFirstLetter = gridProperties.getInteger("ASCIIINDEXOFFIRSTLETTER");
         languageOccurences = new double[nbOfLetters];
-        try {
-            BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(frenchOccurenceFile)));
-            for (int i = 0; i < nbOfLetters; i++) {
-                languageOccurences[i] = Double.valueOf(br.readLine());
-            }
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
+
+        for (int i = 0; i < nbOfLetters; i++) {
+            String currentChar = String.valueOf((char) ('A' + i));
+            languageOccurences[i] = gridProperties.getDouble(currentChar.concat("_FR"));
         }
     }
 
@@ -66,9 +70,8 @@ public class GridGenerator {
         for (int i = 0; i < languageOccurences.length; i++) {
             System.out.println(languageOccurences[i]);
         }
+
     }
-
-
     public static void main(String[] args) {
 
         Grid grid;
@@ -78,16 +81,29 @@ public class GridGenerator {
         for (int i = 0; i < 10; i++) {
             grid = generator.nextRandomGrid();
             System.out.println(grid.printGrid());
+            System.out.println("Nb of vowels: "+grid.getNbOfVowels() +
+                    "\nNb of max identical letter : " + grid.getNbOfMaxIdenticalLetter());
         }
         System.out.println();
         System.out.println("Grid with french occurences :");
         System.out.println("--------------------------------------------------------------\n");
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 100; i++) {
             grid = generator.nextGrid();
             System.out.println(grid.printGrid());
+            System.out.println("Nb of vowels: "+grid.getNbOfVowels() +
+                    "\nNb of max identical letter : " + grid.getNbOfMaxIdenticalLetter());
+            if(!grid.isPrevalid()){
+                System.out.println("*********** UNVALID GRID ! *************");
+            }
         }
     }
-
+    public Grid nextPrevalidGrid(){
+        Grid grid;
+        do{
+           grid = nextGrid();
+        }while(!grid.isPrevalid());
+        return grid;
+    }
     public Grid nextGrid() {
         Grid grid = new Grid(size);
         char[][] content = new char[size][size];
@@ -98,8 +114,8 @@ public class GridGenerator {
                 letter = 100 * random.nextDouble();
                 letterIndex = findCorrespondingLetterIndex(letter);
                 if (letterIndex == -1) {
-                    System.out.println("Error in fillGridWithLanguageOccurence");
-                    System.exit(-1);
+                    //System.out.println("Error in fillGridWithLanguageOccurence");
+                    letterIndex = 4; //we place "E" in case of error
                 }
                 content[i][j] = (char) (letterIndex + indexOfFirstLetter);
             }
