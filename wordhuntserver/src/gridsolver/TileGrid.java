@@ -34,6 +34,8 @@ public class TileGrid extends Grid {
 		}
 	}
 	
+	public List<Tile> getTiles() { return tiles; }
+	
 	public Tile getTileByIndex(int x, int y) {
 		if ((x < 0) || (x >= size) || (y < 0) || (y >= size)) {
 			throw new IllegalArgumentException("Tile index out of bounds");
@@ -46,56 +48,6 @@ public class TileGrid extends Grid {
 		}
 		
 		throw new RuntimeException("??? Your tile doesn't exist?");
-	}
-	
-	public List<Tile> getTiles() { return tiles; }
-	
-	/** DEPRECATED DO NOT TOUCH >:( */
-	public char[] getNeighbors(int i, int j) {
-		char[][] content = getContent();
-		char[] neighbors;
-		int max = content.length - 1;
-		if (i == 0) {
-			if (j == 0) neighbors = new char[] {content[0][1],
-					content[1][0],content[1][1]};
-			else if (j == max) neighbors = new char[] {content[1][max],
-					content[0][max-1],content[1][max-1]};
-			else neighbors = new char[] {content[0][j+1],content[1][j+1],
-					content[1][j],content[0][j-1],content[1][j-1]};
-		} else if (i == max) {
-			if (j == 0) neighbors = new char[] {content[max][1],
-					content[max-1][0],content[max-1][1]};
-			else if (j == max) neighbors = new char[] {content[max-1][max],
-					content[max][max-1],content[max-1][max-1]};
-			else neighbors = new char[] {content[max][j+1],content[max-1][j+1],
-					content[max-1][j],content[max][j-1],content[max-1][j-1]};
-		} else {
-			if (j == 0) neighbors = new char[] {content[i+1][0],content[i+1][1],
-					content[i][1],content[i-1][0],content[i-1][1]};
-			else if (j == max) neighbors = new char[] {content[i+1][max],content[i+1][max-1],
-					content[i][max-1],content[i-1][max],content[i-1][max-1]};
-			else neighbors = new char[] {content[i-1][j+1],content[i][j+1],content[i+1][j+1],
-					content[i-1][j],content[i+1][j],
-					content[i-1][j-1],content[i][j-1],content[i+1][j-1]};
-		}
-		
-		return neighbors;
-	}
-	
-	/** DEPRECATED DO NOT TOUCH >:( */
-	public char[] getNeighbors(int[] index) {
-		return getNeighbors(index[0],index[1]);
-	}
-	
-	/** DEPRECATED DO NOT TOUCH >:( */
-	public int[] getLetterIndex(char letter, int start) {
-		char[][] content = getContent();
-		for (int i = 0; i < content.length; i++) {
-			for (int j = 0; j < content.length; j++){
-				if ((content[i][j] == letter) && ((i * content.length + j) > start)) return new int[] {i,j};
-			}
-		}
-		return new int[] {-1,-1}; // if letter is not found
 	}
 	
 	public List<Tile> getTileByLetter(char letter) {
