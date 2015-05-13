@@ -1,6 +1,7 @@
 package gridsolver;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import whobjects.Grid;
@@ -31,6 +32,14 @@ public class GridSolver {
 		return result;
 	}
 
+	private String findLetters2(){
+		HashMap<Character,Integer> hashmap = grid.getLetterCount();
+		String result = "";
+		for(Character c :hashmap.keySet()){
+			result += c;
+		}
+		return result;
+	}
 }
 
 class Provider {

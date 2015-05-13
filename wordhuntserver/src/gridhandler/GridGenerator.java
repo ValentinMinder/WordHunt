@@ -1,12 +1,7 @@
 package gridhandler;
 
-import java.io.*;
-import java.util.HashMap;
 import java.util.Random;
-import java.util.Set;
-import java.util.TreeSet;
 
-import whobjects.LetterOccurences;
 import whobjects.Grid;
 import whproperties.WHProperties;
 
@@ -18,6 +13,9 @@ public class GridGenerator {
     private static int size;
     private static int nbOfLetters;
     private static int indexOfFirstLetter;
+    private static double vowelRatioLowerBound;
+    private static double vowelRatioUpperBound;
+    private static int maxVowelCount;
     private double[] languageOccurences; // array of letter occurences,
     private WHProperties gridProperties;
     private Random random;
@@ -42,6 +40,9 @@ public class GridGenerator {
         size = gridProperties.getInteger("SIZE");
         nbOfLetters = gridProperties.getInteger("NBOFLETTERS");
         indexOfFirstLetter = gridProperties.getInteger("ASCIIINDEXOFFIRSTLETTER");
+        vowelRatioLowerBound = gridProperties.getDouble("VOWELRATIOLOWERBOUND");
+        vowelRatioUpperBound = gridProperties.getDouble("VOWELRATIOUPPERBOUND");
+        maxVowelCount = gridProperties.getInteger("MAXVOWELCOUNT");
         languageOccurences = new double[nbOfLetters];
 
         for (int i = 0; i < nbOfLetters; i++) {
@@ -93,12 +94,12 @@ public class GridGenerator {
         System.out.println();
         System.out.println("Grid with french occurences :");
         System.out.println("--------------------------------------------------------------\n");
-        for (int i = 0; i < 100; i++) {
+        for (int i = 0; i < 100000; i++) {
             grid = generator.nextGrid();
             System.out.println(grid.printGrid());
             System.out.println("Nb of vowels: "+grid.getNbOfVowels() +
                     "\nNb of max identical letter : " + grid.getNbOfMaxIdenticalLetter());
-            if(!grid.isPrevalid()){
+            if(!grid.isPrevalid(vowelRatioLowerBound,vowelRatioUpperBound,maxVowelCount)){
                 System.out.println("*********** UNVALID GRID ! *************");
             }
         }
@@ -107,7 +108,7 @@ public class GridGenerator {
         Grid grid;
         do{
            grid = nextGrid();
-        }while(!grid.isPrevalid());
+        }while(!grid.isPrevalid(vowelRatioLowerBound,vowelRatioUpperBound,maxVowelCount));
         return grid;
     }
     public Grid nextGrid() {
