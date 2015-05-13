@@ -7,7 +7,7 @@ import whobjects.Grid;
 
 public class GridSolver {
 
-	private Grid grid;
+	protected Grid grid;
 
 	public GridSolver(Grid grid) {
 		this.grid = grid;
