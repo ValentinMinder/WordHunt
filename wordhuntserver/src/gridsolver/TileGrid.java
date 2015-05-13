@@ -34,7 +34,7 @@ public class TileGrid extends Grid {
 		}
 	}
 	
-	public Tile getTile(int x, int y) {
+	public Tile getTileByIndex(int x, int y) {
 		if ((x < 0) || (x >= size) || (y < 0) || (y >= size)) {
 			throw new IllegalArgumentException("Tile index out of bounds");
 		}
@@ -96,6 +96,16 @@ public class TileGrid extends Grid {
 			}
 		}
 		return new int[] {-1,-1}; // if letter is not found
+	}
+	
+	public List<Tile> getTileByLetter(char letter) {
+		List<Tile> result = new ArrayList<Tile>();
+		for (Tile t: tiles) {
+			if (t.getLetter() == letter) {
+				result.add(t);
+			}
+		}
+		return result;
 	}
 	
 	class Tile {
