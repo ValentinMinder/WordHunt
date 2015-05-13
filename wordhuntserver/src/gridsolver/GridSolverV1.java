@@ -20,62 +20,65 @@ public class GridSolverV1 extends GridSolver {
 		// TODO Auto-generated method stub
 
 	}
-	
-	private static long findAWay(int max, LinkedList<Pair> pairs) {
+
+	private static long findAWay(int max) {
 		long result = 0;
-		if (pairs.size() == max) {
-			return 1;
+		for (int i = 0; i < 4; i++) {
+			for (int j = 0; j < 4; j++) {
+				LinkedList<Coordinate> l = new LinkedList<>();
+				l.add(new Coordinate(i, j));
+				result += findAWay(max, l);
+			}
 		}
+		return result;
+	}
 
-		if (pairs.size() == 0) {
-//			for (int i = 0; i < 4; i++) {
-//				for (int j = 0; j < 4; j++) {
-//					result += findAWay(max, new Pair(i, j));
-//				}
-//			}
-
+	private static long findAWay(int max, LinkedList<Coordinate> coords) {
+		long result = 0;
+		if (coords.size() == max) {
+			return 1;
 		} else {
-			List<Pair> next = pairs.get(pairs.size() - 1).neighborsWihtout(pairs);
-			
-			for (Pair pair : next) {
-				pairs.addFirst(pair);
-				result += findAWay(max, pairs);
-				pairs.remove(pair);
-//				pairs.p
+			List<Coordinate> next = coords.get(coords.size() - 1)
+					.neighborsWihtout(coords);
+
+			for (Coordinate pair : next) {
+				coords.addFirst(pair);
+				result += findAWay(max, coords);
+				coords.remove(pair);
+				// pairs.p
 			}
 		}
 
 		return result;
 
 	}
-
 }
 
-class Pair {
+class Coordinate {
 	static int xmax = 4;
 	static int ymax = 4;
 	private int xCoord;
 	private int yCoord;
 
-	Pair(int x, int y) {
+	Coordinate(int x, int y) {
 		this.xCoord = x;
 		this.yCoord = y;
 	}
 
-	List<Pair> neighbors() {
-		return neighborsWihtout(new ArrayList<Pair>());
+	List<Coordinate> neighbors() {
+		return neighborsWihtout(new ArrayList<Coordinate>());
 	}
 
-	List<Pair> neighborsWihtout(List<Pair> pairs) {
-		List<Pair> list = new ArrayList<Pair>();
+	List<Coordinate> neighborsWihtout(List<Coordinate> coords) {
+		List<Coordinate> list = new ArrayList<Coordinate>();
 		for (int nextX = Math.max(0, xCoord - 1); nextX < Math.min(xmax,
 				xCoord + 2); nextX++) {
 			label: for (int nextY = Math.max(0, yCoord - 1); nextY < Math.min(
 					ymax, yCoord + 2); nextY++) {
 
 				// ignore preceeding
-				for (Pair pair : pairs) {
-					if (pair.xCoord == nextX && pair.yCoord == nextY)
+				for (Coordinate coord : coords) {
+					if (coord.xCoord == nextX && coord.yCoord == nextY)
 						continue label;
 				}
 
@@ -83,7 +86,7 @@ class Pair {
 				if (xCoord == nextX && yCoord == nextY) {
 					continue label;
 				}
-				list.add(new Pair(nextX, nextY));
+				list.add(new Coordinate(nextX, nextY));
 			}
 		}
 		return list;
