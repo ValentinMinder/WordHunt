@@ -3,9 +3,8 @@ package gridsolver;
 import gridhandler.GridGenerator;
 import gridsolver.TileGrid.Tile;
 
-import java.util.Iterator;
 import java.util.LinkedList;
-import java.util.List;
+import java.util.logging.Logger;
 
 /**
  * Simple "GRID AGAINST DICTIONNARY" algorithm of finding ALL acceptable
@@ -29,7 +28,8 @@ import java.util.List;
  */
 public class GridSolverV1 extends GridSolver {
 
-	private TileGrid grid;
+	protected TileGrid grid;
+	private Logger logger = Logger.getLogger(GridSolverV1.class.getName());
 
 	public GridSolverV1(TileGrid grid) {
 		super(grid);
@@ -53,8 +53,12 @@ public class GridSolverV1 extends GridSolver {
 
 	@Override
 	public void solve() {
-		int lengthMax = 16;
-		long foundWords = DFSStart(lengthMax);
+		int lengthMax = 10;
+		logger.info("Start solving of GridSolverV1");
+		long time = System.currentTimeMillis();
+		long foundWords = DFSExploration.DFSStart(this, lengthMax, false);
+		time = System.currentTimeMillis() - time;
+		logger.info("End solving of GridSolverV1 in : " + time + " ms");
 		System.out.println("k : " + foundWords);
 		// TODO: do something with found grids.
 	}
@@ -72,83 +76,5 @@ public class GridSolverV1 extends GridSolver {
 	protected void addSolution(String solution, LinkedList<Tile> pathToSolution) {
 		// TODO store found solution and path
 		// System.out.println("Solution found:" + solution);
-	}
-
-	/**
-	 * Start of the DFS exploration for each 1st Tile, with max recursions
-	 * (length).
-	 * 
-	 * @param max
-	 * @return
-	 */
-	private long DFSStart(int max) {
-		int result = 0;
-		List<Tile> tiles = grid.getTiles();
-		for (Tile tile : tiles) {
-			LinkedList<Tile> l = new LinkedList<>();
-			l.add(tile);
-			result += DFSRecursion(max, l);
-		}
-		return result;
-	}
-
-	/**
-	 * Recursive DFS step, with max recursions (length).
-	 * 
-	 * @param max
-	 * @param usedTiles
-	 * @return
-	 */
-	private long DFSRecursion(int max, LinkedList<Tile> usedTiles) {
-		long result = 0;
-		if (usedTiles.size() > max) {
-			return 0;
-		}
-
-		// finding current word, and testing validation
-		String word = findWord(usedTiles);
-		if (validateAnswer(word)) {
-			result++;
-			addSolution(word, usedTiles);
-		}
-
-		// testing continuation
-		if (continueWithSubstring(word)) {
-			// DFS exploration of all neighbors.
-			List<Tile> nextNeighbors = usedTiles.peekLast().getNeighbors();
-			label: for (Tile tile : nextNeighbors) {
-				// discard already used neighbors
-				if (usedTiles.contains(tile)) {
-					continue label;
-				}
-
-				// adding the current neighbor to the stack
-				usedTiles.addLast(tile);
-
-				// recursion
-				result += DFSRecursion(max, usedTiles);
-
-				// removing the current neighbor from the stack
-				usedTiles.pollLast();
-			}
-
-		}
-
-		return result;
-	}
-
-	/**
-	 * Construct a String representation
-	 * 
-	 * @param usedTiles
-	 * @return
-	 */
-	private String findWord(LinkedList<Tile> usedTiles) {
-		StringBuilder sb = new StringBuilder(usedTiles.size());
-		Iterator<Tile> it = usedTiles.iterator();
-		while (it.hasNext()) {
-			sb.append(it.next().getLetter());
-		}
-		return sb.toString();
 	}
 }

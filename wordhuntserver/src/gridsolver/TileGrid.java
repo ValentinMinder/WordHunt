@@ -1,6 +1,7 @@
 package gridsolver;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -58,6 +59,21 @@ public class TileGrid extends Grid {
 			}
 		}
 		return result;
+	}
+	
+	/**
+	 * Construct a String representation of a list of Tile.
+	 * 
+	 * @param usedTiles
+	 * @return
+	 */
+	public static String toWord(LinkedList<Tile> usedTiles) {
+		StringBuilder sb = new StringBuilder(usedTiles.size());
+		Iterator<Tile> it = usedTiles.iterator();
+		while (it.hasNext()) {
+			sb.append(it.next().getLetter());
+		}
+		return sb.toString();
 	}
 	
 	class Tile {
