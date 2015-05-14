@@ -2,6 +2,7 @@ package gridsolver;
 
 import gridsolver.TileGrid.Tile;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -35,14 +36,28 @@ public class DFSExploration implements Runnable {
 			boolean allowMutliThread) {
 		int result = 0;
 		List<Tile> tiles = solver.grid.getTiles();
+		List<Thread> threads = new ArrayList<Thread>();
 		for (Tile tile : tiles) {
 			LinkedList<Tile> list = new LinkedList<>();
 			list.add(tile);
 			DFSExploration dfs = new DFSExploration(solver, depthMax, list);
 			if (allowMutliThread) {
-				new Thread(dfs).start();
+				threads.add(new Thread(dfs));
 			} else {
 				result += dfs.DFSRecursion(depthMax, list);
+			}
+		}
+
+		if (allowMutliThread) {
+			for (Thread thread : threads) {
+				thread.start();
+			}
+			for (Thread thread : threads) {
+				try {
+					thread.join();
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
 			}
 		}
 		return result;
