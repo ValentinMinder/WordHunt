@@ -53,10 +53,10 @@ public class GridSolverV1 extends GridSolver {
 
 	@Override
 	public void solve() {
-		int lengthMax = 10;
+		int lengthMax = 16;
 		logger.info("Start solving of GridSolverV1");
 		long time = System.currentTimeMillis();
-		long foundWords = DFSExploration.DFSStart(this, lengthMax, false);
+		long foundWords = DFSExploration.DFSStart(this, lengthMax, true);
 		time = System.currentTimeMillis() - time;
 		logger.info("End solving of GridSolverV1 in : " + time + " ms");
 		System.out.println("k : " + foundWords);
@@ -69,7 +69,7 @@ public class GridSolverV1 extends GridSolver {
 	}
 
 	protected boolean continueWithSubstring(String substring) {
-		// TODO: connexion to DB with appropriate DBAcesse Object.
+		// in this version, return TRUE always.
 		return true;
 	}
 
