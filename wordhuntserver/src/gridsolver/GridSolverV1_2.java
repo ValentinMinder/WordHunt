@@ -23,7 +23,7 @@ public class GridSolverV1_2 extends GridSolverV1 {
 
 	protected boolean continueWithSubstring(String substring) {
 		// TODO: connexion to DB with appropriate DBAcesse Object.
-		return true;
+		return db.continueWithSubstring(substring);
 	}
 
 }
