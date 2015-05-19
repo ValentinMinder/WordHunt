@@ -99,7 +99,7 @@ public class Grid {
      */
     public boolean isPrevalid(double lowerBound, double upperBound, int maxCount){
         double vowelRatio = (double) getNbOfVowels()/(double) (content.length * content.length) ;
-        if (vowelRatio < lowerBound|| vowelRatio > upperBound){
+        if (vowelRatio < lowerBound || vowelRatio > upperBound){
             return false;
         }
         int greaterCount = 0;
@@ -108,7 +108,7 @@ public class Grid {
                 greaterCount = i;
             }
         }
-        if(maxCount > greaterCount){
+        if(greaterCount > maxCount){
             return false;
         }
         return true;

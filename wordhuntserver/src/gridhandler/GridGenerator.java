@@ -94,7 +94,7 @@ public class GridGenerator {
         System.out.println();
         System.out.println("Grid with french occurences :");
         System.out.println("--------------------------------------------------------------\n");
-        for (int i = 0; i < 100000; i++) {
+        for (int i = 0; i < 10000; i++) {
             grid = generator.nextGrid();
             System.out.println(grid.printGrid());
             System.out.println("Nb of vowels: "+grid.getNbOfVowels() +
