@@ -1,59 +1,29 @@
 package gridsolver;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-
 import whobjects.Grid;
 
-public class GridSolver {
+/**
+ * Abstract top-level class for all algorithm implementation of finding ALL
+ * acceptable solution in a specific grid.
+ * <p>
+ * 
+ * Algorithms are divided into two families: <br>
+ * - V1: "GRID AGAINST DICTIONNARY" family: we generate possible solutions from
+ * the grid with a DFS exploration from all starting Tiles, and test these
+ * solutions against the dictionary.<br>
+ * - V2: "DICTIONARY AGAINST GRID" family: from the set of the known words
+ * (dictionary), we test them successively against the Grid (if there are in or
+ * not).
+ * <p>
+ */
+public abstract class GridSolver {
 
-	private Grid grid;
+	protected Grid grid;
 
 	public GridSolver(Grid grid) {
 		this.grid = grid;
 	}
 
-	public void solve() {
-		// get the words with the existing letters.
-		Provider.getWords(findLetters());
-	}
-
-	// find the composing letters...
-	private String findLetters() {
-		String result = "";
-		char[][] content = grid.getContent();
-		for (int i = 0; i < content.length; i++) {
-			for (int j = 0; j < content.length; j++) {
-				// TODO: avoid doubles
-				result += content[i][j];
-			}
-		}
-		return result;
-	}
-
-	private String findLetters2(){
-		HashMap<Character,Integer> hashmap = grid.getLetterCount();
-		String result = "";
-		for(Character c :hashmap.keySet()){
-			result += c;
-		}
-		return result;
-	}
+	abstract public void solve();
 }
 
-class Provider {
-	static List<String> getWords() {
-		List<String> result = new ArrayList<>();
-		result.add("Hello");
-		result.add("World");
-		return result;
-	}
-
-	static List<String> getWords(String precond) {
-		List<String> result = new ArrayList<>();
-		result.add("Hello");
-		result.add("World");
-		return result;
-	}
-}
