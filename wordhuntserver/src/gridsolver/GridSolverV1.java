@@ -34,6 +34,7 @@ public class GridSolverV1 extends GridSolver {
 	protected TileGrid grid;
 	private Logger logger = Logger.getLogger(GridSolverV1.class.getName());
 	protected static WordProvider db;
+	private static int[] nbOfWords;
 
 	public GridSolverV1(TileGrid grid) {
 		super(grid);
@@ -44,11 +45,13 @@ public class GridSolverV1 extends GridSolver {
 	 * Test program for GridSolverV1.
 	 */
 	public static void main(String[] args) {
+		int nbOfGrids = 100;
+		nbOfWords = new int[nbOfGrids];
 		db = WordProvider.getInstance();
 		// TODO: disaster, please have generator return TileGrid !
 		TileGrid grid = new TileGrid(4);
 		GridGenerator gen = GridGenerator.getInstance();
-		grid.setContent(gen.nextGrid().getContent());
+		grid.setContent(gen.nextValidGrid().getContent());
 
 		// test a resolution
 		GridSolverV1 solver = new GridSolverV1_2(grid);
@@ -56,12 +59,29 @@ public class GridSolverV1 extends GridSolver {
 		solver.solve();
 
 		long time = System.currentTimeMillis();
-
-		for (int i = 0; i < 1000; i++) {
+		int nbOfGridsThatContainsLessThen50 = 0;
+		int nbOfGridsThatContainsLessThen100 = 0;
+        int percent = 0;
+		for (int i = 0; i < nbOfGrids; i++) {
+            if(i > 0 && i % (nbOfGrids/100) == 0){
+                System.out.print(++percent +"% ");
+            }
 			grid = new TileGrid(4);
-			grid.setContent(gen.nextGrid().getContent());
+			grid.setContent(gen.nextValidGrid().getContent());
 			solver = new GridSolverV1_2(grid);
 			solver.solve();
+			nbOfWords[i] = solver.solutions.size();
+			System.out.println(grid.printGrid());
+			System.out.println(solver.solutions);
+			System.out.println("Nb of words per grid :"+solver.solutions.size());
+			if(solver.solutions.size() < 50){
+				nbOfGridsThatContainsLessThen50 ++;
+				nbOfGridsThatContainsLessThen100++;
+				System.out.println("<50 !");
+			}else if(solver.solutions.size() < 100){
+				nbOfGridsThatContainsLessThen100++;
+				System.out.println("<100 !");
+			}
 
 		}
 		System.out.println("Found: " + solver.solutions.size() + " words.");
@@ -69,9 +89,20 @@ public class GridSolverV1 extends GridSolver {
 		System.out.println(solver.solutions);
 
 		time = System.currentTimeMillis() - time;
-		System.out.flush();
-		System.err.println("End solving of 10'000 grids in : " + time + " ms");
-	}
+        System.out.flush();
+		System.err.println("End solving of " + nbOfGrids+" grids in : " + time + " ms");
+
+		System.out.println("Nb of words per grid :");
+		for (int i = 0; i < nbOfGrids; i++) {
+//			System.out.println(nbOfWords[i]);
+		}
+		System.out.println("Nb of grids that contains less then 50 : "+nbOfGridsThatContainsLessThen50);
+		System.out.println("Nb of grids that contains less then 100 : "+nbOfGridsThatContainsLessThen100);
+
+        System.out.println("Nb of thrown grids because of Prevalidation : "+gen.getNbOfThrowngridBecauseOfPrevalidation());
+        System.out.println("Nb of thrown grids because of Validation : "+gen.getNbOfThrowngridBecauseOfValidation());
+        System.out.println("Total nb of thrown grids  : "+gen.getNbOfThrowngrid());
+    }
 
 	@Override
 	public void solve() {

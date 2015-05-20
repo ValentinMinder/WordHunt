@@ -16,6 +16,11 @@ public class GridGenerator {
     private static double vowelRatioLowerBound;
     private static double vowelRatioUpperBound;
     private static int maxVowelCount;
+    private static int minLength;
+    private static int minNbOfWords;
+    private int nbOfThrowngrid;
+    private int nbOfThrowngridBecauseOfPrevalidation;
+    private int nbOfThrowngridBecauseOfValidation;
     private double[] languageOccurences; // array of letter occurences,
     private WHProperties gridProperties;
     private Random random;
@@ -43,6 +48,8 @@ public class GridGenerator {
         vowelRatioLowerBound = gridProperties.getDouble("VOWELRATIOLOWERBOUND");
         vowelRatioUpperBound = gridProperties.getDouble("VOWELRATIOUPPERBOUND");
         maxVowelCount = gridProperties.getInteger("MAXVOWELCOUNT");
+        minLength = gridProperties.getInteger("MINLENGTH");
+        minNbOfWords = gridProperties.getInteger("MINNBOFWORDS");
         languageOccurences = new double[nbOfLetters];
 
         for (int i = 0; i < nbOfLetters; i++) {
@@ -79,6 +86,19 @@ public class GridGenerator {
         }
 
     }
+
+    public int getNbOfThrowngridBecauseOfValidation() {
+        return nbOfThrowngridBecauseOfValidation;
+    }
+
+    public int getNbOfThrowngridBecauseOfPrevalidation() {
+        return nbOfThrowngridBecauseOfPrevalidation;
+    }
+
+    public int getNbOfThrowngrid() {
+        return nbOfThrowngrid;
+    }
+
     public static void main(String[] args) {
 
         Grid grid;
@@ -106,11 +126,26 @@ public class GridGenerator {
     }
     public Grid nextPrevalidGrid(){
         Grid grid;
-        do{
-           grid = nextGrid();
-        }while(!grid.isPrevalid(vowelRatioLowerBound,vowelRatioUpperBound,maxVowelCount));
+        grid = nextGrid();
+        while(!grid.isPrevalid(vowelRatioLowerBound, vowelRatioUpperBound, maxVowelCount)){
+            grid = nextGrid();
+            nbOfThrowngrid++;
+            nbOfThrowngridBecauseOfPrevalidation++;
+        }
         return grid;
     }
+
+    public Grid nextValidGrid(){
+        Grid grid;
+        grid = nextPrevalidGrid();
+        while(!grid.isValid(minNbOfWords,minLength)){
+            grid = nextPrevalidGrid();
+            nbOfThrowngrid++;
+            nbOfThrowngridBecauseOfValidation++;
+        }
+        return grid;
+    }
+
     public Grid nextGrid() {
         Grid grid = new Grid(size);
         char[][] content = new char[size][size];

@@ -1,8 +1,13 @@
 package whobjects;
 
+import gridsolver.GridSolverV1;
+import gridsolver.GridSolverV1_2;
+import gridsolver.TileGrid;
 import whproperties.WHProperties;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * Created by Karim Ghozlani on 06.05.2015.
@@ -99,7 +104,7 @@ public class Grid {
      * 11/ 16 = 68.75%
      * 12 / 16 = 75%
      * Bounds have to be specified after implementing the solver
-     * @return true if the grid is considered valid, false if not
+     * @return true if the grid is considered prevalid, false if not
      */
     public boolean isPrevalid(double lowerBound, double upperBound, int maxCount){
         double vowelRatio = (double) getNbOfVowels()/(double) (content.length * content.length) ;
@@ -117,6 +122,28 @@ public class Grid {
         }
         return true;
     }
+
+    public boolean isValid(int minNbOfWords, int minWordLength){
+        TileGrid tileGrid = new TileGrid(size);
+        tileGrid.setContent(getContent());
+        GridSolverV1_2 solver = new GridSolverV1_2(tileGrid);
+        solver.solve();
+        List<String> solutions = (List<String>) solver.getSolutions();
+        if(solutions.size() < minNbOfWords){
+            return false;
+        }
+        int maxLength = 0;
+        for(String s : solutions){
+            if(s.length() > maxLength){
+                maxLength = s.length();
+            }
+        }
+        if(maxLength < minWordLength ){
+            return false;
+        }
+        return true;
+    }
+
     public String printGrid() {
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < content.length; i++) {
