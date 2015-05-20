@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">WordHunt</string>
+    <string name="action_settings">Settings</string>
+    <string name="hello_world">Welcome to WordHunt!</string>
+    <string name="button_test_ping_txt">TEST PING!</string>
+    <string name="button_login">Login</string>
+    <string name="button_grid_training">Training</string>
+    <string name="IP_address">IP Address</string>
+    <string name="IP_last_used">Last used:</string>
+    <string name="IP_localhost">localhost</string>
+    <string name="IP_local_192_0">192.168.0.</string>
+    <string name="IP_local_192_1">192.168.1.</string>
+    <string name="IP_HEIG">10.192.94.</string>
+    <string name="title_activity_game">GameActivity</string>
+    <string name="next">clear</string>
+    <string name="finish">validate</string>
+
+</resources>

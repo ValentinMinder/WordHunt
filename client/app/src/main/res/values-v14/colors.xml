@@ -1,0 +1,9 @@
+<resources>
+
+    <color name="black_overlay">#66000000</color>
+    <color name="textColorGrid">#b2000000</color>
+    <color name="defaultColor">#FFD1CBCE</color>
+    <color name="mainColor">#ff78a3d1</color>
+    <color name="secondarColor">#ffd17c8a</color>
+
+</resources>

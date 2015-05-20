@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="70dp"
+    android:layout_height="70dp">
+
+    <TextView
+        android:id="@+id/infos"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
+        android:textSize="12sp"
+        android:text="0"
+        android:layout_marginStart="7dp"
+        android:layout_marginLeft="7dp"
+        android:layout_marginTop="5dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+    <Button
+        android:layout_marginRight="10dp"
+        android:textColor="@color/textColorGrid"
+        android:textSize="30sp"
+        android:width="70dp"
+        android:layout_height="70dp"
+        android:id="@+id/buttonGrid"
+        android:layout_width="wrap_content" />
+
+</RelativeLayout>
