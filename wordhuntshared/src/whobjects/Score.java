@@ -1,7 +1,13 @@
 package whobjects;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Collection;
+import java.util.LinkedList;
+import java.util.Random;
+
+import whproperties.WHProperties;
+import whprotocol.WHProtocol;
+
+import static java.lang.Math.ceil;
 
 /**
  * Created by David on 09.05.2015.
@@ -10,51 +16,93 @@ public class Score {
 
     private int score;
     private double[] languageOccurences;
+    private static int nbOfLetters;
+    private WHProperties gridProperties;
+    private Random random;
+    private Score(){
+        random = new Random();
+        gridProperties = new WHProperties("wordhuntserver/frenchGrid.properties");
+        nbOfLetters = gridProperties.getInteger("NBOFLETTERS");
 
-    private Score() {
-        languageOccurences = new double[LetterOccurences.getNbOfLetters()];
+        languageOccurences = new double[nbOfLetters];
+
+        for (int i = 0; i < nbOfLetters; i++) {
+            String currentChar = String.valueOf((char) ('A' + i));
+            languageOccurences[i] = gridProperties.getDouble(currentChar.concat("_FR"));
+        }
     }
 
-    public int getScore(String word) {
+    public int getScore(String word, WHProtocol.WHPointsType pointsType){
         score = 0;
-        languageOccurences = LetterOccurences.getInstance(LetterOccurences.language.FR).getLanguageOccurences();
-        score += (word.length() - 2) * 100; //Score start at 100 for a 3 letters word
-        for (int i = 0; i < word.length(); i++) { // More points if the letter occurs less in language
-            char c = word.charAt(i);
-            double letterWeight = 1 / languageOccurences[c - 'A'];
-//            System.out.println("letterWeight: " + letterWeight);
-            score += (letterWeight / 4) * 100;
+        switch(pointsType) {
+            case WORD:
+                score = 1;
+                break;
+            case LENGTH:
+                score = word.length();
+                break;
+            case LENGTH_SQUARE:
+                score = (word.length()-2) * (word.length()-2);
+                break;
+            case LENGTH_LETTERFREQ:
+                languageOccurences = LetterOccurences.getInstance(LetterOccurences.language.FR).getLanguageOccurences();
+                score = word.length()*100;
+                for (int i = 0; i < word.length(); i++) { // More points if the letter occurs less in language
+                    char c = word.charAt(i);
+                    double letterWeight = 1 / languageOccurences[c - 'A'];
+                    if(letterWeight > 1) {
+//                    System.out.println("letterWeight: " + letterWeight);
+                        score += ceil((letterWeight/4))*100;
+                    }
+                }
+                break;
+            case BONUS:
+
+            default :
+                score = 0;
+
+
         }
 
         return score;
     }
 
-    public int getScore(List<String> words) {
-        score = 0;
-        languageOccurences = LetterOccurences.getInstance(LetterOccurences.language.FR).getLanguageOccurences();
-        for (String word : words) {
-            score += (word.length() - 2) * 100; //Score start at 100 for a 3 letters word
-            for (int i = 0; i < word.length(); i++) { // More points if the letter occurs less in language
-                char c = word.charAt(i);
-                double letterWeight = 1 / languageOccurences[c - 'A'];
-//            System.out.println("letterWeight: " + letterWeight);
-                score += (letterWeight / 4) * 100;
-            }
-        }
 
+    public int getScore(Collection<String> words, WHProtocol.WHPointsType pointsType){
+        score = 0;
+        for(String s : words){
+            score += getScore(s, pointsType);
+        }
         return score;
     }
 
 
     public static void main(String[] args) {
         Score test = new Score();
-        System.out.printf("Score : Tatamis :" + test.getScore("TATAMIS"));
-        System.out.printf("Score : ZYGOTE :" + test.getScore("ZYGOTE"));
-        List<String> words = new ArrayList<String>();
+        System.out.println("Score LENGTH: TATAMIS :" + test.getScore("TATAMIS", WHProtocol.WHPointsType.LENGTH));
+        System.out.println("Score LENGTH: ZYGOTE :" + test.getScore("ZYGOTE", WHProtocol.WHPointsType.LENGTH));
+
+        System.out.println("Score LENGTH_SQUARE: TATAMIS :" + test.getScore("TATAMIS", WHProtocol.WHPointsType.LENGTH_SQUARE));
+        System.out.println("Score LENGTH_SQUARE: ZYGOTE :" + test.getScore("ZYGOTE", WHProtocol.WHPointsType.LENGTH_SQUARE));
+        System.out.println("Score LENGTH_SQUARE: ANTICONSTITUTIONNELLEMENT :" + test.getScore("ANTICONSTITUTIONNELLEMENT", WHProtocol.WHPointsType.LENGTH_SQUARE));
+
+        System.out.println("Score LENGTH_LETTERFREQ: TATAMIS :" + test.getScore("TATAMIS", WHProtocol.WHPointsType.LENGTH_LETTERFREQ));
+        System.out.println("Score LENGTH_LETTERFREQ: ZYGOTE :" + test.getScore("ZYGOTE", WHProtocol.WHPointsType.LENGTH_LETTERFREQ));
+
+
+
+        Collection<String> words = new LinkedList<String>();
         words.add("TATAMIS");
         words.add("ZYGOTE");
-        System.out.printf("Score : Total :" +  test.getScore(words));
+        words.add("THERMOMETRE");
+
+        System.out.println("Score Collection WORD: " + test.getScore(words, WHProtocol.WHPointsType.WORD));
+
+        System.out.println("Score Collection LENGTH_LETTERFREQ: " + test.getScore(words, WHProtocol.WHPointsType.LENGTH_LETTERFREQ));
+
     }
+
+
 
 
 }
