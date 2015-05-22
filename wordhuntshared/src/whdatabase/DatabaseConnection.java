@@ -21,7 +21,7 @@ public class DatabaseConnection {
 
         user = "root";
         pwd = "";
-        dbName = "test";
+        dbName = "wordhunt";
         port = "3306";
 
 
