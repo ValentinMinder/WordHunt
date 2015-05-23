@@ -1,21 +1,22 @@
 package whobjects;
 
-import gridsolver.GridSolverV1;
 import gridsolver.GridSolverV1_2;
 import gridsolver.TileGrid;
-import whproperties.WHProperties;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 /**
- * Created by Karim Ghozlani on 06.05.2015.
+ * Represents the word grid
+ * content is set via setContent()
+ * isValid() solves a grid and add its hashed solutions using hashCode() to solutionsHashed
  */
 public class Grid {
 
     private char[][] content;
-
+    private ArrayList<Integer> solutionsHashed;
+    private int gridID;
     protected int size;
 
     public Grid() {
@@ -43,7 +44,17 @@ public class Grid {
 		return content;
 	}
 
+    public int getGridID() {
+        return gridID;
+    }
 
+    public void setGridID(int gridID) {
+        this.gridID = gridID;
+    }
+
+    public ArrayList<Integer> getHashedSolutions() {
+        return solutionsHashed;
+    }
 
     public int getNbOfVowels() {
         int nbOfVowels = 0;
@@ -123,12 +134,25 @@ public class Grid {
         return true;
     }
 
+    /**
+     * checks if the grid is valid by solving it
+     * @see solutionsHashed solutions are hashed and stored
+     * @param minNbOfWords desired mininum number of words in the grid
+     * @param minWordLength desired minimum length of longest word in the grid
+     * @return
+     */
     public boolean isValid(int minNbOfWords, int minWordLength){
         TileGrid tileGrid = new TileGrid(size);
         tileGrid.setContent(getContent());
         GridSolverV1_2 solver = new GridSolverV1_2(tileGrid);
         solver.solve();
         List<String> solutions = (List<String>) solver.getSolutions();
+        // Add hashed solutions to the grid
+        solutionsHashed = new ArrayList<Integer>(solutions.size());
+        for(String solution : solutions ){
+            solutionsHashed.add(solution.hashCode());
+        }
+
         if(solutions.size() < minNbOfWords){
             return false;
         }
