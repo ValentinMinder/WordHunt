@@ -4,13 +4,18 @@ import java.util.Arrays;
 
 import whobjects.Grid;
 
+/**
+ * Grid Solver, second implementation concept<br>
+ * Discontinued after first concept proved efficient enough
+ * <br><br>
+ * DEPRECATED - code has been commented
+ *
+ */
 public class GridSolverV2 extends GridSolver {
 
 	public GridSolverV2(Grid grid) {
 		super(grid);
 	}
-	
-	// TODO: adapt to TileGrid
 	
 	/*private boolean checkWord(String word) {
 		int size = grid.getContent().length;
@@ -29,9 +34,9 @@ public class GridSolverV2 extends GridSolver {
 		}
 		
 		return false;
-	}*/
+	}
 	
-	/*private boolean checkLetter(String partial, int[] current) {
+	private boolean checkLetter(String partial, int[] current) {
 		for(int i=0;i<partial.length();i++) {
 			boolean contains = false;
 			for (char c: grid.getNeighbors(current))
@@ -39,14 +44,9 @@ public class GridSolverV2 extends GridSolver {
 			if (!contains) return false;
 		}
 		return false;
-	}*/
+	}
 	
 	public void solve() {
-		// TODO: fetch dictionary from db
-		// for(String word: dic) checkWord(word);
-	}
-
-	public static void main(String[] args) {
-		
-	}
+		for(String word: dic) checkWord(word);
+	}*/
 }
