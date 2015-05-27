@@ -1,11 +1,7 @@
 package whobjects;
 
-import gridsolver.GridSolverV1_2;
-import gridsolver.TileGrid;
-
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 /**
  * Represents the word grid
@@ -14,8 +10,8 @@ import java.util.List;
  */
 public class Grid {
 
-    private char[][] content;
-    private ArrayList<Integer> solutionsHashed;
+	protected char[][] content;
+    protected ArrayList<Integer> solutionsHashed;
     private int gridID;
     protected int size;
 
@@ -110,62 +106,17 @@ public class Grid {
     }
 
     /**
-     * 3/16 = 18.75%
-     * 4/16 = 25%
-     * 11/ 16 = 68.75%
-     * 12 / 16 = 75%
-     * Bounds have to be specified after implementing the solver
-     * @return true if the grid is considered prevalid, false if not
+     * @return FALSE
      */
     public boolean isPrevalid(double lowerBound, double upperBound, int maxCount){
-        double vowelRatio = (double) getNbOfVowels()/(double) (content.length * content.length) ;
-        if (vowelRatio < lowerBound || vowelRatio > upperBound){
-            return false;
-        }
-        int greaterCount = 0;
-        for(Integer i: getLetterCount().values()){
-            if(i > greaterCount){
-                greaterCount = i;
-            }
-        }
-        if(greaterCount > maxCount){
-            return false;
-        }
-        return true;
+        return false;
     }
 
     /**
-     * checks if the grid is valid by solving it
-     * @see solutionsHashed solutions are hashed and stored
-     * @param minNbOfWords desired mininum number of words in the grid
-     * @param minWordLength desired minimum length of longest word in the grid
-     * @return
+     * @return FALSE
      */
     public boolean isValid(int minNbOfWords, int minWordLength){
-        TileGrid tileGrid = new TileGrid(size);
-        tileGrid.setContent(getContent());
-        GridSolverV1_2 solver = new GridSolverV1_2(tileGrid);
-        solver.solve();
-        List<String> solutions = (List<String>) solver.getSolutions();
-        // Add hashed solutions to the grid
-        solutionsHashed = new ArrayList<Integer>(solutions.size());
-        for(String solution : solutions ){
-            solutionsHashed.add(solution.hashCode());
-        }
-
-        if(solutions.size() < minNbOfWords){
-            return false;
-        }
-        int maxLength = 0;
-        for(String s : solutions){
-            if(s.length() > maxLength){
-                maxLength = s.length();
-            }
-        }
-        if(maxLength < minWordLength ){
-            return false;
-        }
-        return true;
+        return false;
     }
 
     public String printGrid() {

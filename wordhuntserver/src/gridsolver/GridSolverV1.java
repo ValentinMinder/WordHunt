@@ -19,15 +19,11 @@ import java.util.logging.Logger;
  * test these solutions against the dictionary.
  * <p>
  * 
- * Specific algorithm of V1 is the following: <br>
- * - Generate ALL solutions from the Grid. <br>
+ * Specific algorithm of V1_2 is the following: <br>
+ * - When generating ALL solutions from the Grid, stop the recursion when the
+ * start substring is not present anymore ("continueWithSubstring"). <br>
  * - Then, test them 1 by 1 against the dictionary. <br>
  * 
- * <p>
- * PLEASE NOTE THAT THIS IS THE SIMPLIEST ALGORITHM POSSIBLE, BUT ALSO THE LESS
- * SMART ! ITS COMPLEXITY IS HIGH-ORDER EXPONENTIAL, AND ITS ONLY MEANT AS A
- * PROOF OF CONCEPT. PLEASE HAVE A LOOK AT OPTIMIZED VERSION IN OTHER
- * IMPLEMENTATION.
  */
 public class GridSolverV1 extends GridSolver {
 
@@ -54,7 +50,7 @@ public class GridSolverV1 extends GridSolver {
 		grid.setContent(gen.nextValidGrid().getContent());
 
 		// test a resolution
-		GridSolverV1 solver = new GridSolverV1_2(grid);
+		GridSolverV1 solver = new GridSolverV1(grid);
 		System.out.println(grid.printGrid());
 		solver.solve();
 
@@ -68,7 +64,7 @@ public class GridSolverV1 extends GridSolver {
             }
 			grid = new TileGrid(4);
 			grid.setContent(gen.nextValidGrid().getContent());
-			solver = new GridSolverV1_2(grid);
+			solver = new GridSolverV1(grid);
 			solver.solve();
 			nbOfWords[i] = solver.solutions.size();
 			System.out.println(grid.printGrid());
@@ -126,7 +122,7 @@ public class GridSolverV1 extends GridSolver {
 
 	protected boolean continueWithSubstring(String substring) {
 		// in this version, return TRUE always.
-		return true;
+		return db.continueWithSubstring(substring);
 	}
 
 	private int sol = 0;
