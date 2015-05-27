@@ -15,6 +15,7 @@ import whprotocol.WHGridReplyMessage;
 import whprotocol.WHMessage;
 import whprotocol.WHProtocol.WHMessageHeader;
 import whprotocol.WHSimpleMessage;
+import whprotocol.WHSubmitPostMessage;
 
 public class ClientHandler implements Runnable {
 
@@ -102,13 +103,22 @@ public class ClientHandler implements Runnable {
 			// TODO IMPLEMENT
 		case SCHEDULE_COMPET:
 			// TODO IMPLEMENT
-		case SUBMIT_POST:
-			// TODO IMPLEMENT
 			// not implemented yet
 			logger.warning("WARN: client issued bad request with NOT IMPLEMENTED command:"
 					+ clientCommand.getHeader());
 			return new WHMessage(WHMessageHeader.BAD_REQUEST_400,
 					"NOT IMPLEMENTS YET " + clientCommand.getHeader());
+		case SUBMIT_POST:
+			WHSubmitPostMessage post = (WHSubmitPostMessage) clientCommand.getContent();
+			
+			//TODO retrieve grid from id
+			//TODO verify token with user
+			
+			// if solution is accepted:
+			return new WHMessage(WHMessageHeader.SUBMIT_VALIDATE,
+					new WHSimpleMessage(1234, "Solution accepted"));
+			// if solution is rejected:
+			//return new WHMessage(WHMessageHeader.CHEATING_BANNED_400, "u suck >:(");
 		case PING_REPLY:
 		case ANSWERS_REPLY:
 		case AUTH_TOKEN:
