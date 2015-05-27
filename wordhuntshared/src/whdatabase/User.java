@@ -5,6 +5,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import whprotocol.WHMessage;
+import whprotocol.WHProtocol;
+
 /**
  * Created by David on 22.05.2015.
  */
@@ -33,7 +36,7 @@ public class User {
         this.password = password;
     }
 
-    public void registerUser(){
+    public WHMessage registerUser(){
         Connection conn = DatabaseConnection.getInstance().getConnection();
         PreparedStatement stmt = null;
 
@@ -45,16 +48,17 @@ public class User {
                 stmt.setString(3, password);
                 stmt.executeUpdate();
             }else{
-                System.out.println("Already registered!");
+                return new WHMessage(WHProtocol.WHMessageHeader.SERVER_ERROR_500, "Already registered");
             }
 
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        return new WHMessage(WHProtocol.WHMessageHeader.REGISTER_ACCOUNT_CREATED_201,  email + " is now registered " );
 
     }
 
-    public boolean correctCredentials(){
+    public WHMessage correctCredentials(){
         Connection conn = DatabaseConnection.getInstance().getConnection();
         PreparedStatement stmt = null;
         ResultSet rs = null;
@@ -67,9 +71,11 @@ public class User {
                 rs = stmt.executeQuery();
                 if(!rs.isBeforeFirst()){
                     //Wrong Credentials
-                    return false;
+                    return new WHMessage(WHProtocol.WHMessageHeader.AUTHENTICATE_BAD_CREDENTIALS, "Bad Credentials");
                 }
-                return true;
+//                int token = getToken();
+                int token = 1;
+                return new WHMessage(WHProtocol.WHMessageHeader.AUTH_TOKEN, Integer.toString(token));
             }
 
 
@@ -77,13 +83,14 @@ public class User {
             e.printStackTrace();
         }
         //Not Registered
-        return false;
+        return new WHMessage(WHProtocol.WHMessageHeader.REGISTER, "Please register first");
 
 
     }
 
 
     public void getToken(){
+
 
     }
 
@@ -119,8 +126,11 @@ public class User {
 
         User me = new User("Jean", "david@f.com", "othersecret");
         me.registerUser();
-        if(me.correctCredentials()){
+        WHMessage message = me.correctCredentials();
+        if(message.getHeader() == WHProtocol.WHMessageHeader.AUTH_TOKEN){
             System.out.println("OK You're logged");
+            System.out.println(message.getContent().toString());
+
         }else{
             System.out.println("Nope go away!!!");
         }
