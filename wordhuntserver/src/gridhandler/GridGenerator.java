@@ -1,5 +1,7 @@
 package gridhandler;
 
+import gridsolver.TileGrid;
+
 import java.util.Random;
 
 import whobjects.Grid;
@@ -147,7 +149,7 @@ public class GridGenerator {
     }
 
     public Grid nextGrid() {
-        Grid grid = new Grid(size);
+        Grid grid = new TileGrid(size);
         char[][] content = new char[size][size];
         double letter;
         int letterIndex;
@@ -167,7 +169,7 @@ public class GridGenerator {
     }
 
     public Grid nextRandomGrid() {
-        Grid grid = new Grid(size);
+        Grid grid = new TileGrid(size);
         char[][] content = new char[size][size];
         for (int i = 0; i < size; i++) {
             for (int j = 0; j < size; j++) {
