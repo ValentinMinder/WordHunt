@@ -24,19 +24,26 @@ public class GridHandler {
 	}
 
 	/**
-	 * Returns a grid, that can be new or from storage (aka already generated).
+	 * Returns a new grid
 	 * 
 	 * @return
 	 */
 	public Grid getGrid() {
-		Grid grid;
-		// for the moment, only returns new generated grid.
-		boolean newGrid = true;
-		if (newGrid) {
-			grid = generator.nextGrid();
-		} else {
-			grid = null;
-		}
-		return grid;
+		return generator.nextValidGrid();
 	}
+
+	/**
+	 * Returns a grid, from storage (aka already generated).
+	 * @param gridID
+	 * @return the grid with ID gridID
+	 */
+	public Grid getGrid(int gridID){
+		//TODO
+		return new Grid(4);
+	}
+
+    public void storeGrid(){
+        //Grid grid = getGrid()
+        //db.store(grid.getContent(),grid.getID());
+    }
 }

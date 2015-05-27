@@ -1,10 +1,22 @@
 package whobjects;
+
+import gridsolver.GridSolverV1_2;
+import gridsolver.TileGrid;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
 /**
- * Created by Karim Ghozlani on 06.05.2015.
+ * Represents the word grid
+ * content is set via setContent()
+ * isValid() solves a grid and add its hashed solutions using hashCode() to solutionsHashed
  */
 public class Grid {
 
     private char[][] content;
+    private ArrayList<Integer> solutionsHashed;
+    private int gridID;
     protected int size;
 
     public Grid() {
@@ -31,6 +43,130 @@ public class Grid {
 	public char[][] getContent() {
 		return content;
 	}
+
+    public int getGridID() {
+        return gridID;
+    }
+
+    public void setGridID(int gridID) {
+        this.gridID = gridID;
+    }
+
+    public ArrayList<Integer> getHashedSolutions() {
+        return solutionsHashed;
+    }
+
+    public int getNbOfVowels() {
+        int nbOfVowels = 0;
+        char[][] content = getContent();
+        for (int i = 0; i < getContent().length; i++) {
+            for (int j = 0; j < getContent().length; j++) {
+                if (content[i][j] == 'A' ||
+                        content[i][j] == 'E' ||
+                        content[i][j] == 'I' ||
+                        content[i][j] == 'O' ||
+                        content[i][j] == 'U') {
+
+                    nbOfVowels++;
+                }
+            }
+        }
+        return nbOfVowels;
+    }
+
+
+    public int getNbOfMaxIdenticalLetter() {
+        int nbOfMaxIdenticalLetter = 1;
+        char[][] content = getContent();
+        HashMap<Character,Integer> hashMap = getLetterCount();
+        for(Integer i : hashMap.values()){
+            if(i > nbOfMaxIdenticalLetter){
+                nbOfMaxIdenticalLetter = i;
+            }
+        }
+        return nbOfMaxIdenticalLetter;
+    }
+
+    /**
+     *
+     * @return an hashMap containing the letters (keys) et the nb of its appearances in the grid
+     */
+
+    public HashMap<Character,Integer> getLetterCount(){
+        HashMap<Character,Integer> hashMap = new HashMap<Character,Integer>();
+        for (int i = 0; i < content.length; i++) {
+            for (int j = 0; j < content.length; j++) {
+                if(hashMap.containsKey(content[i][j])){
+                    int nbOfIdenticalLetter = hashMap.get(content[i][j]);
+                    nbOfIdenticalLetter++;
+                    hashMap.remove(content[i][j]);
+                    hashMap.put(content[i][j],nbOfIdenticalLetter);
+                }else {
+                    hashMap.put(content[i][j],1);
+                }
+            }
+        }
+        return hashMap;
+    }
+
+    /**
+     * 3/16 = 18.75%
+     * 4/16 = 25%
+     * 11/ 16 = 68.75%
+     * 12 / 16 = 75%
+     * Bounds have to be specified after implementing the solver
+     * @return true if the grid is considered prevalid, false if not
+     */
+    public boolean isPrevalid(double lowerBound, double upperBound, int maxCount){
+        double vowelRatio = (double) getNbOfVowels()/(double) (content.length * content.length) ;
+        if (vowelRatio < lowerBound || vowelRatio > upperBound){
+            return false;
+        }
+        int greaterCount = 0;
+        for(Integer i: getLetterCount().values()){
+            if(i > greaterCount){
+                greaterCount = i;
+            }
+        }
+        if(greaterCount > maxCount){
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * checks if the grid is valid by solving it
+     * @see solutionsHashed solutions are hashed and stored
+     * @param minNbOfWords desired mininum number of words in the grid
+     * @param minWordLength desired minimum length of longest word in the grid
+     * @return
+     */
+    public boolean isValid(int minNbOfWords, int minWordLength){
+        TileGrid tileGrid = new TileGrid(size);
+        tileGrid.setContent(getContent());
+        GridSolverV1_2 solver = new GridSolverV1_2(tileGrid);
+        solver.solve();
+        List<String> solutions = (List<String>) solver.getSolutions();
+        // Add hashed solutions to the grid
+        solutionsHashed = new ArrayList<Integer>(solutions.size());
+        for(String solution : solutions ){
+            solutionsHashed.add(solution.hashCode());
+        }
+
+        if(solutions.size() < minNbOfWords){
+            return false;
+        }
+        int maxLength = 0;
+        for(String s : solutions){
+            if(s.length() > maxLength){
+                maxLength = s.length();
+            }
+        }
+        if(maxLength < minWordLength ){
+            return false;
+        }
+        return true;
+    }
 
     public String printGrid() {
         StringBuilder sb = new StringBuilder();
