@@ -26,3 +26,4 @@ public abstract class GridSolver {
 
 	abstract public void solve();
 }
+

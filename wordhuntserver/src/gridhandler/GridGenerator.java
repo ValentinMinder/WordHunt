@@ -1,19 +1,28 @@
 package gridhandler;
-import java.io.*;
+
 import java.util.Random;
 
 import whobjects.Grid;
+import whproperties.WHProperties;
 
 /**
  * Created by Karim Ghozlani on 08.05.2015.
  */
 public class GridGenerator {
 
-    private static int size = 4;
-    private static final int nbOfLetters = 26;
-    private static final int indexOfFirstLetter = 65;
+    private static int size;
+    private static int nbOfLetters;
+    private static int indexOfFirstLetter;
+    private static double vowelRatioLowerBound;
+    private static double vowelRatioUpperBound;
+    private static int maxVowelCount;
+    private static int minLength;
+    private static int minNbOfWords;
+    private int nbOfThrowngrid;
+    private int nbOfThrowngridBecauseOfPrevalidation;
+    private int nbOfThrowngridBecauseOfValidation;
     private double[] languageOccurences; // array of letter occurences,
-    private String frenchOccurenceFile = "frenchOccurencesToParse.txt"; //here we set the language
+    private WHProperties gridProperties;
     private Random random;
     private static GridGenerator instance = null;
 
@@ -32,17 +41,26 @@ public class GridGenerator {
 
     private void initGenerator() {
         random = new Random();
+        gridProperties = new WHProperties("frenchGrid.properties");
+        size = gridProperties.getInteger("SIZE");
+        nbOfLetters = gridProperties.getInteger("NBOFLETTERS");
+        indexOfFirstLetter = gridProperties.getInteger("ASCIIINDEXOFFIRSTLETTER");
+        vowelRatioLowerBound = gridProperties.getDouble("VOWELRATIOLOWERBOUND");
+        vowelRatioUpperBound = gridProperties.getDouble("VOWELRATIOUPPERBOUND");
+        maxVowelCount = gridProperties.getInteger("MAXVOWELCOUNT");
+        minLength = gridProperties.getInteger("MINLENGTH");
+        minNbOfWords = gridProperties.getInteger("MINNBOFWORDS");
         languageOccurences = new double[nbOfLetters];
-        try {
-            BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(frenchOccurenceFile)));
-            for (int i = 0; i < nbOfLetters; i++) {
-                languageOccurences[i] = Double.valueOf(br.readLine());
-            }
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
+
+        for (int i = 0; i < nbOfLetters; i++) {
+            String currentChar = String.valueOf((char) ('A' + i));
+            languageOccurences[i] = gridProperties.getDouble(currentChar.concat("_FR"));
         }
+
+        // TODO: check Karim/David !
+//        languageOccurences = new double[LetterOccurences.getNbOfLetters()];
+//        languageOccurences = LetterOccurences.getInstance(LetterOccurences.language.FR).getLanguageOccurences();
+
     }
 
     private int findCorrespondingLetterIndex(double letter) {
@@ -66,8 +84,20 @@ public class GridGenerator {
         for (int i = 0; i < languageOccurences.length; i++) {
             System.out.println(languageOccurences[i]);
         }
+
     }
 
+    public int getNbOfThrowngridBecauseOfValidation() {
+        return nbOfThrowngridBecauseOfValidation;
+    }
+
+    public int getNbOfThrowngridBecauseOfPrevalidation() {
+        return nbOfThrowngridBecauseOfPrevalidation;
+    }
+
+    public int getNbOfThrowngrid() {
+        return nbOfThrowngrid;
+    }
 
     public static void main(String[] args) {
 
@@ -78,14 +108,42 @@ public class GridGenerator {
         for (int i = 0; i < 10; i++) {
             grid = generator.nextRandomGrid();
             System.out.println(grid.printGrid());
+            System.out.println("Nb of vowels: "+grid.getNbOfVowels() +
+                    "\nNb of max identical letter : " + grid.getNbOfMaxIdenticalLetter());
         }
         System.out.println();
         System.out.println("Grid with french occurences :");
         System.out.println("--------------------------------------------------------------\n");
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 10000; i++) {
             grid = generator.nextGrid();
             System.out.println(grid.printGrid());
+            System.out.println("Nb of vowels: "+grid.getNbOfVowels() +
+                    "\nNb of max identical letter : " + grid.getNbOfMaxIdenticalLetter());
+            if(!grid.isPrevalid(vowelRatioLowerBound,vowelRatioUpperBound,maxVowelCount)){
+                System.out.println("*********** UNVALID GRID ! *************");
+            }
         }
+    }
+    public Grid nextPrevalidGrid(){
+        Grid grid;
+        grid = nextGrid();
+        while(!grid.isPrevalid(vowelRatioLowerBound, vowelRatioUpperBound, maxVowelCount)){
+            grid = nextGrid();
+            nbOfThrowngrid++;
+            nbOfThrowngridBecauseOfPrevalidation++;
+        }
+        return grid;
+    }
+
+    public Grid nextValidGrid(){
+        Grid grid;
+        grid = nextPrevalidGrid();
+        while(!grid.isValid(minNbOfWords,minLength)){
+            grid = nextPrevalidGrid();
+            nbOfThrowngrid++;
+            nbOfThrowngridBecauseOfValidation++;
+        }
+        return grid;
     }
 
     public Grid nextGrid() {
@@ -98,8 +156,8 @@ public class GridGenerator {
                 letter = 100 * random.nextDouble();
                 letterIndex = findCorrespondingLetterIndex(letter);
                 if (letterIndex == -1) {
-                    System.out.println("Error in fillGridWithLanguageOccurence");
-                    System.exit(-1);
+                    //System.out.println("Error in fillGridWithLanguageOccurence");
+                    letterIndex = 4; //we place "E" in case of error
                 }
                 content[i][j] = (char) (letterIndex + indexOfFirstLetter);
             }
