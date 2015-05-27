@@ -111,14 +111,18 @@ public class ClientHandler implements Runnable {
 		case SUBMIT_POST:
 			WHSubmitPostMessage post = (WHSubmitPostMessage) clientCommand.getContent();
 			
-			//TODO retrieve grid from id
 			//TODO verify token with user
+			//post.getAuthToken();
 			
-			// if solution is accepted:
+			//TODO retrieve grid from id
+			int score = 0;
+			for (String word: post.getUserSolutions()) {
+				// if word is not in solutions -> cheating!
+					//return new WHMessage(WHMessageHeader.CHEATING_BANNED_400, "u suck >:(");
+				// else count score
+			}
 			return new WHMessage(WHMessageHeader.SUBMIT_VALIDATE,
-					new WHSimpleMessage(1234, "Solution accepted"));
-			// if solution is rejected:
-			//return new WHMessage(WHMessageHeader.CHEATING_BANNED_400, "u suck >:(");
+					new WHSimpleMessage(score, "Solution accepted"));
 		case PING_REPLY:
 		case ANSWERS_REPLY:
 		case AUTH_TOKEN:
