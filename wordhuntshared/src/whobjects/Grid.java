@@ -5,6 +5,7 @@ package whobjects;
 public class Grid {
 
     private char[][] content;
+    protected int size;
 
     public Grid() {
 
@@ -12,6 +13,7 @@ public class Grid {
 
     public Grid(int size) {
         content = new char[size][size];
+        this.size = size;
     }
 
     public void setContent(char[][] content) {
