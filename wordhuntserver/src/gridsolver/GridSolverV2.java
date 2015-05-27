@@ -49,4 +49,8 @@ public class GridSolverV2 extends GridSolver {
 	public void solve() {
 		for(String word: dic) checkWord(word);
 	}*/
+	
+	public void solve() {
+		throw new RuntimeException("DEPRECATED");
+	}
 }
