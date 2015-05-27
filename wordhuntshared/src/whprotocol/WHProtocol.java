@@ -65,6 +65,7 @@ public class WHProtocol {
 		WORD, // 1 word = 1 point
 		LENGTH, // 1 word of x letter = x points
 		LENGTH_SQUARE, // 1 word of x letter = (x-2)(x-2) points
+        LENGTH_LETTERFREQ, // letter x 1/4*letterfrequency
 		BONUS // special regime (certain word have a privilege)
 	}
 }

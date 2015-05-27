@@ -2,6 +2,8 @@ package whprotocol;
 
 import whobjects.Grid;
 
+import java.util.Collection;
+
 public class WHGridReplyMessage extends WHMessageContent {
 
 	private Grid grid;
@@ -26,5 +28,9 @@ public class WHGridReplyMessage extends WHMessageContent {
 	 */
 	public void setGrid(Grid grid) {
 		this.grid = grid;
+	}
+
+	public Collection<Integer> getHashedSolution(){
+		return grid.getHashedSolutions();
 	}
 }
