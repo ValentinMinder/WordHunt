@@ -96,7 +96,7 @@ public class TileGrid extends Grid {
     public boolean isValid(int minNbOfWords, int minWordLength){
         TileGrid tileGrid = new TileGrid(size);
         tileGrid.setContent(getContent());
-        GridSolverV1_2 solver = new GridSolverV1_2(tileGrid);
+        GridSolverV1 solver = new GridSolverV1(tileGrid);
         solver.solve();
         List<String> solutions = (List<String>) solver.getSolutions();
         // Add hashed solutions to the grid
