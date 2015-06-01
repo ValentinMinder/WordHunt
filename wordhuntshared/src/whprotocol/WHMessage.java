@@ -126,11 +126,40 @@ public class WHMessage {
 			case SERVER_ERROR_500:
 			case BAD_REQUEST_400:
 			case AUTH_REQUIRED_403:
+			case SUBMIT_VALIDATE:
+			case NETWORK_ERROR:
 				content = gson.fromJson(payload, WHSimpleMessage.class);
 				break;
-			default:
-				System.err.println("not implemented yet.");
-				return null;
+			case AUTH_POST:
+				content = gson.fromJson(payload, WHLogin.class);
+				break;
+			case AUTH_TOKEN:
+				content = gson.fromJson(payload, WHAuthMessage.class);
+				break;
+			case REGISTER:
+				content = gson.fromJson(payload, WHRegister.class);
+				break;
+			case GRID_REPLY:
+				content = gson.fromJson(payload, WHGridReplyMessage.class);
+				break;
+			case SUBMIT_POST:
+				content = gson.fromJson(payload, WHSubmitPostMessage.class);
+				break;
+			case GRID_GET:
+				// TODO correct class ??$
+				System.err.println("comportment isn't sure so well.... please check");
+				content = gson.fromJson(payload, WHSimpleMessage.class);
+//				content = gson.fromJson(payload, WHAuthMessage.class); ??
+				break;
+			case ANSWERS_GET:
+				System.err.println("Not implemented yet");
+				break;
+			case ANSWERS_REPLY:
+				System.err.println("Not implemented yet");
+				break;
+			case SCHEDULE_COMPET:
+				System.err.println("Not implemented yet");
+				break;
 			}
 		} catch (JsonSyntaxException e) {
 			e.printStackTrace();

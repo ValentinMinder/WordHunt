@@ -10,9 +10,12 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.logging.Logger;
 
+import whdatabase.User;
 import whobjects.Grid;
 import whprotocol.WHGridReplyMessage;
+import whprotocol.WHLogin;
 import whprotocol.WHMessage;
+import whprotocol.WHRegister;
 import whprotocol.WHProtocol.WHMessageHeader;
 import whprotocol.WHSimpleMessage;
 import whprotocol.WHSubmitPostMessage;
@@ -96,11 +99,19 @@ public class ClientHandler implements Runnable {
 			reply = new WHGridReplyMessage(0, grid);
 			return new WHMessage(WHMessageHeader.GRID_REPLY, reply);
 		case ANSWERS_GET:
-			// TODO IMPLEMENT
+			// TODO not implemented yet
+			logger.warning("WARN: client issued bad request with NOT IMPLEMENTED command:"
+					+ clientCommand.getHeader());
+			return new WHMessage(WHMessageHeader.BAD_REQUEST_400,
+					"NOT IMPLEMENTS YET " + clientCommand.getHeader());
 		case AUTH_POST:
-			// TODO IMPLEMENT
+			WHLogin message = (WHLogin) clientCommand.getContent();
+			User user = new User(message.getUsername(), message.getPassword());
+			return user.correctCredentials();
 		case REGISTER:
-			// TODO IMPLEMENT
+			WHRegister mess = (WHRegister) clientCommand.getContent();
+			User u = new User(mess.getUsername(), mess.getPassword(), mess.getPassword());
+			return u.registerUser();
 		case SCHEDULE_COMPET:
 			// TODO IMPLEMENT
 			// not implemented yet
