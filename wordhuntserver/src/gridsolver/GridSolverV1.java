@@ -35,6 +35,7 @@ public class GridSolverV1 extends GridSolver {
 	public GridSolverV1(TileGrid grid) {
 		super(grid);
 		this.grid = grid;
+		db = WordProvider.getInstance(); // bug fix: instanciation of WordProvider.
 	}
 
 	/**
