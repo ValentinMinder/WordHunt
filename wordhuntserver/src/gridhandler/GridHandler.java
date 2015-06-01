@@ -10,7 +10,7 @@ public class GridHandler {
 
 	public static GridHandler getInstance() {
 		if (null == instance) {
-			synchronized (instance) {
+			synchronized (GridHandler.class) { // bug fix: synchronized on null object.
 				if (null == instance) {
 					instance = new GridHandler();
 				}
