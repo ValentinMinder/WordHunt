@@ -3,12 +3,34 @@ package whobjects;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+
 /**
  * Represents the word grid
  * content is set via setContent()
  * isValid() solves a grid and add its hashed solutions using hashCode() to solutionsHashed
  */
 public class Grid {
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		return new Gson().toJson(toJsonTree());
+	}
+
+	/** manually to GSON to avoid sub-classes (TileGrid) */
+	public JsonObject toJsonTree() {
+		Gson moteurJson = new Gson();
+		JsonObject root = new JsonObject();
+		root.add("content", moteurJson.toJsonTree(content));
+		root.add("solutionsHashed", moteurJson.toJsonTree(solutionsHashed));
+		root.add("gridID", moteurJson.toJsonTree(gridID));
+		root.add("size", moteurJson.toJsonTree(size));
+		return root;
+	}
 
 	protected char[][] content;
     protected ArrayList<Integer> solutionsHashed;

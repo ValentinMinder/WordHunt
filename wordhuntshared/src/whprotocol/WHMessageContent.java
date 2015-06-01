@@ -4,8 +4,8 @@ import com.google.gson.Gson;
 
 public abstract class WHMessageContent {
 
-	private int status;
-	private static Gson gson = new Gson();
+	protected int status;
+	protected static Gson gson = new Gson();
 
 	public WHMessageContent(int status) {
 		super();

@@ -1,8 +1,10 @@
 package whprotocol;
 
+import java.util.Collection;
+
 import whobjects.Grid;
 
-import java.util.Collection;
+import com.google.gson.JsonObject;
 
 public class WHGridReplyMessage extends WHMessageContent {
 
@@ -32,5 +34,18 @@ public class WHGridReplyMessage extends WHMessageContent {
 
 	public Collection<Integer> getHashedSolution(){
 		return grid.getHashedSolutions();
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		JsonObject root = new JsonObject();
+		root.add("status", gson.toJsonTree(status));
+		root.add("grid", grid.toJsonTree());
+		return gson.toJson(root);
 	}
 }

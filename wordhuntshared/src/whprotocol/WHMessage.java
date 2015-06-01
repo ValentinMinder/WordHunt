@@ -83,7 +83,7 @@ public class WHMessage {
 	 */
 	@Override
 	public String toString() {
-		return "WHMessage [header=" + header + ", content=" + content + "]";
+		return header + "\n" + content + "\n";
 	}
 
 	/**
@@ -98,10 +98,12 @@ public class WHMessage {
 	public static WHMessage validateMessage(String data) {
 		int idx = data.indexOf("\n");
 		if (idx == -1) { // data should contain a \n
+			System.err.println("\n error type 1.");
 			return null;
 		}
 		int idxEnd = data.indexOf("\n", idx + 1);
 		if (idx == -1 || idxEnd != data.length() - 1) {
+			System.err.println("\n error type 2.");
 			return null; // data should terminate by the second \n
 		}
 		WHMessageHeader header = null;
@@ -109,6 +111,7 @@ public class WHMessage {
 			header = WHMessageHeader.valueOf(data.substring(0, idx));
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
+			System.err.println("header error.");
 			return null;
 		}
 
