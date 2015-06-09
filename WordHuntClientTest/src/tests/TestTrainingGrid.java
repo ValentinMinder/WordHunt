@@ -53,8 +53,8 @@ public class TestTrainingGrid extends TestAbstractWordHunt {
 		WHMessage.writeMessage(pw, query);
 
 		WHMessage reply = WHMessage.readMessage(br);
-		assertEquals(reply.getHeader(), WHMessageHeader.GRID_REPLY);
-		assertEquals(reply.getContent().getClass(), WHGridReplyMessage.class);
+		assertEquals(WHMessageHeader.GRID_REPLY, reply.getHeader());
+		assertEquals(WHGridReplyMessage.class, reply.getContent().getClass());
 	}
 
 	/**

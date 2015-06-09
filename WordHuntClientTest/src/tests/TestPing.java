@@ -24,8 +24,8 @@ public class TestPing extends TestAbstractWordHunt {
 		ping.writeMessage(pw);
 
 		WHMessage reply = WHMessage.readMessage(br);
-		assertEquals(reply.getHeader(), WHMessageHeader.PING_REPLY);
-		assertEquals(reply.getContent().getClass(), WHSimpleMessage.class);
+		assertEquals(WHMessageHeader.PING_REPLY, reply.getHeader());
+		assertEquals(WHSimpleMessage.class, reply.getContent().getClass());
 
 		WHSimpleMessage replied = (WHSimpleMessage) reply.getContent();
 		assertEquals(replied.getPayload(), message + " - read by the server.");

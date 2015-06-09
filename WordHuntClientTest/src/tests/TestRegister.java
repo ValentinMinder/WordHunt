@@ -43,8 +43,8 @@ public class TestRegister extends TestAbstractRegister {
 		query.writeMessage(pw);
 		WHMessage reply = WHMessage.readMessage(br);
 		System.out.println(reply);
-		assertEquals(reply.getHeader(),
-				WHMessageHeader.REGISTER_ACCOUNT_CREATED_201);
+		assertEquals(WHMessageHeader.REGISTER_ACCOUNT_CREATED_201,
+				reply.getHeader());
 		assertEquals(reply.getContent().getClass(), WHSimpleMessage.class);
 	}
 
@@ -62,32 +62,31 @@ public class TestRegister extends TestAbstractRegister {
 		WHMessage query = new WHMessage(WHMessageHeader.REGISTER, reg);
 		query.writeMessage(pw);
 		WHMessage reply = WHMessage.readMessage(br);
-		assertEquals(reply.getHeader(),
-				WHMessageHeader.REGISTER_ACCOUNT_CREATED_201);
+		assertEquals(WHMessageHeader.REGISTER_ACCOUNT_CREATED_201,
+				reply.getHeader());
 		assertEquals(reply.getContent().getClass(), WHSimpleMessage.class);
 
 		// email & username already in use
 		query = new WHMessage(WHMessageHeader.REGISTER, reg);
 		query.writeMessage(pw);
 		reply = WHMessage.readMessage(br);
-		assertEquals(reply.getHeader(), WHMessageHeader.BAD_REQUEST_400);
-		assertEquals(reply.getContent().getClass(), WHSimpleMessage.class);
+		assertEquals(WHMessageHeader.BAD_REQUEST_400, reply.getHeader());
+		assertEquals(WHSimpleMessage.class, reply.getContent().getClass());
 
 		// email already in use
 		reg = new WHRegister(0, name + rand.nextInt(), "secret", email);
 		query = new WHMessage(WHMessageHeader.REGISTER, reg);
 		query.writeMessage(pw);
 		reply = WHMessage.readMessage(br);
-		assertEquals(reply.getHeader(), WHMessageHeader.BAD_REQUEST_400);
-		assertEquals(reply.getContent().getClass(), WHSimpleMessage.class);
+		assertEquals(WHMessageHeader.BAD_REQUEST_400, reply.getHeader());
+		assertEquals(WHSimpleMessage.class, reply.getContent().getClass());
 
 		// username already in use
 		reg = new WHRegister(0, name, "secret", email + rand.nextInt());
 		query = new WHMessage(WHMessageHeader.REGISTER, reg);
 		query.writeMessage(pw);
 		reply = WHMessage.readMessage(br);
-		assertEquals(reply.getHeader(), WHMessageHeader.BAD_REQUEST_400);
-		assertEquals(reply.getContent().getClass(), WHSimpleMessage.class);
+		assertEquals(WHMessageHeader.BAD_REQUEST_400, reply.getHeader());
+		assertEquals(WHSimpleMessage.class, reply.getContent().getClass());
 	}
-
 }
