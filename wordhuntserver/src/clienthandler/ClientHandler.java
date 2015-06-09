@@ -11,7 +11,6 @@ import java.net.InetAddress;
 import java.net.Socket;
 import java.util.logging.Logger;
 
-import whdatabase.User;
 import whobjects.Grid;
 import whprotocol.WHCompetScheduling;
 import whprotocol.WHGridReplyMessage;
@@ -23,6 +22,7 @@ import whprotocol.WHSimpleMessage;
 import whprotocol.WHSubmitPostMessage;
 
 import competition.CompetitionManager;
+import database.User;
 
 public class ClientHandler implements Runnable {
 

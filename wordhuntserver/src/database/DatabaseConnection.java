@@ -1,4 +1,4 @@
-package whdatabase;
+package database;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -20,7 +20,7 @@ public class DatabaseConnection {
     private DatabaseConnection() {
 
         user = "root";
-        pwd = "";
+        pwd = "root";
         dbName = "wordhunt";
         port = "3306";
 

@@ -11,7 +11,6 @@ import java.sql.Statement;
 import java.util.Collection;
 
 import gridsolver.TileGrid;
-import whdatabase.DatabaseConnection;
 import whobjects.Grid;
 import whobjects.Score;
 import whproperties.WHProperties;
