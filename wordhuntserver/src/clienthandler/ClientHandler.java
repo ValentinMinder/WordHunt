@@ -13,6 +13,7 @@ import java.util.logging.Logger;
 
 import whobjects.Grid;
 import whprotocol.WHCompetScheduling;
+import whprotocol.WHGetGrid;
 import whprotocol.WHGridReplyMessage;
 import whprotocol.WHLogin;
 import whprotocol.WHMessage;
@@ -118,6 +119,9 @@ public class ClientHandler implements Runnable {
 			Grid grid = GridHandler.getInstance().getGrid();
 			reply = new WHGridReplyMessage(0, grid);
 			return new WHMessage(WHMessageHeader.GRID_REPLY, reply);
+		case GRID_GET_AUTHENTICATED:
+			WHGetGrid getGridMessage = (WHGetGrid) clientCommand.getContent();
+			return GridHandler.getInstance().getGrid(getGridMessage);
 		case ANSWERS_GET:
 			// TODO not implemented yet
 			logger.warning("WARN: client issued bad request with NOT IMPLEMENTED command:"

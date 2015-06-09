@@ -10,8 +10,11 @@ import org.junit.Test;
 
 import whprotocol.WHAuthMessage;
 import whprotocol.WHCompetScheduling;
+import whprotocol.WHGetGrid;
+import whprotocol.WHGridReplyMessage;
 import whprotocol.WHLogin;
 import whprotocol.WHMessage;
+import whprotocol.WHProtocol.WHGameType;
 import whprotocol.WHProtocol.WHMessageHeader;
 import whprotocol.WHRegister;
 
@@ -107,6 +110,41 @@ public class TestCompetitionSchedule extends TestAbstractAuthenticated {
 						new WHCompetScheduling(token)));
 		WHMessage message = WHMessage.readMessage(br);
 		assertEquals(WHMessageHeader.AUTH_REQUIRED_403, message.getHeader());
+	}
+	
+	@Test
+	public void testJoinCompetition() throws IOException {
+
+		connectAsAdmin();
+
+		// scheduling a competition: ok.
+		WHMessage.writeMessage(pw, new WHMessage(
+				WHMessageHeader.SCHEDULE_COMPET, new WHCompetScheduling(
+						adminToken, 1000, 1500)));
+		WHMessage message = WHMessage.readMessage(br);
+		assertEquals(WHMessageHeader.SCHEDULE_COMPET_ACK, message.getHeader());
+
+		// we wait that the competition starts.
+		try {
+			Thread.sleep(1100);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		WHGetGrid gridGet = new WHGetGrid(token, WHGameType.COMPETITION);
+		WHMessage query = new WHMessage(WHMessageHeader.GRID_GET_AUTHENTICATED,
+				gridGet);
+		WHMessage.writeMessage(pw, query);
+
+		WHMessage reply = WHMessage.readMessage(br);
+		assertEquals(WHMessageHeader.GRID_REPLY, reply.getHeader());
+		assertEquals(WHGridReplyMessage.class, reply.getContent().getClass());
+		
+		// we wait till the end of the previous compet.
+		try {
+			Thread.sleep(1800);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 	}
 
 }

@@ -162,6 +162,12 @@ public class WHMessage {
 			case SCHEDULE_COMPET:
 				content = gson.fromJson(payload, WHCompetScheduling.class);
 				break;
+			case GRID_GET_AUTHENTICATED:
+				content = gson.fromJson(payload, WHGetGrid.class);
+				break;
+			default:
+				System.err.println("header not found / not implemented");
+				return null;
 			}
 		} catch (JsonSyntaxException e) {
 			e.printStackTrace();

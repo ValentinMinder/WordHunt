@@ -22,12 +22,17 @@ import whprotocol.WHProtocol;
 public class GridStorage {
 
     private static Gson gson = new Gson();
+    private static int size = new WHProperties("frenchGrid.properties").getInteger("SIZE");
 
     private static GridStorage instance;
 
     public static GridStorage getInstance(){
         if(instance == null){
-            instance = new GridStorage();
+        	synchronized (GridStorage.class) {
+				if (instance == null) {
+					instance = new GridStorage();
+				}
+			}
         }
         return instance;
     }
@@ -73,11 +78,78 @@ public class GridStorage {
         return id;
 
     }
+    
+    /** returns any grid played by this username wanted, not played by the username not wanted */
+    public Grid getGridByUser(String usernameWanted, int idUserNotWanted) {
+    	Connection conn = DatabaseConnection.getInstance().getConnection();
+        PreparedStatement stmt = null;
+        
+        Grid grid = new Grid(size);
+        try {
+        	stmt = conn.prepareStatement("SELECT * FROM grille LEFT JOIN " +
+            		" (SELECT id_grille FROM score WHERE id_utilisateur = ?) AS notWantedGrid" +
+            		" ON grille.id_grille = notWantedGrid.id_grille" +
+            		" LEFT JOIN (SELECT id_grille FROM score NATURAL JOIN utilisateur WHERE nom_utilisateur = ? ) AS wantedGrid " +
+            		" ON grille.id_grille = wantedGrid.id_grille" +
+            		" WHERE notWantedGrid.id_grille IS NULL AND wantedGrid.id_grill IS NOT NULL ");
+        	stmt.setInt(1, idUserNotWanted);
+        	stmt.setString(2, usernameWanted);
+            ResultSet rs = stmt.executeQuery();
+            String content = null;
 
-    public Grid getGrid(int id) {
+            if (rs.next()){
+                content = rs.getString("valeurs_cases");
+                grid.setContent(gson.fromJson(content, char[][].class));
+            }else{
+                return null;
+            }
+
+
+
+        }catch(SQLException e)
+        {
+            e.printStackTrace();
+            return null;
+        }
+        
+    	return grid;
+    }
+    
+    /** returns any grid not played by the usernameNotWanted */
+    public Grid getGridByNotUser(int idUserNotWanted) {
+    	Connection conn = DatabaseConnection.getInstance().getConnection();
+        PreparedStatement stmt = null;
+        
+        Grid grid = new Grid(size);
+        try {
+            stmt = conn.prepareStatement("SELECT * FROM grille LEFT JOIN " +
+            		" (SELECT id_grille FROM score WHERE id_utilisateur = ?) AS notWantedGrid" +
+            		" ON grille.id_grille = notWantedGrid.id_grille" +
+            		" WHERE notWantedGrid.id_grille IS NULL ");
+            stmt.setInt(1, idUserNotWanted);
+            ResultSet rs = stmt.executeQuery();
+            String content = null;
+
+            if (rs.next()){
+                content = rs.getString("valeurs_cases");
+                grid.setContent(gson.fromJson(content, char[][].class));
+            }else{
+                System.out.println("GRID does not exist");
+                return null;
+            }
+        }catch(SQLException e)
+        {
+            e.printStackTrace();
+            return null;
+        }
+        
+    	return grid;
+    }
+
+    /** returns the grid defined by this id */
+    public Grid getGridByID(int id) {
         Connection conn = DatabaseConnection.getInstance().getConnection();
         PreparedStatement stmt = null;
-        int size = new WHProperties("wordhuntserver/frenchGrid.properties").getInteger("SIZE");
         Grid grid = new Grid(size);
 
         try {
@@ -109,7 +181,7 @@ public class GridStorage {
 //
 //        System.out.println("id: " + id);
 
-        Grid grid2 = GridStorage.getInstance().getGrid(3);
+        Grid grid2 = GridStorage.getInstance().getGridByID(3);
         System.out.println(grid2.printGrid());
 
     }

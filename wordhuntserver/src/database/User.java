@@ -197,6 +197,28 @@ public class User {
            	return false;
         }
     }
+    
+    /** Checks if a token is valid. If yes, return the username according to it */
+	public static int isValidToken(String authToken) {
+		Connection conn = DatabaseConnection.getInstance().getConnection();
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+
+		try {
+			stmt = conn
+					.prepareStatement("SELECT id_utilisateur FROM utilisateur WHERE token = ?");
+			stmt.setString(1, authToken);
+			rs = stmt.executeQuery();
+			if (!rs.isBeforeFirst()) { // no result: not known.
+				return -1;
+			}
+			rs.next();
+			return rs.getInt("id_utilisateur");
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return -1;
+		}
+	}
 
 
     public static void main(String[] args) {
