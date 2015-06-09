@@ -1,13 +1,12 @@
 package whobjects;
 
+import static java.lang.Math.ceil;
+
 import java.util.Collection;
 import java.util.LinkedList;
-import java.util.Random;
 
 import whproperties.WHProperties;
 import whprotocol.WHProtocol;
-
-import static java.lang.Math.ceil;
 
 /**
  * Created by David on 09.05.2015.
@@ -18,9 +17,19 @@ public class Score {
     private double[] languageOccurences;
     private static int nbOfLetters;
     private WHProperties gridProperties;
-    private Random random;
+    private static Score instance;
+    
+    public static Score getInstance () {
+    	if (instance == null) {
+    		synchronized (Score.class) {
+    			if (instance == null) {
+    				instance = new Score();
+    			}
+    		}
+    	}
+    	return instance;
+    }
     private Score(){
-        random = new Random();
         gridProperties = new WHProperties("wordhuntserver/frenchGrid.properties");
         nbOfLetters = gridProperties.getInteger("NBOFLETTERS");
 

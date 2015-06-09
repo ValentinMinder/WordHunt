@@ -39,7 +39,7 @@ public class GridStorage {
         Connection conn = DatabaseConnection.getInstance().getConnection();
         PreparedStatement stmt = null;
         String content = gson.toJson(grid.getContent());
-        Score aScore = new Score();
+        Score aScore = Score.getInstance();
         Collection<String> solutions = grid.getSolutions();
         String sols = gson.toJson(solutions);
         int score = aScore.getScore(solutions, WHProtocol.WHPointsType.LENGTH);
