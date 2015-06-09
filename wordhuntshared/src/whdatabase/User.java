@@ -64,7 +64,7 @@ public class User {
                 stmt.setString(3, CRYPTO_SALT + password);
                 stmt.executeUpdate();
             }else{
-                return new WHMessage(WHProtocol.WHMessageHeader.SERVER_ERROR_500, "Email " + email + " or username " + name + " already registered");
+                return new WHMessage(WHProtocol.WHMessageHeader.BAD_REQUEST_400, "Email " + email + " or username " + name + " already registered");
             }
 
         } catch (SQLException e) {
@@ -99,7 +99,7 @@ public class User {
             e.printStackTrace();
         }
         //Not Registered
-        return new WHMessage(WHProtocol.WHMessageHeader.AUTHENTICATE_BAD_CREDENTIALS, "Please register first");
+        return new WHMessage(WHProtocol.WHMessageHeader.AUTHENTICATE_BAD_CREDENTIALS, "Account + " + name + " not known. Please register first");
 
 
     }

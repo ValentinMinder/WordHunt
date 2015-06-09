@@ -131,13 +131,11 @@ public class WHMessage {
 			case AUTH_REQUIRED_403:
 			case SUBMIT_VALIDATE:
 			case NETWORK_ERROR:
+			case AUTH_TOKEN: // the token is encapsulated in a simple message !
 				content = gson.fromJson(payload, WHSimpleMessage.class);
 				break;
 			case AUTH_POST:
 				content = gson.fromJson(payload, WHLogin.class);
-				break;
-			case AUTH_TOKEN:
-				content = gson.fromJson(payload, WHAuthMessage.class);
 				break;
 			case REGISTER:
 				content = gson.fromJson(payload, WHRegister.class);
@@ -149,9 +147,9 @@ public class WHMessage {
 				content = gson.fromJson(payload, WHSubmitPostMessage.class);
 				break;
 			case GRID_GET:
-				// TODO correct class ??$
-				System.err.println("comportment isn't sure so well.... please check");
+				// TODO grid get can be a simple message (back ward compatibility a& simplicity)
 				content = gson.fromJson(payload, WHSimpleMessage.class);
+				// but also a bigger message (if you are authenticated)
 //				content = gson.fromJson(payload, WHAuthMessage.class); ??
 				break;
 			case ANSWERS_GET:
@@ -161,7 +159,7 @@ public class WHMessage {
 				System.err.println("Not implemented yet");
 				break;
 			case SCHEDULE_COMPET:
-				System.err.println("Not implemented yet");
+				content = gson.fromJson(payload, WHCompetScheduling.class);
 				break;
 			}
 		} catch (JsonSyntaxException e) {
@@ -177,16 +175,21 @@ public class WHMessage {
 	 * 
 	 * @param reader
 	 *            the stream to read from
-	 * @return the message read, or null if protocol error.
+	 * @return the message read, or null if protocol error or end of stream reached
 	 * @throws IOException
 	 */
 	public static WHMessage readMessage(BufferedReader reader)
 			throws IOException {
 		StringBuilder sb = new StringBuilder();
 		String tmp;
-		while (!((tmp = reader.readLine()).equals(""))) {
+		// read line by line, with end of stream check
+		while (((tmp = reader.readLine()) != null && !tmp.equals(""))) {
 			sb.append(tmp);
 			sb.append("\n");
+		}
+		if (null == tmp) {
+			// end of stream reached
+			return null;
 		}
 		return validateMessage(sb.toString());
 	}
