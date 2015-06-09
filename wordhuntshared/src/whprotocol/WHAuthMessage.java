@@ -26,4 +26,8 @@ public class WHAuthMessage extends WHMessageContent {
 		super(status);
 		this.authToken = authToken;
 	}
+	
+	public WHAuthMessage(String authToken) {
+		this.authToken = authToken;
+	}
 }

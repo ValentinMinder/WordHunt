@@ -4,12 +4,16 @@ import com.google.gson.Gson;
 
 public abstract class WHMessageContent {
 
-	protected int status;
+	protected int status = 0;
 	protected static Gson gson = new Gson();
 
 	public WHMessageContent(int status) {
 		super();
 		this.status = status;
+	}
+	
+	public WHMessageContent() {
+		super();
 	}
 
 	/**

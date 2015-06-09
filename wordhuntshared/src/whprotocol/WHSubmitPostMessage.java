@@ -12,6 +12,13 @@ public class WHSubmitPostMessage extends WHAuthMessage {
 		this.gridID = gridID;
 		this.userSolutions = userSolutions;
 	}
+	
+	public WHSubmitPostMessage(String authToken, int gridID,
+			List<String> userSolutions) {
+		super(authToken);
+		this.gridID = gridID;
+		this.userSolutions = userSolutions;
+	}
 
 	public int getGridID() {
 		return gridID;

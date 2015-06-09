@@ -16,6 +16,11 @@ public class WHGridReplyMessage extends WHMessageContent {
 		super(status);
 		this.grid = grid;
 	}
+	
+	public WHGridReplyMessage(Grid grid) {
+		super();
+		this.grid = grid;
+	}
 
 	/**
 	 * @return the grid
