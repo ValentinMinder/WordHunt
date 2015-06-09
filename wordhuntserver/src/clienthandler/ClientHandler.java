@@ -62,7 +62,7 @@ public class ClientHandler implements Runnable {
 					break;
 				}
 				WHMessage query = WHMessage.readMessage(reader);
-				if (null == query) {
+				if (null == query || null == query.getContent()) {
 					WHMessage.writeMessage(writer, new WHMessage(
 							WHMessageHeader.BAD_REQUEST_400,
 							"Bad Request - refused."));

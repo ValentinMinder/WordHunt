@@ -30,7 +30,7 @@ public class Score {
     	return instance;
     }
     private Score(){
-        gridProperties = new WHProperties("wordhuntserver/frenchGrid.properties");
+        gridProperties = new WHProperties("frenchGrid.properties");
         nbOfLetters = gridProperties.getInteger("NBOFLETTERS");
 
         languageOccurences = new double[nbOfLetters];

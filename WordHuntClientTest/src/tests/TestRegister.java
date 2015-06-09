@@ -42,7 +42,6 @@ public class TestRegister extends TestAbstractRegister {
 				new WHRegister(0, name, "secret", email));
 		query.writeMessage(pw);
 		WHMessage reply = WHMessage.readMessage(br);
-		System.out.println(reply);
 		assertEquals(WHMessageHeader.REGISTER_ACCOUNT_CREATED_201,
 				reply.getHeader());
 		assertEquals(reply.getContent().getClass(), WHSimpleMessage.class);

@@ -8,12 +8,12 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import whprotocol.WHAuthMessage;
 import whprotocol.WHCompetScheduling;
 import whprotocol.WHLogin;
 import whprotocol.WHMessage;
 import whprotocol.WHProtocol.WHMessageHeader;
 import whprotocol.WHRegister;
-import whprotocol.WHSimpleMessage;
 
 /**
  * Class that test administration functionalities, like scheduling a
@@ -47,8 +47,7 @@ public class TestCompetitionSchedule extends TestAbstractAuthenticated {
 		WHMessage.writeMessage(pw, new WHMessage(WHMessageHeader.AUTH_POST,
 				new WHLogin(0, "admin", "adminPassword")));
 		WHMessage message = WHMessage.readMessage(br);
-		System.out.println(message);
-		adminToken = ((WHSimpleMessage) message.getContent()).getPayload();
+		adminToken = ((WHAuthMessage) message.getContent()).getAuthToken();
 	}
 
 	/**
@@ -90,7 +89,7 @@ public class TestCompetitionSchedule extends TestAbstractAuthenticated {
 
 		// we wait till the end of the previous compet.
 		try {
-			Thread.sleep(2000);
+			Thread.sleep(1200);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}

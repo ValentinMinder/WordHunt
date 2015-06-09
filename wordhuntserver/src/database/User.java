@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Random;
 
+import whprotocol.WHAuthMessage;
 import whprotocol.WHMessage;
 import whprotocol.WHProtocol;
 import whprotocol.WHProtocol.WHMessageHeader;
@@ -66,7 +67,7 @@ public class User {
                 stmt.setString(2, email);
                 String salt = generateToken();
                 stmt.setString(3, salt);
-                stmt.setString(4, salt + password);
+                stmt.setString(4, password + salt);
                 stmt.executeUpdate();
             }else{
                 return new WHMessage(WHProtocol.WHMessageHeader.BAD_REQUEST_400, "Email " + email + " or username " + name + " already registered.");
@@ -92,7 +93,7 @@ public class User {
             if (salt != null) {
                 stmt = conn.prepareStatement("SELECT * FROM utilisateur WHERE nom_utilisateur = ? AND mot_de_passe = SHA(?)");
                 stmt.setString(1, name);
-                stmt.setString(2, salt + password);
+                stmt.setString(2, password + salt);
                 rs = stmt.executeQuery();
                 if(!rs.isBeforeFirst()){
                     //Wrong Credentials
@@ -128,7 +129,7 @@ public class User {
 			stmt.setString(2, name);
 			stmt.executeUpdate();
 			// if nothing is thrown, then success!
-			return new WHMessage(WHProtocol.WHMessageHeader.AUTH_TOKEN, token);
+			return new WHMessage(WHProtocol.WHMessageHeader.AUTH_TOKEN, new WHAuthMessage(token));
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return new WHMessage(WHProtocol.WHMessageHeader.SERVER_ERROR_500, 
@@ -168,6 +169,7 @@ public class User {
             rs.next();
             return rs.getString("salt");
         } catch (SQLException e) {
+        	e.printStackTrace();
             throw e;
         }
     }
@@ -185,12 +187,13 @@ public class User {
             stmt = conn.prepareStatement("SELECT token FROM utilisateur WHERE nom_utilisateur = ?");
             stmt.setString(1, "admin");
             rs = stmt.executeQuery();
-            if(!rs.isBeforeFirst()){ // no result: not known.
+            if (!rs.isBeforeFirst()) { // no result: not known.
                 return false;
             }
             rs.next();
             return token.equals(rs.getString("token")); // check that it's the same
         } catch (SQLException e) {
+        	e.printStackTrace();
            	return false;
         }
     }

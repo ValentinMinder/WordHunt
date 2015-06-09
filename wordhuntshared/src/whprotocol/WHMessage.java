@@ -131,8 +131,10 @@ public class WHMessage {
 			case AUTH_REQUIRED_403:
 			case SUBMIT_VALIDATE:
 			case NETWORK_ERROR:
-			case AUTH_TOKEN: // the token is encapsulated in a simple message !
 				content = gson.fromJson(payload, WHSimpleMessage.class);
+				break;
+			case AUTH_TOKEN: // the token is NOT encapsulated in a simple message !
+				content = gson.fromJson(payload, WHAuthMessage.class);
 				break;
 			case AUTH_POST:
 				content = gson.fromJson(payload, WHLogin.class);
@@ -147,10 +149,9 @@ public class WHMessage {
 				content = gson.fromJson(payload, WHSubmitPostMessage.class);
 				break;
 			case GRID_GET:
-				// TODO grid get can be a simple message (back ward compatibility a& simplicity)
+				// grid get can is a simple message (back ward compatibility a& simplicity)
+				// for authenticated message, please see Grid_get_authenticated !
 				content = gson.fromJson(payload, WHSimpleMessage.class);
-				// but also a bigger message (if you are authenticated)
-//				content = gson.fromJson(payload, WHAuthMessage.class); ??
 				break;
 			case ANSWERS_GET:
 				System.err.println("Not implemented yet");
@@ -164,7 +165,7 @@ public class WHMessage {
 			}
 		} catch (JsonSyntaxException e) {
 			e.printStackTrace();
-			System.err.println("json error.");
+			System.err.println("json de/serialization error.");
 			return null;
 		}
 		return new WHMessage(header, content);
