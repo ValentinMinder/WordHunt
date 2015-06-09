@@ -4,16 +4,19 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Random;
 
 import whprotocol.WHMessage;
 import whprotocol.WHProtocol;
+import whprotocol.WHProtocol.WHMessageHeader;
 
 /**
  * Created by David on 22.05.2015.
  */
 public class User {
 
-	private final static String CRYPTO_SALT = "WordHuntGameGEN2015";
+	private static Random rand = new Random();
+
     private String name;
     private String email;
 
@@ -58,19 +61,21 @@ public class User {
 
         try {
             if(!isAlreadyRegistered()) {
-                stmt = conn.prepareStatement("INSERT INTO utilisateur (nom_utilisateur, email, mot_de_passe) VALUES (?,?,SHA(?)) ");
+                stmt = conn.prepareStatement("INSERT INTO utilisateur (nom_utilisateur, email, salt, mot_de_passe) VALUES (?,?,?,SHA(?)) ");
                 stmt.setString(1, name);
                 stmt.setString(2, email);
-                stmt.setString(3, CRYPTO_SALT + password);
+                String salt = generateToken();
+                stmt.setString(3, salt);
+                stmt.setString(4, salt + password);
                 stmt.executeUpdate();
             }else{
-                return new WHMessage(WHProtocol.WHMessageHeader.BAD_REQUEST_400, "Email " + email + " or username " + name + " already registered");
+                return new WHMessage(WHProtocol.WHMessageHeader.BAD_REQUEST_400, "Email " + email + " or username " + name + " already registered.");
             }
 
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return new WHMessage(WHProtocol.WHMessageHeader.REGISTER_ACCOUNT_CREATED_201,  email + " is now registered and known as " + name );
+        return new WHMessage(WHProtocol.WHMessageHeader.REGISTER_ACCOUNT_CREATED_201,  email + " is now registered and known as " + name + ".");
 
     }
 
@@ -80,56 +85,88 @@ public class User {
         ResultSet rs = null;
 
         try {
-            if(isAlreadyRegistered()){
+        	String salt = getSaltForUser();
+            if (salt != null) {
                 stmt = conn.prepareStatement("SELECT * FROM utilisateur WHERE nom_utilisateur = ? AND mot_de_passe = SHA(?)");
                 stmt.setString(1, name);
-                stmt.setString(2, CRYPTO_SALT + password);
+                stmt.setString(2, salt + password);
                 rs = stmt.executeQuery();
                 if(!rs.isBeforeFirst()){
                     //Wrong Credentials
-                    return new WHMessage(WHProtocol.WHMessageHeader.AUTHENTICATE_BAD_CREDENTIALS, "Bad Credentials for " + name);
+                    return new WHMessage(WHProtocol.WHMessageHeader.AUTHENTICATE_BAD_CREDENTIALS, 
+                    		"Bad Credentials for " + name);
                 }
-//                int token = getToken();
-                int token = 1;
-                return new WHMessage(WHProtocol.WHMessageHeader.AUTH_TOKEN, Integer.toString(token));
+                // right credentials: give token.
+                String token = generateToken();
+                return storeToken(token);
+            } else {
+            	//Not Registered
+                return new WHMessage(WHProtocol.WHMessageHeader.AUTHENTICATE_BAD_CREDENTIALS, 
+                		"Account + " + name + " not known. Please register first");
             }
 
 
         } catch (SQLException e) {
             e.printStackTrace();
+            return new WHMessage(WHMessageHeader.SERVER_ERROR_500, 
+            		"Server error. Please try again");
         }
-        //Not Registered
-        return new WHMessage(WHProtocol.WHMessageHeader.AUTHENTICATE_BAD_CREDENTIALS, "Account + " + name + " not known. Please register first");
-
-
     }
 
+    /**
+     * Store the token given for the user.
+     */
+    private WHMessage storeToken(String token) {
+    	Connection conn = DatabaseConnection.getInstance().getConnection();
+        PreparedStatement stmt = null;
+		try {
+			stmt = conn.prepareStatement("UPDATE utilisateur SET token = ? WHERE nom_utilisateur = ?");
+			stmt.setString(1, token);
+			stmt.setString(2, name);
+			stmt.executeUpdate();
+			// if nothing is thrown, then success!
+			return new WHMessage(WHProtocol.WHMessageHeader.AUTH_TOKEN, token);
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return new WHMessage(WHProtocol.WHMessageHeader.SERVER_ERROR_500, 
+					"Could not store or deliver token. Please try again later.");
+		}
+	}
 
-    public void getToken(){
-
-
+    private static int length = 32;
+	/** generates a new token.*/
+    private String generateToken(){
+    	StringBuilder sb = new StringBuilder(length);
+    	for (int i = 0; i < length; i++) {
+			sb.append((char) (rand.nextInt('Z'-'A') + 'A')); // random A-Z
+		}
+    	return sb.toString();
     }
 
-    public boolean isAlreadyRegistered(){
+    /** Checks if the user is already registered */
+    public boolean isAlreadyRegistered() throws SQLException {
+    	return (null != getSaltForUser());
+    }
+
+    /** Get the cryptographic salt for this user. Return null if user not known. */
+    public String getSaltForUser() throws SQLException {
         Connection conn = DatabaseConnection.getInstance().getConnection();
         PreparedStatement stmt = null;
         ResultSet rs = null;
 
         try {
-            stmt = conn.prepareStatement("SELECT * FROM utilisateur WHERE email = ? OR nom_utilisateur = ?");
+            stmt = conn.prepareStatement("SELECT salt FROM utilisateur WHERE email = ? OR nom_utilisateur = ?");
             stmt.setString(1, email);
             stmt.setString(2, name);
             rs = stmt.executeQuery();
-            if(!rs.isBeforeFirst()){
-                return false;
+            if(!rs.isBeforeFirst()){ // no result: not known.
+                return null;
             }
-
-
+            rs.next();
+            return rs.getString("salt");
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw e;
         }
-
-        return true;
     }
 
 
@@ -138,9 +175,14 @@ public class User {
         System.out.println(usr.registerUser());
         System.out.println(usr.registerUser());
 
-        if(usr.isAlreadyRegistered()){
-            System.out.println("Already registered here");
-        }
+        try {
+			if(usr.isAlreadyRegistered()){
+			    System.out.println("Already registered here");
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
         User me = new User("Jean", "david@f.com", "othersecret");
         System.out.println(me.registerUser());

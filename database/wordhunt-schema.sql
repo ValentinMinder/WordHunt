@@ -136,7 +136,9 @@ CREATE TABLE `Utilisateur` (
   `id_utilisateur` int(11) NOT NULL AUTO_INCREMENT,
   `nom_utilisateur` varchar(255) NOT NULL,
   `email` varchar(255) NOT NULL,
-  `mot_de_passe` varchar(255) NOT NULL,
+  `salt` char(32) NOT NULL,
+  `mot_de_passe` char(40) NOT NULL,
+  `token` char(32),
   PRIMARY KEY (`id_utilisateur`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
