@@ -36,9 +36,13 @@ public class Grid {
     protected ArrayList<Integer> solutionsHashed;
     private int gridID;
     protected int size;
-
-    public Grid() {
-
+    
+    public int getID () {
+    	return gridID;
+    }
+    
+    public void setID (int gridID) {
+    	this.gridID = gridID;
     }
 
     public Grid(int size) {

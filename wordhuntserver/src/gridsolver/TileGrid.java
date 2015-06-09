@@ -9,6 +9,7 @@ import whobjects.Grid;
 
 public class TileGrid extends Grid {
 	private List<Tile> tiles = new LinkedList<Tile>();
+	private List<String> solutions;
 	
 	public TileGrid(int size) {
 		super(size);
@@ -35,6 +36,20 @@ public class TileGrid extends Grid {
 		}
 	}
 	
+	/**
+	 * @return the solutions
+	 */
+	public List<String> getSolutions() {
+		return solutions;
+	}
+
+	/**
+	 * @param solutions the solutions to set
+	 */
+	public void setSolutions(List<String> solutions) {
+		this.solutions = solutions;
+	}
+
 	public List<Tile> getTiles() { return tiles; }
 	
 	public Tile getTileByIndex(int x, int y) {
@@ -98,12 +113,8 @@ public class TileGrid extends Grid {
         tileGrid.setContent(getContent());
         GridSolverV1 solver = new GridSolverV1(tileGrid);
         solver.solve();
-        List<String> solutions = (List<String>) solver.getSolutions();
-        // Add hashed solutions to the grid
-        solutionsHashed = new ArrayList<Integer>(solutions.size());
-        for(String solution : solutions ){
-            solutionsHashed.add(solution.hashCode());
-        }
+        solutions = (List<String>) solver.getSolutions();
+
 
         if(solutions.size() < minNbOfWords){
             return false;
@@ -116,6 +127,13 @@ public class TileGrid extends Grid {
         }
         if(maxLength < minWordLength ){
             return false;
+        }
+        // grid is valid
+        
+        // Add hashed solutions to the grid
+        solutionsHashed = new ArrayList<Integer>(solutions.size());
+        for(String solution : solutions ){
+            solutionsHashed.add(solution.hashCode());
         }
         return true;
     }
