@@ -56,7 +56,8 @@ public class GridHandler {
 		switch(getGridMessage.getType()) {
 		case TRAINING:
 			grid = GridHandler.getInstance().getGrid();
-			GridStorage.getInstance().storeGrid((TileGrid) grid);
+			int id = GridStorage.getInstance().storeGrid((TileGrid) grid);
+			grid.setGridID(id);
 			break;
 		case COMPETITION:
 			return CompetitionManager.getInstance().getGrid();

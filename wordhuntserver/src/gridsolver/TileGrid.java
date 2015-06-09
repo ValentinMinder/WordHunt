@@ -43,13 +43,6 @@ public class TileGrid extends Grid {
 		return solutions;
 	}
 
-	/**
-	 * @param solutions the solutions to set
-	 */
-	public void setSolutions(List<String> solutions) {
-		this.solutions = solutions;
-	}
-
 	public List<Tile> getTiles() { return tiles; }
 	
 	public Tile getTileByIndex(int x, int y) {
@@ -103,7 +96,7 @@ public class TileGrid extends Grid {
 
     /**
      * checks if the grid is valid by solving it
-     * @see solutionsHashed solutions are hashed and stored
+     * @see hashedSolutions solutions are hashed and stored
      * @param minNbOfWords desired mininum number of words in the grid
      * @param minWordLength desired minimum length of longest word in the grid
      * @return
@@ -131,9 +124,10 @@ public class TileGrid extends Grid {
         // grid is valid
         
         // Add hashed solutions to the grid
-        solutionsHashed = new ArrayList<Integer>(solutions.size());
+        hashedSolutions = new int [solutions.size()];
+        int i = 0;
         for(String solution : solutions ){
-            solutionsHashed.add(solution.hashCode());
+            hashedSolutions[i++] = solution.hashCode();
         }
         return true;
     }

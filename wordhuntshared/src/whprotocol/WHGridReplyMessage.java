@@ -37,7 +37,7 @@ public class WHGridReplyMessage extends WHMessageContent {
 		this.grid = grid;
 	}
 
-	public Collection<Integer> getHashedSolution(){
+	public int[] getHashedSolution(){
 		return grid.getHashedSolutions();
 	}
 	

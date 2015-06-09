@@ -9,7 +9,7 @@ import com.google.gson.JsonObject;
 /**
  * Represents the word grid
  * content is set via setContent()
- * isValid() solves a grid and add its hashed solutions using hashCode() to solutionsHashed
+ * isValid() solves a grid and add its hashed solutions using hashCode() to hashedSolutions
  */
 public class Grid {
 
@@ -26,14 +26,14 @@ public class Grid {
 		Gson moteurJson = new Gson();
 		JsonObject root = new JsonObject();
 		root.add("content", moteurJson.toJsonTree(content));
-		root.add("solutionsHashed", moteurJson.toJsonTree(solutionsHashed));
+		root.add("hashedSolutions", moteurJson.toJsonTree(hashedSolutions));
 		root.add("gridID", moteurJson.toJsonTree(gridID));
 		root.add("size", moteurJson.toJsonTree(size));
 		return root;
 	}
 
 	protected char[][] content;
-    protected ArrayList<Integer> solutionsHashed;
+    protected int[] hashedSolutions;
     private int gridID;
     protected int size;
     
@@ -74,8 +74,15 @@ public class Grid {
         this.gridID = gridID;
     }
 
-    public ArrayList<Integer> getHashedSolutions() {
-        return solutionsHashed;
+    public int[] getHashedSolutions() {
+        return hashedSolutions;
+    }
+    
+    public void setHashedSolutions(int[] hashs) {
+    	this.hashedSolutions = new int[hashs.length];
+        for (int i = 0; i < hashs.length ; i++) {
+            this.hashedSolutions[i] = hashs[i];
+        }
     }
 
     public int getNbOfVowels() {

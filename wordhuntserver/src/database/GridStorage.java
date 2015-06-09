@@ -1,7 +1,6 @@
 package database;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
+import gridsolver.TileGrid;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -10,11 +9,13 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Collection;
 
-import gridsolver.TileGrid;
 import whobjects.Grid;
 import whobjects.Score;
 import whproperties.WHProperties;
 import whprotocol.WHProtocol;
+import whprotocol.WHProtocol.WHLangage;
+
+import com.google.gson.Gson;
 
 /**
  * Created by David on 27.05.2015.
@@ -46,14 +47,16 @@ public class GridStorage {
         Score aScore = Score.getInstance();
         Collection<String> solutions = grid.getSolutions();
         String sols = gson.toJson(solutions);
+        String hashs = gson.toJson(grid.getHashedSolutions());
         int score = aScore.getScore(solutions, WHProtocol.WHPointsType.LENGTH);
         int id = 0;
 
         try {
-            stmt = conn.prepareStatement("INSERT INTO grille (id_type, valeurs_cases, score_max) VALUES (?,?,?)", Statement.RETURN_GENERATED_KEYS);
-            stmt.setInt(1, 1);
+            stmt = conn.prepareStatement("INSERT INTO grille (id_lang, valeurs_cases, score_max, hashs) VALUES (?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
+            stmt.setInt(1, WHLangage.FRENCH.ordinal()); // default: french.
             stmt.setString(2, content);
             stmt.setInt(3, score);
+            stmt.setString(4, hashs);
 
             stmt.executeUpdate();
 
@@ -100,6 +103,9 @@ public class GridStorage {
             if (rs.next()){
                 content = rs.getString("valeurs_cases");
                 grid.setContent(gson.fromJson(content, char[][].class));
+                content = rs.getString("hashs");
+                grid.setHashedSolutions(gson.fromJson(content, int[].class));
+                grid.setGridID(rs.getInt("id_grille"));
             }else{
                 return null;
             }
@@ -131,8 +137,11 @@ public class GridStorage {
             String content = null;
 
             if (rs.next()){
-                content = rs.getString("valeurs_cases");
+            	content = rs.getString("valeurs_cases");
                 grid.setContent(gson.fromJson(content, char[][].class));
+                content = rs.getString("hashs");
+                grid.setHashedSolutions(gson.fromJson(content, int[].class));
+                grid.setGridID(rs.getInt("id_grille"));
             }else{
                 System.out.println("GRID does not exist");
                 return null;
@@ -159,9 +168,11 @@ public class GridStorage {
             String content = null;
 
             if (rs.next()){
-                content = rs.getString("valeurs_cases");
+            	content = rs.getString("valeurs_cases");
                 grid.setContent(gson.fromJson(content, char[][].class));
-//                System.out.println(grid.printGrid());
+                content = rs.getString("hashs");
+                grid.setHashedSolutions(gson.fromJson(content, int[].class));
+                grid.setGridID(rs.getInt("id_grille"));
             }else{
                 System.out.println("GRID does not exist");
             }
