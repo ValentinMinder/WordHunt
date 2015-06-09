@@ -12,6 +12,7 @@ import whprotocol.WHCompetScheduling;
 import whprotocol.WHLogin;
 import whprotocol.WHMessage;
 import whprotocol.WHProtocol.WHMessageHeader;
+import whprotocol.WHRegister;
 import whprotocol.WHSimpleMessage;
 
 /**
@@ -36,10 +37,13 @@ public class TestCompetitionSchedule extends TestAbstractAuthenticated {
 
 	/** Utily method that provide admin connection */
 	private void connectAsAdmin() throws IOException {
-		// creates admin
-		// WHMessage.writeMessage(pw, new WHMessage(WHMessageHeader.REGISTER,
-		// new WHRegister(0, "admin", "adminPassword", "admin@wordhunt.com")));
-		// WHMessage.readMessage(br);
+		// creates an admin user (has no effect if already exists)
+		WHMessage.writeMessage(pw, new WHMessage(WHMessageHeader.REGISTER,
+				new WHRegister(0, "admin", "adminPassword",
+						"admin@wordhunt.com")));
+		WHMessage.readMessage(br);
+
+		// login as admin.
 		WHMessage.writeMessage(pw, new WHMessage(WHMessageHeader.AUTH_POST,
 				new WHLogin(0, "admin", "adminPassword")));
 		WHMessage message = WHMessage.readMessage(br);
@@ -70,6 +74,7 @@ public class TestCompetitionSchedule extends TestAbstractAuthenticated {
 		message = WHMessage.readMessage(br);
 		assertEquals(WHMessageHeader.BAD_REQUEST_400, message.getHeader());
 
+		// we wait till the previous compet is finished.
 		try {
 			Thread.sleep(2000);
 		} catch (InterruptedException e) {
@@ -79,9 +84,16 @@ public class TestCompetitionSchedule extends TestAbstractAuthenticated {
 		// scheduling another competition: ok. (the previous one is done)
 		WHMessage.writeMessage(pw, new WHMessage(
 				WHMessageHeader.SCHEDULE_COMPET, new WHCompetScheduling(
-						adminToken, 1000, 500)));
+						adminToken, 1000, 50)));
 		message = WHMessage.readMessage(br);
 		assertEquals(WHMessageHeader.SCHEDULE_COMPET_ACK, message.getHeader());
+
+		// we wait till the end of the previous compet.
+		try {
+			Thread.sleep(2000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 	}
 
 	/**
@@ -95,8 +107,7 @@ public class TestCompetitionSchedule extends TestAbstractAuthenticated {
 						WHMessageHeader.SCHEDULE_COMPET,
 						new WHCompetScheduling(token)));
 		WHMessage message = WHMessage.readMessage(br);
-		// TODO: WHMessageHeader.AUTH_REQUIRED_403
-		assertEquals(WHMessageHeader.BAD_REQUEST_400, message.getHeader());
+		assertEquals(WHMessageHeader.AUTH_REQUIRED_403, message.getHeader());
 	}
 
 }

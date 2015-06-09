@@ -136,8 +136,7 @@ public class ClientHandler implements Runnable {
 		case SCHEDULE_COMPET:
 			WHCompetScheduling compet = (WHCompetScheduling) clientCommand
 					.getContent();
-			return CompetitionManager.getInstance().schedule(
-					compet.getDelayStart(), compet.getAvailableWindowTime());
+			return CompetitionManager.getInstance().schedule(compet);
 		case SUBMIT_POST:
 			WHSubmitPostMessage post = (WHSubmitPostMessage) clientCommand.getContent();
 			

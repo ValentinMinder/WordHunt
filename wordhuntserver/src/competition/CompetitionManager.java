@@ -11,6 +11,7 @@ import whprotocol.WHCompetScheduling;
 import whprotocol.WHGridReplyMessage;
 import whprotocol.WHMessage;
 import whprotocol.WHProtocol.WHMessageHeader;
+import database.User;
 
 public class CompetitionManager {
 
@@ -39,8 +40,22 @@ public class CompetitionManager {
 
 	}
 
-	public WHMessage schedule(long delay) {
+	private WHMessage schedule(long delay) {
 		return schedule(delay, WHCompetScheduling.defaultAvailableWindowTime);
+	}
+
+	/** Checks admin rights and schedule a competition */
+	public WHMessage schedule(WHCompetScheduling compet) {
+		// checks if this is the admin
+		if (User.checkAdminToken(compet.getAuthToken())) {
+			// schedule competition
+			return schedule(compet.getDelayStart(),
+					compet.getAvailableWindowTime());
+		} else {
+			// admin right refused !
+			return new WHMessage(WHMessageHeader.AUTH_REQUIRED_403,
+					"Sorry, your must be admin!");
+		}
 	}
 
 	/**
@@ -51,7 +66,7 @@ public class CompetitionManager {
 	 * @param available
 	 * @return true if successful.
 	 */
-	public WHMessage schedule(final long delay, final long available) {
+	private WHMessage schedule(final long delay, final long available) {
 		if (delay < WHCompetScheduling.defaultDelayStart / 2) {
 			return new WHMessage(WHMessageHeader.BAD_REQUEST_400,
 					"Cannot schedule in the past!");

@@ -53,8 +53,8 @@ public class User {
     }
 
     public WHMessage registerUser(){
-    	if (email == null) {
-    		throw new RuntimeException("email needed to register");
+    	if (email == null || name == null) {
+    		throw new RuntimeException("email & name needed to register");
     	}
         Connection conn = DatabaseConnection.getInstance().getConnection();
         PreparedStatement stmt = null;
@@ -80,6 +80,9 @@ public class User {
     }
 
     public WHMessage correctCredentials(){
+    	if (name == null) {
+    		throw new RuntimeException("name needed to connect");
+    	}
         Connection conn = DatabaseConnection.getInstance().getConnection();
         PreparedStatement stmt = null;
         ResultSet rs = null;
@@ -149,7 +152,7 @@ public class User {
     }
 
     /** Get the cryptographic salt for this user. Return null if user not known. */
-    public String getSaltForUser() throws SQLException {
+    private String getSaltForUser() throws SQLException {
         Connection conn = DatabaseConnection.getInstance().getConnection();
         PreparedStatement stmt = null;
         ResultSet rs = null;
@@ -166,6 +169,29 @@ public class User {
             return rs.getString("salt");
         } catch (SQLException e) {
             throw e;
+        }
+    }
+    
+    /** 
+     * Check if the token is the admin one. <br> 
+     * Returns also false if admin not known or sql error.
+     */
+    public static boolean checkAdminToken (String token) {
+        Connection conn = DatabaseConnection.getInstance().getConnection();
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+
+        try {
+            stmt = conn.prepareStatement("SELECT token FROM utilisateur WHERE nom_utilisateur = ?");
+            stmt.setString(1, "admin");
+            rs = stmt.executeQuery();
+            if(!rs.isBeforeFirst()){ // no result: not known.
+                return false;
+            }
+            rs.next();
+            return token.equals(rs.getString("token")); // check that it's the same
+        } catch (SQLException e) {
+           	return false;
         }
     }
 
