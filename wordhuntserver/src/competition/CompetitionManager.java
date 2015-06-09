@@ -7,14 +7,12 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import whobjects.Grid;
+import whprotocol.WHCompetScheduling;
 import whprotocol.WHGridReplyMessage;
 import whprotocol.WHMessage;
 import whprotocol.WHProtocol.WHMessageHeader;
 
 public class CompetitionManager {
-
-	/** 5 minutes */
-	private final static long DEFAULT_AVAILABLE_TIME = 1000 * 60 * 5;
 
 	private static CompetitionManager instance;
 
@@ -41,8 +39,8 @@ public class CompetitionManager {
 
 	}
 
-	public WHMessage schedule(long timestamp) {
-		return schedule(timestamp, DEFAULT_AVAILABLE_TIME);
+	public WHMessage schedule(long delay) {
+		return schedule(delay, WHCompetScheduling.defaultAvailableWindowTime);
 	}
 
 	/**
@@ -53,8 +51,8 @@ public class CompetitionManager {
 	 * @param available
 	 * @return true if successful.
 	 */
-	public WHMessage schedule(final long timestamp, final long available) {
-		if (timestamp < System.currentTimeMillis()) {
+	public WHMessage schedule(final long delay, final long available) {
+		if (delay < WHCompetScheduling.defaultDelayStart / 2) {
 			return new WHMessage(WHMessageHeader.BAD_REQUEST_400,
 					"Cannot schedule in the past!");
 		}
@@ -69,7 +67,7 @@ public class CompetitionManager {
 		}
 
 		// the competition is scheduled in future
-		scheduleTime = new Date(timestamp);
+		scheduleTime = new Date(System.currentTimeMillis() + delay);
 		scheduled = true;
 		timer.schedule(new TimerTask() {
 
@@ -92,7 +90,7 @@ public class CompetitionManager {
 					}
 				}, available);
 			}
-		}, scheduleTime);
+		}, delay);
 		return new WHMessage(WHMessageHeader.SCHEDULE_COMPET_ACK,
 				"Competition scheduled in " + getTime());
 	}
@@ -132,15 +130,15 @@ public class CompetitionManager {
 
 		// no schedule in the past.
 		System.out.println("no sched:  "
-				+ manager.schedule(System.currentTimeMillis() - 1000));
+				+ manager.schedule(-1000));
 
 		// schedule in 2sec, during 3 sec.
 		System.out.println("scheduled: "
-				+ manager.schedule(System.currentTimeMillis() + 2100, 3000));
+				+ manager.schedule(2100, 3000));
 
 		// no schedule with other schedule
 		System.out.println("no sched:  "
-				+ manager.schedule(System.currentTimeMillis() + 1000));
+				+ manager.schedule(1000));
 
 		// its scheduled... but not running!
 		System.out.println("scheduled: " + manager.getGrid());

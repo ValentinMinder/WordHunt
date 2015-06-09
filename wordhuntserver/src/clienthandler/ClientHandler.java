@@ -13,6 +13,7 @@ import java.util.logging.Logger;
 
 import whdatabase.User;
 import whobjects.Grid;
+import whprotocol.WHCompetScheduling;
 import whprotocol.WHGridReplyMessage;
 import whprotocol.WHLogin;
 import whprotocol.WHMessage;
@@ -20,6 +21,8 @@ import whprotocol.WHProtocol.WHMessageHeader;
 import whprotocol.WHRegister;
 import whprotocol.WHSimpleMessage;
 import whprotocol.WHSubmitPostMessage;
+
+import competition.CompetitionManager;
 
 public class ClientHandler implements Runnable {
 
@@ -127,15 +130,14 @@ public class ClientHandler implements Runnable {
 			return user.correctCredentials();
 		case REGISTER:
 			WHRegister mess = (WHRegister) clientCommand.getContent();
-			User u = new User(mess.getUsername(), mess.getPassword(), mess.getPassword());
+			User u = new User(mess.getUsername(), mess.getEmail(),
+					mess.getPassword());
 			return u.registerUser();
 		case SCHEDULE_COMPET:
-			// TODO IMPLEMENT
-			// not implemented yet
-			logger.warning("WARN: client issued bad request with NOT IMPLEMENTED command:"
-					+ clientCommand.getHeader());
-			return new WHMessage(WHMessageHeader.BAD_REQUEST_400,
-					"NOT IMPLEMENTS YET " + clientCommand.getHeader());
+			WHCompetScheduling compet = (WHCompetScheduling) clientCommand
+					.getContent();
+			return CompetitionManager.getInstance().schedule(
+					compet.getDelayStart(), compet.getAvailableWindowTime());
 		case SUBMIT_POST:
 			WHSubmitPostMessage post = (WHSubmitPostMessage) clientCommand.getContent();
 			
