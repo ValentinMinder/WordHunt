@@ -14,6 +14,11 @@ public class WHSimpleMessage extends WHMessageContent {
 		super(status);
 		this.payload = payload;
 	}
+	
+	public WHSimpleMessage(String payload) {
+		super();
+		this.payload = payload;
+	}
 
 	/**
 	 * @return the payload

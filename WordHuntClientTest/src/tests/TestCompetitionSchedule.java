@@ -3,17 +3,26 @@ package tests;
 import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
+import java.net.UnknownHostException;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
+import whprotocol.WHAuthMessage;
 import whprotocol.WHCompetScheduling;
+import whprotocol.WHGetGrid;
+import whprotocol.WHGridReplyMessage;
 import whprotocol.WHLogin;
 import whprotocol.WHMessage;
+import whprotocol.WHSimpleMessage;
+import whprotocol.WHSubmitPostMessage;
+import whprotocol.WHProtocol.WHGameType;
 import whprotocol.WHProtocol.WHMessageHeader;
 import whprotocol.WHRegister;
-import whprotocol.WHSimpleMessage;
 
 /**
  * Class that test administration functionalities, like scheduling a
@@ -47,8 +56,7 @@ public class TestCompetitionSchedule extends TestAbstractAuthenticated {
 		WHMessage.writeMessage(pw, new WHMessage(WHMessageHeader.AUTH_POST,
 				new WHLogin(0, "admin", "adminPassword")));
 		WHMessage message = WHMessage.readMessage(br);
-		System.out.println(message);
-		adminToken = ((WHSimpleMessage) message.getContent()).getPayload();
+		adminToken = ((WHAuthMessage) message.getContent()).getAuthToken();
 	}
 
 	/**
@@ -90,7 +98,7 @@ public class TestCompetitionSchedule extends TestAbstractAuthenticated {
 
 		// we wait till the end of the previous compet.
 		try {
-			Thread.sleep(2000);
+			Thread.sleep(1200);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
@@ -108,6 +116,108 @@ public class TestCompetitionSchedule extends TestAbstractAuthenticated {
 						new WHCompetScheduling(token)));
 		WHMessage message = WHMessage.readMessage(br);
 		assertEquals(WHMessageHeader.AUTH_REQUIRED_403, message.getHeader());
+	}
+	
+	@Test
+	public void testJoinCompetition() throws IOException {
+
+		connectAsAdmin();
+
+		// scheduling a competition: ok.
+		WHMessage.writeMessage(pw, new WHMessage(
+				WHMessageHeader.SCHEDULE_COMPET, new WHCompetScheduling(
+						adminToken, 1000, 1500)));
+		WHMessage message = WHMessage.readMessage(br);
+		assertEquals(WHMessageHeader.SCHEDULE_COMPET_ACK, message.getHeader());
+
+		// we wait that the competition starts.
+		try {
+			Thread.sleep(1100);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		WHGetGrid gridGet = new WHGetGrid(token, WHGameType.COMPETITION);
+		WHMessage query = new WHMessage(WHMessageHeader.GRID_GET_AUTHENTICATED,
+				gridGet);
+		WHMessage.writeMessage(pw, query);
+
+		WHMessage reply = WHMessage.readMessage(br);
+		assertEquals(WHMessageHeader.GRID_REPLY, reply.getHeader());
+		assertEquals(WHGridReplyMessage.class, reply.getContent().getClass());
+		
+		// we wait till the end of the previous compet.
+		try {
+			Thread.sleep(1800);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	@Test
+	public void testChallengeGrid() throws UnknownHostException,
+			IOException {
+		
+		connectAsAdmin();
+		
+		// training grid (by default)
+		WHGetGrid gridGet = new WHGetGrid(token);
+		WHMessage query = new WHMessage(WHMessageHeader.GRID_GET_AUTHENTICATED,
+				gridGet);
+		WHMessage.writeMessage(pw, query);
+
+		WHMessage reply = WHMessage.readMessage(br);
+		assertEquals(WHMessageHeader.GRID_REPLY, reply.getHeader());
+		assertEquals(WHGridReplyMessage.class, reply.getContent().getClass());
+
+		// sends back no solutions: should be okay!
+		List<String> sol = new ArrayList<>();
+		int grididAdmin = ((WHGridReplyMessage) reply.getContent()).getGrid().getID();
+		query = new WHMessage(WHMessageHeader.SUBMIT_POST,
+				new WHSubmitPostMessage(adminToken, grididAdmin, sol));
+		WHMessage.writeMessage(pw, query);
+
+		reply = WHMessage.readMessage(br);
+		assertEquals(WHMessageHeader.SUBMIT_VALIDATE, reply.getHeader());
+		assertEquals(WHSimpleMessage.class, reply.getContent().getClass());
+		
+		try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		
+		// challenge, by default (any grid not played by me - cannot garanty that it's the one above
+		gridGet = new WHGetGrid(token, WHGameType.CHALLENGE);
+		query = new WHMessage(WHMessageHeader.GRID_GET_AUTHENTICATED, gridGet);
+		WHMessage.writeMessage(pw, query);
+
+		reply = WHMessage.readMessage(br);
+		System.out.println(reply);
+		assertEquals(WHMessageHeader.GRID_REPLY, reply.getHeader());
+		assertEquals(WHGridReplyMessage.class, reply.getContent().getClass());
+		
+		// challenge, by grid id (the one from admin)
+		gridGet = new WHGetGrid(token, grididAdmin);
+		query = new WHMessage(WHMessageHeader.GRID_GET_AUTHENTICATED, gridGet);
+		WHMessage.writeMessage(pw, query);
+
+		reply = WHMessage.readMessage(br);
+		assertEquals(WHMessageHeader.GRID_REPLY, reply.getHeader());
+		assertEquals(WHGridReplyMessage.class, reply.getContent().getClass());
+		WHGridReplyMessage gridReply = (WHGridReplyMessage) reply.getContent();
+		assertEquals(grididAdmin, gridReply.getGrid().getGridID());
+		
+		// challenge, by username (the one from admin)
+		gridGet = new WHGetGrid(token, "admin");
+		query = new WHMessage(WHMessageHeader.GRID_GET_AUTHENTICATED, gridGet);
+		WHMessage.writeMessage(pw, query);
+
+		reply = WHMessage.readMessage(br);
+		assertEquals(WHMessageHeader.GRID_REPLY, reply.getHeader());
+		assertEquals(WHGridReplyMessage.class, reply.getContent().getClass());
+		gridReply = (WHGridReplyMessage) reply.getContent();
+		// cannot garanty its the one above, because it may have other grid from admin...
+		// assertEquals(grididAdmin, gridReply.getGrid().getGridID());
 	}
 
 }

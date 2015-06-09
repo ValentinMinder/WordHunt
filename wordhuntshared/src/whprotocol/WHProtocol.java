@@ -24,6 +24,7 @@ public class WHProtocol {
 		PING, // ping from client
 		PING_REPLY, // reply to a ping from server
 		GRID_GET, // client ask for a grid
+		GRID_GET_AUTHENTICATED, // client ask for a grid (while being authenticated)
 		GRID_REPLY, // server sends a grid back to the client
 		ANSWERS_GET, // client asks for the answers
 		ANSWERS_REPLY, // server sends back the answers to a grid

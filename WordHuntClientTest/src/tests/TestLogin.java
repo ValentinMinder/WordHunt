@@ -9,6 +9,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import whprotocol.WHAuthMessage;
 import whprotocol.WHLogin;
 import whprotocol.WHMessage;
 import whprotocol.WHProtocol.WHMessageHeader;
@@ -68,9 +69,7 @@ public class TestLogin extends TestAbstractLogin {
 				new WHLogin(0, name, password)));
 		WHMessage reply = WHMessage.readMessage(br);
 		assertEquals(WHMessageHeader.AUTH_TOKEN, reply.getHeader());
-		// TODO: assertEquals(WHAuthMessage.class,
-		// reply.getContent().getClass());
-		assertEquals(WHSimpleMessage.class, reply.getContent().getClass());
+		assertEquals(WHAuthMessage.class, reply.getContent().getClass());
 	}
 
 }

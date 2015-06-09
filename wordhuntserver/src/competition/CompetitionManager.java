@@ -125,10 +125,10 @@ public class CompetitionManager {
 	public WHMessage getGrid() {
 		if (!competRunning) {
 			if (scheduled) {
-				return new WHMessage(WHMessageHeader.SERVER_ERROR_500,
+				return new WHMessage(WHMessageHeader.BAD_REQUEST_400,
 						"Next competition scheduled in " + getTime());
 			} else {
-				return new WHMessage(WHMessageHeader.SERVER_ERROR_500,
+				return new WHMessage(WHMessageHeader.BAD_REQUEST_400,
 						"No competition running nor scheduled right now!");
 			}
 		} else {

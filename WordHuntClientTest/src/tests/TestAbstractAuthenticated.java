@@ -3,10 +3,10 @@ package tests;
 import org.junit.After;
 import org.junit.Before;
 
+import whprotocol.WHAuthMessage;
 import whprotocol.WHLogin;
 import whprotocol.WHMessage;
 import whprotocol.WHProtocol.WHMessageHeader;
-import whprotocol.WHSimpleMessage;
 
 /**
  * Class for all authenticated - test. <br>
@@ -20,10 +20,15 @@ public abstract class TestAbstractAuthenticated extends TestAbstractLogin {
 	public void setUp() throws Exception {
 		super.setUp();
 		WHMessage.writeMessage(pw, new WHMessage(WHMessageHeader.AUTH_POST,
-				new WHLogin(0, name, email)));
-		WHSimpleMessage reply = (WHSimpleMessage) WHMessage.readMessage(br)
-				.getContent();
-		token = reply.getPayload();
+				new WHLogin(0, name, password)));
+		WHMessage read = WHMessage.readMessage(br);
+		if (!WHAuthMessage.class.equals(read.getContent().getClass())) {
+			System.err.println("Error - not logged in!");
+			System.err.println(read);
+			throw new RuntimeException("Error - logged in was a failure !");
+		}
+		WHAuthMessage reply = (WHAuthMessage) (read.getContent());
+		token = reply.getAuthToken();
 	}
 
 	@After

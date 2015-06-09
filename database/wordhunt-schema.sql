@@ -19,37 +19,10 @@
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
+# DROP DATABASE IF EXISTS `wordhunt`;
 
-# Dump of table Dictionnaire
-# ------------------------------------------------------------
-
-DROP TABLE IF EXISTS `Dictionnaire`;
-
-CREATE TABLE `Dictionnaire` (
-  `id_dictionnaire` int(11) NOT NULL AUTO_INCREMENT,
-  `id_lang` int(11) NOT NULL,
-  PRIMARY KEY (`id_dictionnaire`),
-  KEY `id_lang` (`id_lang`),
-  CONSTRAINT `dictionnaire_ibfk_1` FOREIGN KEY (`id_lang`) REFERENCES `Lang` (`id_lang`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-
-
-# Dump of table Grille
-# ------------------------------------------------------------
-
-DROP TABLE IF EXISTS `Grille`;
-
-CREATE TABLE `Grille` (
-  `id_grille` int(11) NOT NULL AUTO_INCREMENT,
-  `id_type` int(11) NOT NULL,
-  `valeurs_cases` text NOT NULL,
-  `score_max` int(11) NOT NULL,
-  PRIMARY KEY (`id_grille`,`id_type`),
-  KEY `id_type` (`id_type`),
-  CONSTRAINT `grille_ibfk_1` FOREIGN KEY (`id_type`) REFERENCES `TypeJeux` (`id_type`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
+CREATE SCHEMA `wordhunt`;
+USE `wordhunt`;
 
 
 # Dump of table Lang
@@ -63,20 +36,26 @@ CREATE TABLE `Lang` (
   PRIMARY KEY (`id_lang`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+# creates basic languages
+INSERT INTO `Lang` (`id_lang`,`valeur`)
+VALUES
+(0, 'French'),
+(1, 'English'),
+(2, 'Frenglish');
 
-
-# Dump of table Mot
+# Dump of table Grille
 # ------------------------------------------------------------
 
-DROP TABLE IF EXISTS `Mot`;
+DROP TABLE IF EXISTS `Grille`;
 
-CREATE TABLE `Mot` (
-  `id_mot` int(11) NOT NULL AUTO_INCREMENT,
-  `id_dictionnaire` int(11) NOT NULL,
-  `mot` varchar(255) NOT NULL,
-  PRIMARY KEY (`id_mot`,`id_dictionnaire`),
-  KEY `id_dictionnaire` (`id_dictionnaire`),
-  CONSTRAINT `mot_ibfk_1` FOREIGN KEY (`id_dictionnaire`) REFERENCES `Dictionnaire` (`id_dictionnaire`)
+CREATE TABLE `Grille` (
+  `id_grille` int(11) NOT NULL AUTO_INCREMENT,
+  `id_lang` int(11) NOT NULL,
+  `valeurs_cases` text NOT NULL,
+  `score_max` int(11) NOT NULL,
+  `hashs` varchar(65535) NOT NULL,
+  PRIMARY KEY (`id_grille`),
+  CONSTRAINT `grille_ibfk_1` FOREIGN KEY (`id_lang`) REFERENCES `Lang` (`id_lang`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
@@ -105,24 +84,9 @@ DROP TABLE IF EXISTS `SolutionGrille`;
 
 CREATE TABLE `SolutionGrille` (
   `id_grille` int(11) NOT NULL,
-  `id_mot` int(11) NOT NULL,
-  PRIMARY KEY (`id_grille`,`id_mot`),
-  KEY `id_mot` (`id_mot`),
-  CONSTRAINT `solutiongrille_ibfk_2` FOREIGN KEY (`id_grille`) REFERENCES `Grille` (`id_grille`),
-  CONSTRAINT `solutiongrille_ibfk_1` FOREIGN KEY (`id_mot`) REFERENCES `Mot` (`id_mot`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-
-
-# Dump of table TypeJeux
-# ------------------------------------------------------------
-
-DROP TABLE IF EXISTS `TypeJeux`;
-
-CREATE TABLE `TypeJeux` (
-  `id_type` int(11) NOT NULL,
-  `valeur` varchar(255) NOT NULL,
-  PRIMARY KEY (`id_type`)
+  `mots` varchar(65535) NOT NULL,
+  PRIMARY KEY (`id_grille`),
+  CONSTRAINT `solutiongrille_ibfk_2` FOREIGN KEY (`id_grille`) REFERENCES `Grille` (`id_grille`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
@@ -139,7 +103,9 @@ CREATE TABLE `Utilisateur` (
   `salt` char(32) NOT NULL,
   `mot_de_passe` char(40) NOT NULL,
   `token` char(32),
-  PRIMARY KEY (`id_utilisateur`)
+  PRIMARY KEY (`id_utilisateur`),
+  KEY `nom_utilisateur` (`nom_utilisateur`),
+  KEY `email` (`email`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 

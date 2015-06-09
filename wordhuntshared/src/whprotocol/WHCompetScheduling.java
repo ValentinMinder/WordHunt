@@ -29,7 +29,7 @@ public class WHCompetScheduling extends WHAuthMessage {
 	 * @param authToken
 	 */
 	public WHCompetScheduling(String authToken) {
-		super(0, authToken);
+		super(authToken);
 	}
 
 	/**
@@ -40,7 +40,7 @@ public class WHCompetScheduling extends WHAuthMessage {
 	 * @param delay
 	 */
 	public WHCompetScheduling(String authToken, long delay) {
-		super(0, authToken);
+		super(authToken);
 		if (delay > delayStart) {
 			this.delayStart = delay;
 		}
@@ -56,7 +56,7 @@ public class WHCompetScheduling extends WHAuthMessage {
 	 * @param window
 	 */
 	public WHCompetScheduling(String authToken, long delay, long window) {
-		super(0, authToken);
+		super(authToken);
 		if (delay > delayStart) {
 			this.delayStart = delay;
 		}
@@ -71,7 +71,7 @@ public class WHCompetScheduling extends WHAuthMessage {
 	 * @param time
 	 */
 	public WHCompetScheduling(String authToken, Date time) {
-		super(0, authToken);
+		super(authToken);
 		if (time.getTime() > System.currentTimeMillis()) {
 			this.delayStart = Math.max(delayStart,
 					time.getTime() - System.currentTimeMillis());

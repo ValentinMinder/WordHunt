@@ -16,6 +16,11 @@ public class WHGridReplyMessage extends WHMessageContent {
 		super(status);
 		this.grid = grid;
 	}
+	
+	public WHGridReplyMessage(Grid grid) {
+		super();
+		this.grid = grid;
+	}
 
 	/**
 	 * @return the grid
@@ -32,7 +37,7 @@ public class WHGridReplyMessage extends WHMessageContent {
 		this.grid = grid;
 	}
 
-	public Collection<Integer> getHashedSolution(){
+	public int[] getHashedSolution(){
 		return grid.getHashedSolutions();
 	}
 	

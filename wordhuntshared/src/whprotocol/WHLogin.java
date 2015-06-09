@@ -13,6 +13,12 @@ public class WHLogin extends WHMessageContent {
 		this.username = username;
 		this.password = password;
 	}
+
+	public WHLogin(String username, String password) {
+		super();
+		this.username = username;
+		this.password = password;
+	}
 	
 	/**
 	 * @return the username
