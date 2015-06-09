@@ -4,8 +4,9 @@ import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
+import java.util.List;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import whprotocol.WHGetGrid;
@@ -13,6 +14,8 @@ import whprotocol.WHGridReplyMessage;
 import whprotocol.WHMessage;
 import whprotocol.WHProtocol.WHGameType;
 import whprotocol.WHProtocol.WHMessageHeader;
+import whprotocol.WHSimpleMessage;
+import whprotocol.WHSubmitPostMessage;
 
 public class TestCompetitionGrid extends TestAbstractAuthenticated {
 	
@@ -40,6 +43,40 @@ public class TestCompetitionGrid extends TestAbstractAuthenticated {
 	}
 	
 	@Test
+	public void testTrainingGridSubmitSolutions() throws UnknownHostException,
+			IOException {
+		
+		// training grid (by default)
+		WHGetGrid gridGet = new WHGetGrid(token);
+		WHMessage query = new WHMessage(WHMessageHeader.GRID_GET_AUTHENTICATED, gridGet);
+		WHMessage.writeMessage(pw, query);
+
+		WHMessage reply = WHMessage.readMessage(br);
+		assertEquals(WHMessageHeader.GRID_REPLY, reply.getHeader());
+		assertEquals(WHGridReplyMessage.class, reply.getContent().getClass());
+
+		// sends back no solutions: should be okay!
+		List<String> sol = new ArrayList<>();
+		int id = ((WHGridReplyMessage) reply.getContent()).getGrid().getID();
+		query = new WHMessage(WHMessageHeader.SUBMIT_POST, new WHSubmitPostMessage(token, id, sol));
+		WHMessage.writeMessage(pw, query);
+		
+		reply = WHMessage.readMessage(br);
+		assertEquals(WHMessageHeader.SUBMIT_VALIDATE, reply.getHeader());
+		assertEquals(WHSimpleMessage.class, reply.getContent().getClass());
+		
+		// sends back impossible solutions: should say no!
+		sol.add("12345678901234567");
+		query = new WHMessage(WHMessageHeader.SUBMIT_POST,
+				new WHSubmitPostMessage(token, id, sol));
+		WHMessage.writeMessage(pw, query);
+
+		reply = WHMessage.readMessage(br);
+		assertEquals(WHMessageHeader.CHEATING_WARNING_400, reply.getHeader());
+		assertEquals(WHSimpleMessage.class, reply.getContent().getClass());
+	}
+	
+	@Test
 	public void testCompetGrid() throws UnknownHostException,
 			IOException {
 		// competition . should fail, as no competition was launched !
@@ -49,38 +86,5 @@ public class TestCompetitionGrid extends TestAbstractAuthenticated {
 
 		WHMessage reply = WHMessage.readMessage(br);
 		assertEquals(WHMessageHeader.BAD_REQUEST_400, reply.getHeader());
-	}
-	
-	@Test
-	@Ignore
-	public void testChallengeGrid() throws UnknownHostException,
-			IOException {
-		// challenge, by default (any grid not played by me)
-		WHGetGrid gridGet = new WHGetGrid(token, WHGameType.CHALLENGE);
-		WHMessage query = new WHMessage(WHMessageHeader.GRID_GET_AUTHENTICATED, gridGet);
-		WHMessage.writeMessage(pw, query);
-
-		WHMessage reply = WHMessage.readMessage(br);
-		System.out.println(reply);
-		assertEquals(WHMessageHeader.GRID_REPLY, reply.getHeader());
-		assertEquals(WHGridReplyMessage.class, reply.getContent().getClass());
-		
-		// challenge, by grid id
-		gridGet = new WHGetGrid(token, 1);
-		query = new WHMessage(WHMessageHeader.GRID_GET_AUTHENTICATED, gridGet);
-		WHMessage.writeMessage(pw, query);
-
-		reply = WHMessage.readMessage(br);
-		assertEquals(WHMessageHeader.GRID_REPLY, reply.getHeader());
-		assertEquals(WHGridReplyMessage.class, reply.getContent().getClass());
-		
-		// challenge, by username
-		gridGet = new WHGetGrid(token, "admin");
-		query = new WHMessage(WHMessageHeader.GRID_GET_AUTHENTICATED, gridGet);
-		WHMessage.writeMessage(pw, query);
-
-		reply = WHMessage.readMessage(br);
-		assertEquals(WHMessageHeader.GRID_REPLY, reply.getHeader());
-		assertEquals(WHGridReplyMessage.class, reply.getContent().getClass());
 	}
 }

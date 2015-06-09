@@ -9,20 +9,25 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.Socket;
+import java.util.HashSet;
 import java.util.logging.Logger;
 
 import whobjects.Grid;
+import whobjects.Score;
 import whprotocol.WHCompetScheduling;
 import whprotocol.WHGetGrid;
 import whprotocol.WHGridReplyMessage;
 import whprotocol.WHLogin;
 import whprotocol.WHMessage;
 import whprotocol.WHProtocol.WHMessageHeader;
+import whprotocol.WHProtocol.WHPointsType;
 import whprotocol.WHRegister;
 import whprotocol.WHSimpleMessage;
 import whprotocol.WHSubmitPostMessage;
 
 import competition.CompetitionManager;
+
+import database.GridStorage;
 import database.User;
 
 public class ClientHandler implements Runnable {
@@ -143,17 +148,32 @@ public class ClientHandler implements Runnable {
 			return CompetitionManager.getInstance().schedule(compet);
 		case SUBMIT_POST:
 			WHSubmitPostMessage post = (WHSubmitPostMessage) clientCommand.getContent();
-			
-			//TODO verify token with user
-			//post.getAuthToken();
-			
-			//TODO retrieve grid from id
-			int score = 0;
-			for (String word: post.getUserSolutions()) {
-				// if word is not in solutions -> cheating!
-					//return new WHMessage(WHMessageHeader.CHEATING_BANNED_400, "u suck >:(");
-				// else count score
+			// checks userid and grid id
+			int userId = User.isValidToken(post.getAuthToken());
+			if (userId == -1) {
+				return new WHMessage(WHMessageHeader.AUTH_REQUIRED_403, 
+						"Cannot submit if not authenticated");
 			}
+			Grid gridSolve = GridStorage.getInstance().getGridByID(post.getGridID());
+			if (gridSolve == null) {
+				return new WHMessage(WHMessageHeader.BAD_REQUEST_400, 
+						"Grid not found or server error.");
+			}
+			// recupérer les solutions
+			String[] sol = GridStorage.getInstance().getGridSolutionsByID(post.getGridID());
+			HashSet<String> solutions = new HashSet<>(sol.length);
+			for (String string : sol) {
+				solutions.add(string);
+			}
+
+			// checks if the user cheats
+			for (String word: post.getUserSolutions()) {
+				if (!solutions.contains(word)) {
+					return new WHMessage(WHMessageHeader.CHEATING_WARNING_400, "cheating, u suck >:(");
+				}
+			}
+			int score = Score.getInstance().getScore(solutions, WHPointsType.LENGTH); // TODO: default type.
+			GridStorage.getInstance().storeScore(userId, post.getGridID(), score);
 			return new WHMessage(WHMessageHeader.SUBMIT_VALIDATE,
 					new WHSimpleMessage(score, "Solution accepted"));
 		case PING_REPLY:

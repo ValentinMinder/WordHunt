@@ -94,7 +94,7 @@ public class GridStorage {
             		" ON grille.id_grille = notWantedGrid.id_grille" +
             		" LEFT JOIN (SELECT id_grille FROM score NATURAL JOIN utilisateur WHERE nom_utilisateur = ? ) AS wantedGrid " +
             		" ON grille.id_grille = wantedGrid.id_grille" +
-            		" WHERE notWantedGrid.id_grille IS NULL AND wantedGrid.id_grill IS NOT NULL ");
+            		" WHERE notWantedGrid.id_grille IS NULL AND wantedGrid.id_grille IS NOT NULL ");
         	stmt.setInt(1, idUserNotWanted);
         	stmt.setString(2, usernameWanted);
             ResultSet rs = stmt.executeQuery();
@@ -107,6 +107,7 @@ public class GridStorage {
                 grid.setHashedSolutions(gson.fromJson(content, int[].class));
                 grid.setGridID(rs.getInt("id_grille"));
             }else{
+            	System.err.println("Not grid for selection, bad !");
                 return null;
             }
 
@@ -175,6 +176,7 @@ public class GridStorage {
                 grid.setGridID(rs.getInt("id_grille"));
             }else{
                 System.out.println("GRID does not exist");
+                return null;
             }
 
 
@@ -182,9 +184,60 @@ public class GridStorage {
         }catch(SQLException e)
         {
             e.printStackTrace();
+            return null;
         }
         return grid;
     }
+    
+    /** returns the grid defined by this id */
+    public String[] getGridSolutionsByID(int id) {
+        Connection conn = DatabaseConnection.getInstance().getConnection();
+        PreparedStatement stmt = null;
+
+        try {
+            stmt = conn.prepareStatement("SELECT * FROM SolutionGrille WHERE id_grille = ?");
+            stmt.setInt(1, id);
+            ResultSet rs = stmt.executeQuery();
+            String content = null;
+
+            if (rs.next()){
+            	content = rs.getString("mots");
+                return gson.fromJson(content, String[].class);
+            }else{
+                System.out.println("GRID does not exist");
+                return null;
+            }
+
+
+
+        }catch(SQLException e)
+        {
+            e.printStackTrace();
+            return null;
+        }
+    }
+    
+	public void storeScore(int userId, int gridId, int score) {	   
+		Connection conn = DatabaseConnection.getInstance().getConnection();
+		PreparedStatement stmt = null;
+		
+
+		try {
+			stmt = conn
+					.prepareStatement(
+							"INSERT INTO score (id_utilisateur, id_grille, score) VALUES (?, ?, ?)",
+							Statement.RETURN_GENERATED_KEYS);
+			stmt.setInt(1,userId);
+			stmt.setInt(2,gridId);
+			stmt.setInt(3,score);
+
+			stmt.executeUpdate();
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+	}
 
     public static void main(String[] args) {
 //        TileGrid grid = (TileGrid) GridGenerator.getInstance().nextValidGrid();

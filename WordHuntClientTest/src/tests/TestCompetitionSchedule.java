@@ -3,9 +3,13 @@ package tests;
 import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
+import java.net.UnknownHostException;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import whprotocol.WHAuthMessage;
@@ -14,6 +18,8 @@ import whprotocol.WHGetGrid;
 import whprotocol.WHGridReplyMessage;
 import whprotocol.WHLogin;
 import whprotocol.WHMessage;
+import whprotocol.WHSimpleMessage;
+import whprotocol.WHSubmitPostMessage;
 import whprotocol.WHProtocol.WHGameType;
 import whprotocol.WHProtocol.WHMessageHeader;
 import whprotocol.WHRegister;
@@ -145,6 +151,73 @@ public class TestCompetitionSchedule extends TestAbstractAuthenticated {
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	@Test
+	public void testChallengeGrid() throws UnknownHostException,
+			IOException {
+		
+		connectAsAdmin();
+		
+		// training grid (by default)
+		WHGetGrid gridGet = new WHGetGrid(token);
+		WHMessage query = new WHMessage(WHMessageHeader.GRID_GET_AUTHENTICATED,
+				gridGet);
+		WHMessage.writeMessage(pw, query);
+
+		WHMessage reply = WHMessage.readMessage(br);
+		assertEquals(WHMessageHeader.GRID_REPLY, reply.getHeader());
+		assertEquals(WHGridReplyMessage.class, reply.getContent().getClass());
+
+		// sends back no solutions: should be okay!
+		List<String> sol = new ArrayList<>();
+		int grididAdmin = ((WHGridReplyMessage) reply.getContent()).getGrid().getID();
+		query = new WHMessage(WHMessageHeader.SUBMIT_POST,
+				new WHSubmitPostMessage(adminToken, grididAdmin, sol));
+		WHMessage.writeMessage(pw, query);
+
+		reply = WHMessage.readMessage(br);
+		assertEquals(WHMessageHeader.SUBMIT_VALIDATE, reply.getHeader());
+		assertEquals(WHSimpleMessage.class, reply.getContent().getClass());
+		
+		try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		
+		// challenge, by default (any grid not played by me - cannot garanty that it's the one above
+		gridGet = new WHGetGrid(token, WHGameType.CHALLENGE);
+		query = new WHMessage(WHMessageHeader.GRID_GET_AUTHENTICATED, gridGet);
+		WHMessage.writeMessage(pw, query);
+
+		reply = WHMessage.readMessage(br);
+		System.out.println(reply);
+		assertEquals(WHMessageHeader.GRID_REPLY, reply.getHeader());
+		assertEquals(WHGridReplyMessage.class, reply.getContent().getClass());
+		
+		// challenge, by grid id (the one from admin)
+		gridGet = new WHGetGrid(token, grididAdmin);
+		query = new WHMessage(WHMessageHeader.GRID_GET_AUTHENTICATED, gridGet);
+		WHMessage.writeMessage(pw, query);
+
+		reply = WHMessage.readMessage(br);
+		assertEquals(WHMessageHeader.GRID_REPLY, reply.getHeader());
+		assertEquals(WHGridReplyMessage.class, reply.getContent().getClass());
+		WHGridReplyMessage gridReply = (WHGridReplyMessage) reply.getContent();
+		assertEquals(grididAdmin, gridReply.getGrid().getGridID());
+		
+		// challenge, by username (the one from admin)
+		gridGet = new WHGetGrid(token, "admin");
+		query = new WHMessage(WHMessageHeader.GRID_GET_AUTHENTICATED, gridGet);
+		WHMessage.writeMessage(pw, query);
+
+		reply = WHMessage.readMessage(br);
+		assertEquals(WHMessageHeader.GRID_REPLY, reply.getHeader());
+		assertEquals(WHGridReplyMessage.class, reply.getContent().getClass());
+		gridReply = (WHGridReplyMessage) reply.getContent();
+		// cannot garanty its the one above, because it may have other grid from admin...
+		// assertEquals(grididAdmin, gridReply.getGrid().getGridID());
 	}
 
 }
