@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.net.InetAddress;
 import java.net.Socket;
 import java.util.logging.Logger;
 
@@ -15,8 +16,8 @@ import whobjects.Grid;
 import whprotocol.WHGridReplyMessage;
 import whprotocol.WHLogin;
 import whprotocol.WHMessage;
-import whprotocol.WHRegister;
 import whprotocol.WHProtocol.WHMessageHeader;
+import whprotocol.WHRegister;
 import whprotocol.WHSimpleMessage;
 import whprotocol.WHSubmitPostMessage;
 
@@ -27,6 +28,7 @@ public class ClientHandler implements Runnable {
 	private Socket clientSocket = null;
 	private BufferedReader reader = null;
 	private PrintWriter writer = null;
+	private InetAddress ip = null;
 
 	public ClientHandler(Socket clientSocket) {
 		this.clientSocket = clientSocket;
@@ -43,37 +45,52 @@ public class ClientHandler implements Runnable {
 				clientSocket.getInputStream()));
 		writer = new PrintWriter(new OutputStreamWriter(
 				clientSocket.getOutputStream()));
+		ip = clientSocket.getInetAddress();
 	}
 
 	public void run() {
+		// infinite loop for client (has long has connection not broken)
+		while (true) {
+			try {
+				logger.fine("Reading query from client");
+				
+				// in case of broken connection: finish
+				if (null == reader) {
+					break;
+				}
+				WHMessage query = WHMessage.readMessage(reader);
+				if (null == query) {
+					WHMessage.writeMessage(writer, new WHMessage(
+							WHMessageHeader.BAD_REQUEST_400,
+							"Bad Request - refused."));
+					break;
+				}
+				logger.finest(query.toString());
 
-		try {
-			logger.fine("Reading query from client");
-			WHMessage query = WHMessage.readMessage(reader);
-			logger.finest(query.toString());
+				WHMessage reply = handleClient(query);
+				logger.fine("Reply ready to send to client");
+				logger.finest(reply.toString());
 
-			WHMessage reply = handleClient(query);
-			logger.fine("Reply ready to send to client");
-			logger.finest(reply.toString());
-
-			boolean result = reply.writeMessage(writer);
-			if (result) {
-				logger.fine("Reply sent to client");
-			} else {
-				logger.warning("Couldn't send to reply to the client");
-			}
-		} catch (IOException e) {
-			logger.severe("FAIL: I/O ex when reading message");
-			e.printStackTrace();
-			boolean result = WHMessage
-					.writeMessage(writer, new WHMessage(
-							WHMessageHeader.SERVER_ERROR_500,
-							"Internal Server Error."));
-			if (!result) {
-				logger.warning("Couldn't send error message to the client");
+				boolean result = reply.writeMessage(writer);
+				if (result) {
+					logger.fine("Reply sent to client");
+				} else {
+					logger.warning("Couldn't send to reply to the client");
+				}
+			} catch (IOException e) {
+				logger.severe("FAIL: I/O ex when reading message");
+				e.printStackTrace();
+				boolean result = WHMessage.writeMessage(writer, new WHMessage(
+						WHMessageHeader.SERVER_ERROR_500,
+						"Internal Server Error."));
+				if (!result) {
+					logger.warning("Couldn't send error message to the client");
+				}
+				break;
 			}
 		}
 
+		logger.info("Client has disconnected from IP: " + ip);
 	}
 
 	/**
