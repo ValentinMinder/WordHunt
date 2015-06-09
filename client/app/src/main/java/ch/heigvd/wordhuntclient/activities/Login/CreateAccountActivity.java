@@ -12,7 +12,10 @@ import android.widget.TextView;
 
 import ch.heigvd.gen.wordhuntclient.R;
 import ch.heigvd.wordhuntclient.activities.IWHView;
+import ch.heigvd.wordhuntclient.asynctask.WordHuntASyncTask;
 import whprotocol.WHMessage;
+import whprotocol.WHProtocol;
+import whprotocol.WHRegister;
 
 public class CreateAccountActivity extends Activity implements IWHView {
 
@@ -40,17 +43,26 @@ public class CreateAccountActivity extends Activity implements IWHView {
 
     public void onSignUp(View view) {
 
-
+        Button b = (Button) view;
+        b.setClickable(false);
+        b.setText("Processing...");
+        new WordHuntASyncTask(this).execute(new WHMessage(WHProtocol.WHMessageHeader.REGISTER, new WHRegister(0, username.getText().toString(), password.getText().toString(), email.getText().toString())));
     }
 
     @Override
     public void reply(WHMessage message) {
-
+        switch (message.getHeader()){
+            case REGISTER_ACCOUNT_CREATED_201:
+                buttonRegister.setText("Account Created!");
+                break;
+            default:
+                buttonRegister.setText("Fuck off mate!");
+        }
     }
 
     @Override
     public String ipLocation() {
-        return "127.0.0.1";
+        return "192.168.42.1";
     }
 
     @Override
