@@ -18,6 +18,7 @@ import ch.heigvd.gen.wordhuntclient.R;
 import ch.heigvd.wordhuntclient.activities.IWHView;
 import ch.heigvd.wordhuntclient.activities.MainActivity;
 import ch.heigvd.wordhuntclient.asynctask.WordHuntASyncTask;
+import whprotocol.WHAuthMessage;
 import whprotocol.WHLogin;
 import whprotocol.WHMessage;
 import whprotocol.WHProtocol;
@@ -80,6 +81,7 @@ public class LoginActivity extends Activity implements IWHView {
         buttonConnect.setClickable(false);
         buttonConnect.setText("Processing...");
 
+
         CharSequence badCredentials = "Wrong credentials please retry until you figure out the password!!!";
         CharSequence connected = "Connected!!";
         CharSequence serverError = "Server Error. Please retry later";
@@ -93,6 +95,7 @@ public class LoginActivity extends Activity implements IWHView {
             case AUTH_TOKEN:
                 //Correct Credentials
                 Toast.makeText(getApplicationContext(),connected , Toast.LENGTH_LONG).show();
+                AccessToken.getInstance().setToken( ((WHAuthMessage) message.getContent()).getAuthToken());
                 Intent intent = new Intent(this, MainActivity.class);
                 startActivity(intent);
 
