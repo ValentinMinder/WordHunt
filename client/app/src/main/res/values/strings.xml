@@ -31,7 +31,8 @@
     <string name="challenge">Challenge</string>
     <string name="tournament">Competition</string>
     <string name="signup">Enregistrement</string>
-    <string name="signIn">Connection</string>
+    <string name="signIn">Connexion</string>
+    <string name="signOff">Deconnexion</string>
     <string name="gameFinished">game Finished</string>
     <string name="email_addresse">adresse email</string>
     <string name="title_activity_test">TestActivity</string>

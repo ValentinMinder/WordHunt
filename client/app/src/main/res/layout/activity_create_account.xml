@@ -46,13 +46,6 @@
             android:layout_height="wrap_content"
             android:hint="@string/confirmation_password"/>
 
-        <CheckBox
-            android:id="@+id/rememberMe"
-            style="@style/ItemLinerLayout"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/remember_me"/>
-
         <LinearLayout
             style="@style/ItemLinerLayout"
             android:orientation="horizontal"

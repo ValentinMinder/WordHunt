@@ -77,6 +77,13 @@
                 android:onClick="signIn"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content" />
+            <Button
+                android:layout_weight="1"
+                android:id="@+id/buttonSignOff"
+                android:text="@string/signOff"
+                android:onClick="signOff"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content" />
 
         </LinearLayout>
 
