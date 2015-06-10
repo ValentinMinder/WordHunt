@@ -1,6 +1,7 @@
 package ch.heigvd.wordhuntclient.activities.Login;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -9,9 +10,13 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import java.util.logging.Logger;
 
 import ch.heigvd.gen.wordhuntclient.R;
 import ch.heigvd.wordhuntclient.activities.IWHView;
+import ch.heigvd.wordhuntclient.activities.MainActivity;
 import ch.heigvd.wordhuntclient.asynctask.WordHuntASyncTask;
 import whprotocol.WHMessage;
 import whprotocol.WHProtocol;
@@ -19,12 +24,14 @@ import whprotocol.WHRegister;
 
 public class CreateAccountActivity extends Activity implements IWHView {
 
+    private Logger logger = Logger.getLogger(getClass().getName());
     private Button   buttonRegister;
     private TextView password;
     private TextView passwordConfirmation;
     private TextView username;
     private TextView email;
     private CheckBox rememberMe;
+    private TextView messageReply;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,12 +40,12 @@ public class CreateAccountActivity extends Activity implements IWHView {
 
         LinearLayout layout = (LinearLayout) findViewById(R.id.layoutSignUp);
 
-        buttonRegister = (Button) findViewById(R.id.buttonSignUp);
+        buttonRegister = (Button) findViewById(R.id.buttonPerformSignUp);
         password = (TextView) layout.findViewById(R.id.textPassword);
         passwordConfirmation = (TextView) layout.findViewById(R.id.textPasswordConfirmation);
         username = (TextView) layout.findViewById(R.id.username);
         email = (TextView) layout.findViewById(R.id.textEmail);
-        rememberMe = (CheckBox) layout.findViewById(R.id.rememberMe);
+
     }
 
     public void onSignUp(View view) {
@@ -51,13 +58,22 @@ public class CreateAccountActivity extends Activity implements IWHView {
 
     @Override
     public void reply(WHMessage message) {
-        switch (message.getHeader()){
-            case REGISTER_ACCOUNT_CREATED_201:
-                buttonRegister.setText("Account Created!");
-                break;
-            default:
-                buttonRegister.setText("Fuck off mate!");
+        logger.info("Received a reply in GUI.");
+        logger.fine(message.toString());
+
+        /**
+         * If reply is REGISTER_ACCOUNT_CREATED_201, we start a
+         */
+        Toast.makeText(getApplicationContext(), message.getContent().toString() , Toast.LENGTH_LONG).show();
+        buttonRegister.setClickable(true);
+        buttonRegister.setText("s'enregistrer");
+        if(message.getHeader() == WHProtocol.WHMessageHeader.REGISTER_ACCOUNT_CREATED_201){
+
+            Intent intent = new Intent(this, MainActivity.class );
+            startActivity(intent);
+
         }
+
     }
 
     @Override

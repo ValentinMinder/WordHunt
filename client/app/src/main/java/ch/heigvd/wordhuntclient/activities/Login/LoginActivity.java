@@ -1,6 +1,7 @@
 package ch.heigvd.wordhuntclient.activities.Login;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -9,12 +10,17 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.logging.Logger;
 
 import ch.heigvd.gen.wordhuntclient.R;
 import ch.heigvd.wordhuntclient.activities.IWHView;
+import ch.heigvd.wordhuntclient.activities.MainActivity;
+import ch.heigvd.wordhuntclient.asynctask.WordHuntASyncTask;
+import whprotocol.WHLogin;
 import whprotocol.WHMessage;
+import whprotocol.WHProtocol;
 
 public class LoginActivity extends Activity implements IWHView {
 
@@ -37,6 +43,12 @@ public class LoginActivity extends Activity implements IWHView {
     }
 
     public void onSignIn(View view) {
+
+        Button b = (Button) view;
+        b.setClickable(false);
+        b.setText("Processing...");
+        new WordHuntASyncTask(this).execute(new WHMessage(WHProtocol.WHMessageHeader.AUTH_POST, new WHLogin(0, username.getText().toString(), password.getText().toString())));
+
 
     }
 
@@ -65,11 +77,37 @@ public class LoginActivity extends Activity implements IWHView {
 
     @Override
     public void reply(WHMessage message) {
+        buttonConnect.setClickable(false);
+        buttonConnect.setText("Processing...");
+
+        CharSequence badCredentials = "Wrong credentials please retry until you figure out the password!!!";
+        CharSequence connected = "Connected!!";
+        CharSequence serverError = "Server Error. Please retry later";
+
+        switch(message.getHeader()){
+            case AUTHENTICATE_BAD_CREDENTIALS:
+                Toast.makeText(getApplicationContext(),badCredentials , Toast.LENGTH_LONG).show();
+                buttonConnect.setClickable(true);
+                buttonConnect.setText("se connecter");
+                break;
+            case AUTH_TOKEN:
+                //Correct Credentials
+                Toast.makeText(getApplicationContext(),connected , Toast.LENGTH_LONG).show();
+                Intent intent = new Intent(this, MainActivity.class);
+                startActivity(intent);
+
+                break;
+            default:
+                Toast.makeText(getApplicationContext(),serverError , Toast.LENGTH_LONG).show();
+                buttonConnect.setClickable(true);
+                buttonConnect.setText("se connecter");
+        }
+
 
     }
 
     @Override
     public String ipLocation() {
-        return "127.0.0.1";
+        return "192.168.42.1";
     }
 }
