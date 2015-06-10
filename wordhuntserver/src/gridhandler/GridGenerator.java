@@ -5,6 +5,7 @@ import gridsolver.TileGrid;
 import java.util.Random;
 
 import whobjects.Grid;
+import whobjects.Score;
 import whproperties.WHProperties;
 
 /**
@@ -43,7 +44,7 @@ public class GridGenerator {
 
     private void initGenerator() {
         random = new Random();
-        gridProperties = new WHProperties("frenchGrid.properties");
+        gridProperties = new WHProperties(Score.PROPERTYFILENAME);
         size = gridProperties.getInteger("SIZE");
         nbOfLetters = gridProperties.getInteger("NBOFLETTERS");
         indexOfFirstLetter = gridProperties.getInteger("ASCIIINDEXOFFIRSTLETTER");
