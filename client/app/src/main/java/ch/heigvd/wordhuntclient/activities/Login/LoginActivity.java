@@ -40,7 +40,7 @@ public class LoginActivity extends Activity implements IWHView {
         buttonConnect = (Button) layout.findViewById(R.id.buttonPerformSignIn);
         password = (TextView) layout.findViewById(R.id.textPassword);
         username = (TextView) layout.findViewById(R.id.textUserName);
-        rememberMe = (CheckBox) layout.findViewById(R.id.rememberMe);
+//        rememberMe = (CheckBox) layout.findViewById(R.id.rememberMe);
     }
 
     public void onSignIn(View view) {

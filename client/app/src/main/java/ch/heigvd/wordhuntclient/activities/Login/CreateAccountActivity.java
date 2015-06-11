@@ -53,24 +53,44 @@ public class CreateAccountActivity extends Activity implements IWHView {
         Button b = (Button) view;
         b.setClickable(false);
         b.setText("Processing...");
-        new WordHuntASyncTask(this).execute(new WHMessage(WHProtocol.WHMessageHeader.REGISTER, new WHRegister(0, username.getText().toString(), password.getText().toString(), email.getText().toString())));
+        if (password.length() < 8) {
+            Toast.makeText(getApplicationContext(), "Password should be 8 characters long!", Toast.LENGTH_LONG).show();
+            password.setText("");
+            passwordConfirmation.setText("");
+
+            b.setClickable(true);
+            b.setText("s'enregistrer");
+        } else {
+            new WordHuntASyncTask(this).execute(new WHMessage(WHProtocol.WHMessageHeader.REGISTER, new WHRegister(0, username.getText().toString(), password.getText().toString(), email.getText().toString())));
+        }
     }
 
     @Override
     public void reply(WHMessage message) {
         logger.info("Received a reply in GUI.");
         logger.fine(message.toString());
-
-        /**
-         * If reply is REGISTER_ACCOUNT_CREATED_201, we start a
-         */
-        Toast.makeText(getApplicationContext(), message.getContent().toString() , Toast.LENGTH_LONG).show();
         buttonRegister.setClickable(true);
         buttonRegister.setText("s'enregistrer");
-        if(message.getHeader() == WHProtocol.WHMessageHeader.REGISTER_ACCOUNT_CREATED_201){
 
-            Intent intent = new Intent(this, MainActivity.class );
-            startActivity(intent);
+        /**
+         * If reply is REGISTER_ACCOUNT_CREATED_201, we go back to the main activity
+         */
+        CharSequence accepted = "Registration accepted";
+        CharSequence badRequest = "Email or username already registered";
+        switch(message.getHeader()){
+            case REGISTER_ACCOUNT_CREATED_201 :
+                Toast.makeText(getApplicationContext(),accepted , Toast.LENGTH_LONG).show();
+                Intent intent = new Intent(this, MainActivity.class );
+                startActivity(intent);
+                break;
+            case BAD_REQUEST_400 :
+                Toast.makeText(getApplicationContext(), badRequest , Toast.LENGTH_LONG).show();
+                password.setText("");
+                passwordConfirmation.setText("");
+                username.setText("");
+                email.setText("");
+                break;
+            default:
 
         }
 
