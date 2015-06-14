@@ -1,10 +1,10 @@
 package whobjects;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+
+import java.util.HashMap;
+import java.util.HashSet;
 
 /**
  * Represents the word grid
@@ -36,11 +36,11 @@ public class Grid {
     protected int[] hashedSolutions;
     private int gridID;
     protected int size;
-    
+
     public int getID () {
     	return gridID;
     }
-    
+
     public void setID (int gridID) {
     	this.gridID = gridID;
     }
@@ -77,12 +77,20 @@ public class Grid {
     public int[] getHashedSolutions() {
         return hashedSolutions;
     }
-    
+
     public void setHashedSolutions(int[] hashs) {
     	this.hashedSolutions = new int[hashs.length];
         for (int i = 0; i < hashs.length ; i++) {
             this.hashedSolutions[i] = hashs[i];
         }
+    }
+
+    public HashSet<Integer> getHashSetSolutionsAsHashSet() {
+        HashSet<Integer> hashSet = new HashSet<Integer>();
+        for(int i = 0; i < hashedSolutions.length; i++){
+            hashSet.add(hashedSolutions[i]);
+        }
+        return hashSet;
     }
 
     public int getNbOfVowels() {
