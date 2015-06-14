@@ -23,7 +23,7 @@ import com.google.gson.Gson;
 public class GridStorage {
 
     private static Gson gson = new Gson();
-    private static int size = new WHProperties("frenchGrid.properties").getInteger("SIZE");
+    private static int size = new WHProperties(Score.PROPERTYFILENAME).getInteger("SIZE");
 
     private static GridStorage instance;
 
