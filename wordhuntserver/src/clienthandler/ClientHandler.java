@@ -172,7 +172,10 @@ public class ClientHandler implements Runnable {
 					return new WHMessage(WHMessageHeader.CHEATING_WARNING_400, "cheating, u suck >:(");
 				}
 			}
-			int score = Score.getInstance().getScore(solutions, WHPointsType.LENGTH); // TODO: default type.
+
+			int score = Score.getInstance().getScore(post.getUserSolutions(), WHPointsType.LENGTH_SQUARE); // TODO: default type.
+			System.out.println("calculated score: " + score);
+
 			GridStorage.getInstance().storeScore(userId, post.getGridID(), score);
 			return new WHMessage(WHMessageHeader.SUBMIT_VALIDATE,
 					new WHSimpleMessage(score, "Solution accepted"));

@@ -21,7 +21,7 @@ import clienthandler.ClientHandler;
 public class WordHuntServer implements Runnable {
 
 	private ServerSocket serverSocket = null;
-    public static final String PROPERTYFILENAMESERVER = "wordhuntserver/server.properties";
+    public static final String PROPERTYFILENAMESERVER = "server.properties";
 
 	private Logger logger = Logger.getLogger(WordHuntServer.class.getName());
 

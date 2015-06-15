@@ -9,8 +9,11 @@ import java.util.TreeSet;
 
 public class WordProvider {
 
-	private final static String path = "wordhuntserver/src" + File.separator + "gridsolver"
+	private final static String path = "src" + File.separator + "gridsolver"
 			+ File.separator + "dboptitest" + File.separator;
+
+//	private final static String path = "dboptitest" + File.separator;
+
 	private static WordProvider instance;
 
 	public static WordProvider getInstance() {

@@ -92,7 +92,7 @@ public class GridStorage {
         	stmt = conn.prepareStatement("SELECT * FROM grille LEFT JOIN " +
             		" (SELECT id_grille FROM score WHERE id_utilisateur = ?) AS notWantedGrid" +
             		" ON grille.id_grille = notWantedGrid.id_grille" +
-            		" LEFT JOIN (SELECT id_grille FROM score NATURAL JOIN utilisateur WHERE nom_utilisateur = ? ) AS wantedGrid " +
+            		" LEFT JOIN (SELECT id_grille, score AS best_score FROM score NATURAL JOIN utilisateur WHERE nom_utilisateur = ? ) AS wantedGrid " +
             		" ON grille.id_grille = wantedGrid.id_grille" +
             		" WHERE notWantedGrid.id_grille IS NULL AND wantedGrid.id_grille IS NOT NULL ");
         	stmt.setInt(1, idUserNotWanted);
@@ -106,11 +106,12 @@ public class GridStorage {
                 content = rs.getString("hashs");
                 grid.setHashedSolutions(gson.fromJson(content, int[].class));
                 grid.setGridID(rs.getInt("id_grille"));
+                grid.setBestScore(rs.getInt("best_score"));
+
             }else{
             	System.err.println("Not grid for selection, bad !");
                 return null;
             }
-
 
 
         }catch(SQLException e)
@@ -130,7 +131,7 @@ public class GridStorage {
         Grid grid = new Grid(size);
         try {
             stmt = conn.prepareStatement("SELECT * FROM grille LEFT JOIN " +
-            		" (SELECT id_grille FROM score WHERE id_utilisateur = ?) AS notWantedGrid" +
+            		" (SELECT id_grille, score AS best_score FROM score WHERE id_utilisateur = ?) AS notWantedGrid" +
             		" ON grille.id_grille = notWantedGrid.id_grille" +
             		" WHERE notWantedGrid.id_grille IS NULL ");
             stmt.setInt(1, idUserNotWanted);
@@ -143,6 +144,7 @@ public class GridStorage {
                 content = rs.getString("hashs");
                 grid.setHashedSolutions(gson.fromJson(content, int[].class));
                 grid.setGridID(rs.getInt("id_grille"));
+                grid.setBestScore(rs.getInt("best_score"));
             }else{
                 System.out.println("GRID does not exist");
                 return null;
@@ -162,8 +164,13 @@ public class GridStorage {
         PreparedStatement stmt = null;
         Grid grid = new Grid(size);
 
+        System.out.println("searching grid " + id);
         try {
-            stmt = conn.prepareStatement("SELECT* FROM grille WHERE id_grille = ?");
+            stmt = conn.prepareStatement(
+                    "SELECT * FROM grille " +
+                    "left join score on grille.id_grille = score.id_grille " +
+                    "WHERE grille.id_grille = ? ");
+
             stmt.setInt(1, id);
             ResultSet rs = stmt.executeQuery();
             String content = null;
@@ -174,6 +181,9 @@ public class GridStorage {
                 content = rs.getString("hashs");
                 grid.setHashedSolutions(gson.fromJson(content, int[].class));
                 grid.setGridID(rs.getInt("id_grille"));
+                grid.setBestScore(rs.getInt("score"));
+
+
             }else{
                 System.out.println("GRID does not exist");
                 return null;

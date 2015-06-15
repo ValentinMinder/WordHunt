@@ -66,9 +66,12 @@ public class GridHandler {
 				grid = GridStorage.getInstance().getGridByID(getGridMessage.getGridID());
 			} else if (getGridMessage.getUsername() != null) {
 				grid = GridStorage.getInstance().getGridByUser(getGridMessage.getUsername(), userID);
+
+
 			} else {
 				grid = GridStorage.getInstance().getGridByNotUser(userID);
 			}
+
 			break;
 		default:
 			return new WHMessage(WHMessageHeader.BAD_REQUEST_400, "Type of game not known, sorry.");
@@ -81,6 +84,8 @@ public class GridHandler {
 					"or their is no games played by the user that you didn't play). " +
 					"Or something wrong happened.");
 		}
+
+		System.out.println("get the best score for grid "+ grid.getGridID()+" best: " + grid.getBestScore());
 
 		// else, found, return
 		return new WHMessage(WHMessageHeader.GRID_REPLY, new WHGridReplyMessage(grid));
