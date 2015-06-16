@@ -79,5 +79,9 @@
     <string name="delay_start_competition">Délais de départ [min]</string>
     <string name="title_scheduling_competition">Planification de compétition</string>
     <string name="competition_duration_label">Durée de la competition [min]</string>
+    <string name="ip_address_label">IP du serveur</string>
+    <string name="serveur_port_label">Port</string>
+    <string name="test_ping">Tester la connection</string>
+    <string name="default_port">1234</string>
 
 </resources>

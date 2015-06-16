@@ -23,7 +23,6 @@
             android:layout_height="100dp" />
     </LinearLayout>
 
-
     <LinearLayout
         android:id="@+id/layoutSignUp"
         android:paddingLeft="20dp"

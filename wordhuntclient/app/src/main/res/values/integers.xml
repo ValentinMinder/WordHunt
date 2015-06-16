@@ -5,4 +5,5 @@
     <integer name="smooth_scale_duration">400</integer>
     <integer name="smooth_scale_duration_alpha">200</integer>
     <integer name="activity_slide_duration">400</integer>
+    <integer name="default_port">1234</integer>
 </resources>

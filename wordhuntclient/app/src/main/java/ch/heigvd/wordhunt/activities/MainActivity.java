@@ -14,30 +14,40 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.RadioButton;
+import android.widget.Toast;
 
 import ch.heigvd.wordhunt.activities.Admin.CreateCompetition;
 import ch.heigvd.wordhunt.activities.Game.GameActivity;
 import ch.heigvd.wordhunt.activities.Login.CreateAccountActivity;
 import ch.heigvd.wordhunt.activities.Login.LoginActivity;
+import ch.heigvd.wordhunt.asynctask.WordHuntASyncTask;
 import ch.heigvd.wordhunt.design.R;
+import whprotocol.WHMessage;
 import whprotocol.WHProtocol;
 
 
-public class MainActivity extends Activity {
+public class MainActivity extends Activity implements IWHView{
 
     //identifiant des requêtes
     public static int SIGNUP = 0;
     public static int SIGNIN = 1;
 
     public static SharedPreferences preferences;
+    public static SharedPreferences serveurPreferences;
+
+
     public static String prefToken = "ch.heigvd.wordhunt.activities.MainActivity.TOKEN";
     public static String prefUsername = "ch.heigvd.wordhunt.activities.MainActivity.USER_NAME";
+    public static String prefServeurIP = "ch.heigvd.wordhunt.activities.MainActivity.SERVEUR_IP";
+    public static String prefServeurPort = "ch.heigvd.wordhunt.activities.MainActivity.SERVEUR_PORT";
+
 
     public final static String GAME_TYPE_ID = "ch.heigvd.wordhuntclient.activities.MainActivity.GAME_TYPE_ID";
     public final static String CHALLENGE_CHOICE = "ch.heigvd.wordhuntclient.activities.MainActivity.CHALLENGE_CHOICE";
     public final static String CHALLENGE_TYPE = "ch.heigvd.wordhuntclient.activities.MainActivity.CHALLENGE_TYPE";
+
+    private Button pingTestButton;
 
     public static enum TYPE_MODE_CHALENGE{
         CHALLENGE_VS_USER,
@@ -58,6 +68,7 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);
 
         preferences = getSharedPreferences(prefToken, MODE_PRIVATE);
+        serveurPreferences = getSharedPreferences(prefServeurIP, MODE_PRIVATE);
 
         setContentView(R.layout.activity_main);
         Button buttonSignOff = (Button) findViewById(R.id.buttonSignOff);
@@ -279,6 +290,7 @@ public class MainActivity extends Activity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            showPromptSettings();
             return true;
         } else if(id == R.id.compet_sheduling){
             goToActivity(CreateCompetition.class);
@@ -294,5 +306,101 @@ public class MainActivity extends Activity {
 
     public void slideToRight(){
         overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+    }
+
+    @Override
+    public void reply(WHMessage message) {
+
+        if(message.getHeader() == WHProtocol.WHMessageHeader.PING_REPLY) {
+
+            if(pingTestButton != null){
+                pingTestButton.setText("Connexion OK !");
+                pingTestButton.setBackgroundColor(getResources().getColor(R.color.GREEN));
+            }
+        }
+        else{
+
+            pingTestButton.setBackgroundColor(getResources().getColor(R.color.RED));
+            Toast.makeText(this, "ERREUR " +
+                    message.getHeader().toString() +
+                    "  " +  message.toString(), Toast.LENGTH_LONG).show();
+
+        }
+    }
+
+
+    public void showPromptSettings(){
+
+        AlertDialog.Builder alertDiaBuilder = new AlertDialog.Builder(this);
+        View view = LayoutInflater.from(this).inflate(R.layout.prompt_settings,null);
+        final EditText serveurIp = (EditText) view.findViewById(R.id.serveur_ip);
+        final EditText serveurPort = (EditText) view.findViewById(R.id.serveur_port);
+
+        serveurIp.setText(getPrefServeurIP());
+        serveurPort.setText("" + getPrefServeurPort());
+
+        pingTestButton = (Button) view.findViewById(R.id.button_test_ping);
+        pingTestButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                int port = getResources().getInteger(R.integer.default_port);
+                String portUserInput = serveurPort.getText().toString();
+
+                if(WHUtil.isInteger(portUserInput)) {
+                    port =  Integer.parseInt(portUserInput);
+                }
+
+                setServeurPreferences(serveurIp.getText().toString(), port);
+                testPing();
+                pingTestButton.setText("Test en cours...");
+            }
+        });
+
+
+        alertDiaBuilder.setView(view);
+
+        alertDiaBuilder
+                .setCancelable(false)
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        setServeurPreferences(serveurIp.getText().toString(), Integer.parseInt(serveurPort.getText().toString()));
+                    }
+                })
+
+                .setNegativeButton("Annuler", new DialogInterface.OnClickListener() {
+
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+
+//                        dialogInterface.cancel();
+                    }
+                });
+
+        AlertDialog prompt = alertDiaBuilder.create();
+        prompt.show();
+    }
+
+    public void setServeurPreferences(String ipAdress, int port){
+        SharedPreferences.Editor editor= serveurPreferences.edit();
+        editor.putString(prefServeurIP, ipAdress);
+        editor.putInt(prefServeurPort, port);
+        editor.commit();
+    }
+
+    public void testPing(){
+
+        new WordHuntASyncTask(this).execute(
+                new WHMessage(WHProtocol.WHMessageHeader.PING, "TEST PING")
+        );
+    }
+
+    public static String getPrefServeurIP(){
+        return serveurPreferences.getString(MainActivity.prefServeurIP, "");
+    }
+
+    public static int getPrefServeurPort(){
+        return serveurPreferences.getInt(MainActivity.prefServeurPort, 1234);
     }
 }

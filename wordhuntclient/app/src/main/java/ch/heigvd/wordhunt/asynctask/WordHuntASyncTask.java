@@ -13,6 +13,7 @@ import java.net.UnknownHostException;
 import java.util.logging.Logger;
 
 import ch.heigvd.wordhunt.activities.IWHView;
+import ch.heigvd.wordhunt.activities.MainActivity;
 import whprotocol.WHMessage;
 import whprotocol.WHProtocol;
 
@@ -42,8 +43,11 @@ public class WordHuntASyncTask extends AsyncTask<WHMessage, Object, WHMessage> {
 
         logger.info("Initialization of IO task.");
 
-        String dstAddress = "192.168.178.74";
-        int port = 1234;
+//        String dstAddress = "192.168.178.74";
+//        int port = 1234;
+
+        String dstAddress = MainActivity.serveurPreferences.getString(MainActivity.prefServeurIP, "");
+        int port = MainActivity.serveurPreferences.getInt(MainActivity.prefServeurPort, 1234);
 
         Log.d("SERVEUR", "dstAddress: " + dstAddress);
 

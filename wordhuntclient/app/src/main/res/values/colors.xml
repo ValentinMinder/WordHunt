@@ -30,5 +30,6 @@
 
     <color name="WHITE">#FFFFFF</color>
     <color name="RED">#df4e63</color>
+    <color name="GREEN">#ff28a176</color>
 
 </resources>

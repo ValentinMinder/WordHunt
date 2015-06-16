@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:padding="10dp"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ch.heigvd.wordhunt.Interaction.FloatLabelLayout
+
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:floatLabelTextAppearance="@style/TextAppearance.Wordhunt.FloatLabel">
+
+        <EditText
+            android:id="@+id/serveur_ip"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/ip_address_label"
+            android:singleLine="true"
+            android:inputType="textNoSuggestions"
+            android:imeOptions="actionNext"
+            android:nextFocusDown="@+id/serveur_port" />
+
+    </ch.heigvd.wordhunt.Interaction.FloatLabelLayout>
+
+    <ch.heigvd.wordhunt.Interaction.FloatLabelLayout
+
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:floatLabelTextAppearance="@style/TextAppearance.Wordhunt.FloatLabel">
+
+        <EditText
+            android:id="@+id/serveur_port"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/serveur_port_label"
+            android:singleLine="true"
+            android:inputType="textNoSuggestions"
+            android:imeOptions="actionDone" />
+
+    </ch.heigvd.wordhunt.Interaction.FloatLabelLayout>
+
+    <Button
+        android:id="@+id/button_test_ping"
+        android:layout_marginTop="10dp"
+        android:paddingStart="8dp"
+        android:paddingEnd="8dp"
+        android:textColor="@color/text_light"
+        android:text="@string/test_ping"
+        android:background="@color/accent"
+        android:layout_width="wrap_content"
+        android:layout_height="30dp"/>
+
+</LinearLayout>

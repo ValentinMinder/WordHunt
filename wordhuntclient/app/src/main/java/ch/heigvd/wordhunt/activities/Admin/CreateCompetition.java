@@ -20,6 +20,7 @@ import java.util.Date;
 import ch.heigvd.wordhunt.activities.Game.WHTextSwitcher;
 import ch.heigvd.wordhunt.activities.IWHView;
 import ch.heigvd.wordhunt.activities.MainActivity;
+import ch.heigvd.wordhunt.activities.WHUtil;
 import ch.heigvd.wordhunt.asynctask.WordHuntASyncTask;
 import ch.heigvd.wordhunt.design.R;
 import whprotocol.WHCompetScheduling;
@@ -126,7 +127,7 @@ public class CreateCompetition extends Activity implements IWHView{
             String start_time = delay_start_edit.getText().toString();
             String duration_s = duration_edit.getText().toString();
 
-            if(!(isInteger(start_time) && isInteger(duration_s))) {
+            if(!(WHUtil.isInteger(start_time) && WHUtil.isInteger(duration_s))) {
                 Toast.makeText(CreateCompetition.this, "Vérifier que vous avez bien entré des nombres", Toast.LENGTH_LONG).show();
                 return;
             }
@@ -204,22 +205,6 @@ public class CreateCompetition extends Activity implements IWHView{
         } else {
             Toast.makeText(this, message.getHeader().toString() + " " +message.getContent().toString(), Toast.LENGTH_LONG).show();
         }
-    }
-
-    public static boolean isInteger(String s) {
-        return isInteger(s,10);
-    }
-
-    public static boolean isInteger(String s, int radix) {
-        if(s.isEmpty()) return false;
-        for(int i = 0; i < s.length(); i++) {
-            if(i == 0 && s.charAt(i) == '-') {
-                if(s.length() == 1) return false;
-                else continue;
-            }
-            if(Character.digit(s.charAt(i),radix) < 0) return false;
-        }
-        return true;
     }
 
     public void slideToLeft(){
