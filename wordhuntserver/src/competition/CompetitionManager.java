@@ -40,6 +40,7 @@ public class CompetitionManager {
 
 	}
 
+
 	private WHMessage schedule(long delay) {
 		return schedule(delay, WHCompetScheduling.defaultAvailableWindowTime);
 	}
@@ -61,8 +62,7 @@ public class CompetitionManager {
 	/**
 	 * Schedule a new competition, at the given time, available for the
 	 * specified time.
-	 * 
-	 * @param timestamp
+	 *
 	 * @param available
 	 * @return true if successful.
 	 */
@@ -89,7 +89,7 @@ public class CompetitionManager {
 			@Override
 			public void run() {
 				// start the competition
-				competGrid = GridHandler.getInstance().getGrid();
+				competGrid = GridHandler.getInstance().getGridAndStore();
 				competRunning = true;
 
 				// programm the self-destruct of the competition
