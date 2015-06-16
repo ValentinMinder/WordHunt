@@ -29,6 +29,7 @@ public class Grid {
 		root.add("hashedSolutions", moteurJson.toJsonTree(hashedSolutions));
 		root.add("gridID", moteurJson.toJsonTree(gridID));
 		root.add("size", moteurJson.toJsonTree(size));
+        root.add("bestScore", moteurJson.toJsonTree(bestScore));
 		return root;
 	}
 
@@ -36,6 +37,7 @@ public class Grid {
     protected int[] hashedSolutions;
     private int gridID;
     protected int size;
+    protected int bestScore = -1;
 
     public int getID () {
     	return gridID;
@@ -48,6 +50,14 @@ public class Grid {
     public Grid(int size) {
         content = new char[size][size];
         this.size = size;
+    }
+
+    public void setBestScore(int score){
+        bestScore = score;
+    }
+
+    public int getBestScore(){
+        return bestScore;
     }
 
     public void setContent(char[][] content) {

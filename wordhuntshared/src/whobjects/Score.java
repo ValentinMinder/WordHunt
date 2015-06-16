@@ -13,11 +13,12 @@ import whprotocol.WHProtocol;
  */
 public class Score {
 
-    private int score;
+    public static final String PROPERTYFILENAME = "frenchGrid.properties";
     private double[] languageOccurences;
     private static int nbOfLetters;
     private WHProperties gridProperties;
     private static Score instance;
+
     
     public static Score getInstance () {
     	if (instance == null) {
@@ -30,7 +31,7 @@ public class Score {
     	return instance;
     }
     private Score(){
-        gridProperties = new WHProperties("frenchGrid.properties");
+        gridProperties = new WHProperties(PROPERTYFILENAME);
         nbOfLetters = gridProperties.getInteger("NBOFLETTERS");
 
         languageOccurences = new double[nbOfLetters];
@@ -42,7 +43,7 @@ public class Score {
     }
 
     public int getScore(String word, WHProtocol.WHPointsType pointsType){
-        score = 0;
+        int score = 0;
         switch(pointsType) {
             case WORD:
                 score = 1;
@@ -78,7 +79,7 @@ public class Score {
 
 
     public int getScore(Collection<String> words, WHProtocol.WHPointsType pointsType){
-        score = 0;
+        int score = 0;
         for(String s : words){
             score += getScore(s, pointsType);
         }
