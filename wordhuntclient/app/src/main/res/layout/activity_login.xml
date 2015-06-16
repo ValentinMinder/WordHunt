@@ -1,0 +1,91 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:background="@color/primary"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    tools:context="ch.heigvd.wordhuntclient.activities.Login.LoginActivity">
+
+    <LinearLayout
+        android:background="@color/primary"
+        android:transitionName="logo_container"
+        android:orientation="vertical"
+        android:id="@+id/logo_container"
+        android:paddingTop="@dimen/margin_medium"
+        android:paddingBottom="@dimen/margin_medium"
+        android:layout_marginBottom="@dimen/margin_normal"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:src="@drawable/logo_dark"
+            android:layout_gravity="center_horizontal"
+            android:layout_width="100dp"
+            android:layout_height="100dp" />
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_below="@id/logo_container"
+        android:id="@+id/layoutSignIn"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ch.heigvd.wordhunt.Interaction.FloatLabelLayout
+
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:floatLabelTextAppearance="@style/TextAppearance.Wordhunt.FloatLabel">
+
+            <EditText
+                style="@style/dark_edit_text"
+                android:id="@+id/textUserName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/username"
+                android:singleLine="true"
+                android:inputType="textNoSuggestions"
+                android:imeOptions="actionNext"
+                android:nextFocusDown="@+id/edit_password" />
+
+        </ch.heigvd.wordhunt.Interaction.FloatLabelLayout>
+
+        <ch.heigvd.wordhunt.Interaction.FloatLabelLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:floatLabelTextAppearance="@style/TextAppearance.Wordhunt.FloatLabel">
+
+            <EditText
+                style="@style/dark_edit_text"
+                android:id="@+id/textPassword"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/password"
+                android:singleLine="true"
+                android:inputType="textNoSuggestions|textPassword"
+                android:imeOptions="actionDone" />
+
+        </ch.heigvd.wordhunt.Interaction.FloatLabelLayout>
+
+        <LinearLayout
+            android:layout_marginTop="20dp"
+            style="@style/item_small_spacing"
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content">
+
+            <Button
+                style="@style/button_normal_accent"
+                android:id="@+id/buttonPerformSignIn"
+                android:text="@string/connect"
+                android:onClick="onSignIn" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</RelativeLayout>

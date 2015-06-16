@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!--Theme-->
+    <color name="primary">#30445a</color>
+    <color name="primary_light">#b830445a</color>
+    <color name="secondary">#eaf4f2</color>
+    <color name="secondary_dark">#dae5e2</color>
+
+    <color name="accent">#f29f30</color>
+    <color name="accent_dark">#dfa34e</color>
+    <color name="accent_ripple">#ffc4a300</color>
+
+    <!-- Components -->
+    <color name="window_background">#FFFFFF</color>
+
+    <!--Text-->
+
+    <color name="text_secondary">#727272</color>
+    <color name="text_primary">#ff3f556b</color>
+
+    <!--Grid -->
+    <color name="grid_button_selected">@color/accent</color>
+    <color name="grid_button_normal">@color/secondary_dark</color>
+
+    <!-- Disable button and text -->
+    <color name="disable_button">#fff0f0f0</color>
+
+    <color name="disable_text">#ffd9d9d9</color>
+
+    <color name="WHITE">#FFFFFF</color>
+    <color name="RED">#df4e63</color>
+
+</resources>

@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Wordhunt</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="action_search">Search</string>
+    <string name="drawer_open">Open</string>
+    <string name="drawer_close">Close</string>
+    <string name="nav_item_home">Home</string>
+    <string name="nav_item_friends">Friends</string>
+    <string name="nav_item_notifications">Messages</string>
+
+    <!-- navigation drawer item labels -->
+    <string-array name="nav_drawer_labels">
+        <item>@string/nav_item_home</item>
+        <item>@string/nav_item_friends</item>
+        <item>@string/nav_item_notifications</item>
+    </string-array>
+
+    <string name="title_activity_login">LoginActivity</string>
+    <string name="title_activity_create_account">CreateAccountActivity</string>
+    <string name="title_activity_card_flip">CardFlipActivity</string>
+    <string name="title_activity_animation">AnimationActivity</string>
+    <string name="title_activity_game">PLAY NOW</string>
+    <string name="bad_credentials">Mot de passe incorrect, veuillez réessayer !</string>
+    <string name="username">Nom d\'utilisateur</string>
+    <string name="password">Mot de passe</string>
+    <string name="remember_me">Rester connecté</string>
+    <string name="confirmation_password">confirmation du mot de passe</string>
+    <string name="register">s\'enregistrer</string>
+    <string name="connect">se connecter</string>
+    <string name="title_activity_dev">devActivity</string>
+    <string name="dev">dev</string>
+    <string name="training">Entrainement</string>
+    <string name="loadOffline">Charger des parties hors ligne</string>
+    <string name="challenge">Challenge</string>
+    <string name="tournament">Competition</string>
+    <string name="signup">Pas encore de compte ? \n Créer un compte</string>
+    <string name="signup_label">s\'enregistrer</string>
+    <string name="signIn">Connection</string>
+    <string name="gameFinished">game Finished</string>
+    <string name="email_addresse">adresse email</string>
+    <string name="title_activity_test">TestActivity</string>
+
+    <!-- TO REMOVE -->
+    <string name="title_messages">Messages</string>
+    <string name="title_friends">Friends</string>
+    <string name="title_home">Home</string>
+    <string name="sample_text"> This an example of material design</string>
+    <string name="title_activity_screen_slide_pager">ScreenSlidePagerActivity</string>
+    <string name="text2">Text remplacé</string>
+    <string name="desc_image">sample Image</string>
+    <string name="timeLabel">Temps</string>
+    <string name="timeValue">00:00</string>
+    <string name="scoreLabel">Score</string>
+    <string name="scoreValue">00</string>
+    <string name="currentWord">WORDHUNT</string>
+    <string name="signOff">Deconnexion</string>
+    <string name="connected">Connecté</string>
+    <string name="server_error">Une erreur est survenue. Veuillez réessayer plus tard.</string>
+    <string name="processing">Connexion en cours ..</string>
+    <string name="password_too_short">Entrez un mot de passe d\'au moins 8 caractères</string>
+    <string name="register_accepted">Enregistrement accepté</string>
+    <string name="bad_register">Le nom d\'utilisateur ou l\'email est déjà utilisé</string>
+    <string name="against_user">Jouer contre un joueur</string>
+    <string name="on_specific_grid">Jouer sur une grille précise</string>
+    <string name="num_words">Vous avez trouvé %1$d mots !</string>
+    <string name="bestScoreLabel">Best</string>
+    <string name="stopGame">arrêter</string>
+    <string name="you_win">Tu as gagné !</string>
+    <string name="you_loose">GAME OVER!</string>
+    <string name="challenge_random">Grille Aléatoire</string>
+    <string name="title_activity_create_competition">CreateCompetition</string>
+    <string name="compet_setting_label">competition</string>
+    <string name="infos_only_one_competition">* Vous ne pouvez planifier qu\'une compétition à la fois</string>
+    <string name="coutdown_competition_label">La competition en cours \n se termine dans:</string>
+    <string name="start_competition">Lancer la competition</string>
+    <string name="delay_start_competition">Délais de départ [min]</string>
+    <string name="title_scheduling_competition">Planification de compétition</string>
+    <string name="competition_duration_label">Durée de la competition [min]</string>
+
+</resources>

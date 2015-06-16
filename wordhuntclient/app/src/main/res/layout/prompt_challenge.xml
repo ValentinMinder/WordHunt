@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:padding="10dp"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RadioGroup
+        android:checkedButton="1"
+        android:id="@+id/challengeType"
+        android:orientation="vertical"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <RadioButton
+            android:id="@+id/choice_random"
+            android:text="@string/challenge_random"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <RadioButton
+            android:id="@+id/choice_username"
+            android:text="@string/against_user"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <RadioButton
+            android:id="@+id/choice_grid"
+            android:text="@string/on_specific_grid"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        </RadioGroup>
+
+    <EditText
+        android:id="@+id/username"
+        android:hint="username"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content" />
+
+</LinearLayout>

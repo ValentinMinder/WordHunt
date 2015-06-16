@@ -1,0 +1,128 @@
+<LinearLayout
+    android:orientation="vertical"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:animateLayoutChanges="true"
+    tools:context="ch.heigvd.wordhunt.activities.Admin.CreateCompetition">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:id="@+id/resume_competition"
+        android:paddingTop="@dimen/margin_normal"
+        android:paddingBottom="@dimen/margin_normal"
+        android:paddingStart="@dimen/margin_normal"
+        android:paddingEnd="@dimen/margin_normal"
+        android:background="@color/primary"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:textColor="@color/text_light"
+            android:textAlignment="center"
+            android:layout_gravity="center_horizontal"
+            android:text="@string/coutdown_competition_label"
+            android:layout_marginBottom="@dimen/margin_small"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <TextSwitcher
+            android:layout_gravity="center_horizontal"
+            android:id="@+id/timerCompetitionSwitcher"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <TextView
+                style="@style/text_clock"
+                android:text="@string/timeValue"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                style="@style/text_clock"
+                android:text="@string/timeValue"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+        </TextSwitcher>
+
+        <TextView
+            android:textColor="@color/text_light"
+            android:layout_marginTop="@dimen/margin_big"
+            android:text="@string/infos_only_one_competition"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_below="@id/resume_competition"
+        android:paddingRight="@dimen/margin_normal"
+        android:paddingLeft="@dimen/margin_normal"
+        android:orientation="vertical"
+        android:animateLayoutChanges="true"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content">
+
+
+        <LinearLayout
+
+            android:orientation="vertical"
+            android:layout_marginBottom="@dimen/margin_normal"
+            android:layout_marginTop="@dimen/margin_normal"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                style="@style/text_title_section"
+                android:textColor="@color/primary"
+                android:text="@string/title_scheduling_competition"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <ch.heigvd.wordhunt.Interaction.FloatLabelLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <EditText
+                    android:id="@+id/start_time"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/delay_start_competition"
+                    android:singleLine="true"
+                    android:inputType="textNoSuggestions"
+                    android:nextFocusDown="@+id/end_time"
+                    android:imeOptions="actionNext" />
+
+            </ch.heigvd.wordhunt.Interaction.FloatLabelLayout>
+
+            <ch.heigvd.wordhunt.Interaction.FloatLabelLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <EditText
+                    android:id="@+id/end_time"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/competition_duration_label"
+                    android:singleLine="true"
+                    android:inputType="textNoSuggestions"
+                    android:imeOptions="actionDone" />
+
+            </ch.heigvd.wordhunt.Interaction.FloatLabelLayout>
+
+        </LinearLayout>
+
+
+        <Button
+            style="@style/button_normal_accent"
+            android:text="@string/start_competition"
+            android:id="@+id/button_ok"/>
+
+    </LinearLayout>
+
+
+
+</LinearLayout>

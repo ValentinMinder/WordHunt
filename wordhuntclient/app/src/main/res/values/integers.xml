@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <integer name="toast_half_time">500</integer>
+    <integer name="toast_full_time">1000</integer>
+    <integer name="smooth_scale_duration">400</integer>
+    <integer name="smooth_scale_duration_alpha">200</integer>
+    <integer name="activity_slide_duration">400</integer>
+</resources>

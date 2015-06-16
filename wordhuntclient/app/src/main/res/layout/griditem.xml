@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_height="@dimen/grid_button_size"
+    android:layout_width="@dimen/grid_button_size"
+    android:orientation="vertical">
+
+    <Button
+        android:text="X"
+        style="@style/button_grid_game"
+        android:textSize="25sp"
+        android:id="@+id/buttonGrid"
+        android:layout_height="@dimen/grid_button_size"
+        android:layout_width="@dimen/grid_button_size"
+        />
+
+</RelativeLayout>

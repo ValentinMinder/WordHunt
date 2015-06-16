@@ -1,0 +1,10 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="ch.heigvd.wordhunt.Interaction.CardFlip.CardFlipActivity">
+
+    <item android:id="@+id/manualFinish"
+        android:title="@string/stopGame"
+        android:icon="@drawable/ic_done_white_24dp"
+        android:showAsAction="ifRoom"/>
+
+</menu>

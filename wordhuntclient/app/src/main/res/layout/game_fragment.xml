@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    android:id="@+id/gameFragment"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:animateLayoutChanges="true"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ProgressBar
+        android:max="100"
+        android:elevation="2dp"
+        android:id="@+id/progressBar"
+        android:background="@color/accent"
+        android:layout_width="fill_parent"
+        android:layout_height="12dp" />
+
+    <LinearLayout
+        android:id="@+id/scoreLayout"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="20dp"
+        android:orientation="vertical"
+        android:layout_alignParentEnd="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <TextView
+            style="@style/text_big_number"
+            android:layout_gravity="center_horizontal"
+            android:id="@+id/score"
+            android:text="@string/scoreValue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:text="@string/scoreLabel"
+            style="@style/text_big_number_label"
+            android:textColor="@color/text_primary"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:visibility="gone"
+        android:id="@+id/bestScoreLayout"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="20dp"
+        android:orientation="vertical"
+        android:layout_toStartOf="@+id/scoreLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <TextView
+            style="@style/text_big_number"
+            android:layout_gravity="center_horizontal"
+            android:id="@+id/bestScore"
+            android:text="@string/scoreValue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:id="@+id/bestScoreLabel"
+            android:text="@string/bestScoreLabel"
+            style="@style/text_big_number_label"
+            android:textColor="@color/text_primary"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/countDownLayout"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="20dp"
+        android:orientation="vertical"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <TextSwitcher
+            android:id="@+id/timerTextSwitcher"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <TextView
+                style="@style/text_big_number"
+                android:text="@string/timeValue"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                style="@style/text_big_number"
+                android:text="@string/timeValue"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+        </TextSwitcher>
+
+        <TextView
+            android:text="@string/timeLabel"
+            style="@style/text_big_number_label"
+            android:layout_gravity="center_horizontal"
+            android:textColor="@color/text_primary"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+    </LinearLayout>
+
+
+    <TextSwitcher
+
+        style="@style/game_result_textswitcher"
+        android:id="@+id/resultTextSwitcher"
+        android:layout_marginTop="10dp"
+        android:layout_below="@+id/countDownLayout"
+        android:layout_centerHorizontal="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" >
+
+        <TextView
+            style="@style/game_result_text"
+            android:id="@+id/result2"
+            android:text="@string/currentWord"
+            xmlns:android="http://schemas.android.com/apk/res/android" />
+
+        <TextView
+            style="@style/game_result_text"
+            android:id="@+id/result"
+            xmlns:android="http://schemas.android.com/apk/res/android" />
+
+    </TextSwitcher>
+
+    <LinearLayout
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
+        android:id="@+id/gridContainer"
+        android:layout_below="@+id/resultTextSwitcher"
+        android:orientation="vertical"
+        android:paddingStart="40dp"
+        android:paddingEnd="20dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+    </LinearLayout>
+
+
+</RelativeLayout>

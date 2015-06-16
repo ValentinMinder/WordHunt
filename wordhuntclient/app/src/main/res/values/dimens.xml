@@ -1,0 +1,20 @@
+<resources>
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+    <dimen name="nav_drawer_width">260dp</dimen>
+
+    <integer name="card_flip_time_full">300</integer>
+    <integer name="card_flip_time_half">150</integer>
+
+    <dimen name="grid_button_size">55dp</dimen>
+    <dimen name="windowNormalPadding">30dp</dimen>
+
+    <dimen name="button_normal_height">40dp</dimen>
+    <dimen name="button_normal_corner">20dp</dimen>
+
+    <dimen name="margin_small">10dp</dimen>
+    <dimen name="margin_normal">20dp</dimen>
+    <dimen name="margin_medium">30dp</dimen>
+    <dimen name="margin_big">40dp</dimen>
+</resources>

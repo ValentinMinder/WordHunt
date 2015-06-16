@@ -1,0 +1,102 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity" >
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:id="@+id/logo_container"
+        android:paddingTop="@dimen/margin_medium"
+        android:paddingBottom="@dimen/margin_medium"
+        android:background="@color/primary"
+        android:layout_marginBottom="@dimen/margin_normal"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:src="@drawable/logo_dark"
+            android:layout_gravity="center_horizontal"
+            android:layout_width="100dp"
+            android:layout_height="100dp" />
+
+        </LinearLayout>
+
+    <LinearLayout
+        android:layout_below="@+id/logo_container"
+        android:id="@+id/mainMenu"
+        android:orientation="vertical"
+        android:paddingLeft="40dp"
+        android:paddingBottom="10dp"
+        android:paddingRight="40dp"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content">
+
+        <Button
+            style="@style/button_normal"
+            android:id="@+id/buttonOfflineGame"
+            android:text="@string/loadOffline"
+            android:onClick="goToOfflineGame" />
+
+        <Button
+            style="@style/button_normal"
+            android:id="@+id/buttonTraining"
+            android:text="@string/training"
+            android:onClick="goToTraining" />
+
+
+        <Button
+            style="@style/button_normal"
+            android:id="@+id/buttonModeChallenge"
+            android:text="@string/challenge"
+            android:onClick="goToChallenge"/>
+
+        <Button
+            style="@style/button_normal"
+            android:id="@+id/buttonModeTournament"
+            android:text="@string/tournament"
+            android:onClick="goToCompetition" />
+
+        <Space
+            android:layout_width="fill_parent"
+            android:layout_height="20dp" />
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:paddingLeft="40dp"
+        android:paddingRight="40dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginTop="20dp"
+        android:id="@+id/connection"
+        android:gravity="bottom"
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
+        android:layout_marginBottom="10dp"
+        android:layout_height="wrap_content">
+
+
+        <Button
+            style="@style/button_normal_accent"
+            android:id="@+id/buttonSignIn"
+            android:text="@string/signIn"
+            android:onClick="signIn" />
+
+        <Button
+            style="@style/button_outfill_button"
+            android:id="@+id/buttonSignOff"
+            android:text="@string/signOff"
+            android:onClick="signOff" />
+
+        <Button
+            style="?android:attr/borderlessButtonStyle"
+            android:id="@+id/buttonSignUp"
+            android:text="@string/signup"
+            android:onClick="signUp"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content" />
+
+    </LinearLayout>
+
+</RelativeLayout>
