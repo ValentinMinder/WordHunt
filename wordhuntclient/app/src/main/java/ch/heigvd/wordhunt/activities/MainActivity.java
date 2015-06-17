@@ -311,21 +311,29 @@ public class MainActivity extends Activity implements IWHView{
     @Override
     public void reply(WHMessage message) {
 
-        if(message.getHeader() == WHProtocol.WHMessageHeader.PING_REPLY) {
 
-            if(pingTestButton != null){
-                pingTestButton.setText("Connexion OK !");
-                pingTestButton.setBackgroundColor(getResources().getColor(R.color.GREEN));
-            }
+        switch (message.getHeader()){
+
+            case PING_REPLY:
+                if(pingTestButton != null){
+                    pingTestButton.setText("Connexion OK !");
+                    pingTestButton.setBackgroundColor(getResources().getColor(R.color.GREEN));
+                }
+                break;
+
+            case NETWORK_ERROR:
+                pingTestButton.setBackgroundColor(getResources().getColor(R.color.RED));
+                pingTestButton.setText("Connexion impossible");
+                Toast.makeText(this, "Causes possible: \n- Adresse ip incorrecte \n- Numéro de Port incorrect \n- Le serveur n'est pas en marche ", Toast.LENGTH_LONG).show();
+                break;
+
+            default:
+                pingTestButton.setText("Connexion impossible");
+                Toast.makeText(this, "ERREUR " +
+                        message.getHeader().toString() +
+                        "  " + message.toString(), Toast.LENGTH_LONG).show();
         }
-        else{
 
-            pingTestButton.setBackgroundColor(getResources().getColor(R.color.RED));
-            Toast.makeText(this, "ERREUR " +
-                    message.getHeader().toString() +
-                    "  " +  message.toString(), Toast.LENGTH_LONG).show();
-
-        }
     }
 
 

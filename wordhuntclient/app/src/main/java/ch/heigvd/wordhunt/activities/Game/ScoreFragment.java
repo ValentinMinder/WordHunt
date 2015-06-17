@@ -20,6 +20,8 @@ import android.widget.TextView;
 import ch.heigvd.wordhunt.Interaction.Animator.ScoreAnimator;
 import ch.heigvd.wordhunt.design.R;
 
+import static whprotocol.WHProtocol.WHGameType;
+
 /**
  * Created by paulnta on 14.06.15.
  */
@@ -28,11 +30,14 @@ public class ScoreFragment extends Fragment {
     public final static String USER_SOLUTIONS = "user_solution";
     public final static String USER_SCORE = "user_score";
     public final static String BEST_SCORE = "best_score";
+    public final static String GRID_ID = "grid_id";
     public final static String LOG = "SCORE";
+    private static final String GAME_TYPE = "GAME_TYPE";
     private IGameManager gameManager;
 
     private int userScore;
     private int bestScore;
+    private int gridId;
 
     private String[] userSolutions;
     private ScoreAnimator score;
@@ -44,15 +49,19 @@ public class ScoreFragment extends Fragment {
     private ScoreAnimator bestScoreAnimator;
 
     private TextView winnerTextView;
+    private ImageButton buttonHome;
+    private WHGameType gameType;
 
 
-    public static ScoreFragment newInstance(int score, int bestScore,  String[] userSolutions){
+    public static ScoreFragment newInstance(int score, int bestScore,  String[] userSolutions, int gridId, WHGameType gameType){
 
         ScoreFragment scoreFragment = new ScoreFragment();
         Bundle args = new Bundle();
         args.putStringArray(USER_SOLUTIONS, userSolutions);
         args.putInt(USER_SCORE, score);
         args.putInt(BEST_SCORE, bestScore);
+        args.putInt(GRID_ID, gridId);
+        args.putInt(GAME_TYPE, gameType.ordinal());
         scoreFragment.setArguments(args);
 
         return scoreFragment;
@@ -74,6 +83,8 @@ public class ScoreFragment extends Fragment {
         userScore = getArguments().getInt(USER_SCORE);
         userSolutions = getArguments().getStringArray(USER_SOLUTIONS);
         bestScore = getArguments().getInt(BEST_SCORE);
+        gridId = getArguments().getInt(GRID_ID);
+        gameType = WHGameType.values()[getArguments().getInt(GAME_TYPE)];
     }
 
     @Nullable
@@ -81,6 +92,14 @@ public class ScoreFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView  = inflater.inflate(R.layout.score_fragment,container,false);
 
+        TextView textInfosGridId = (TextView) rootView.findViewById(R.id.infos_no_grid);
+        textInfosGridId.setText(getResources().getString(R.string.grid_number_info, gridId));
+
+        if(gameType == WHGameType.OFFLINE){
+            textInfosGridId.setVisibility(View.GONE);
+        }
+
+        buttonHome = (ImageButton) rootView.findViewById(R.id.buttonHome);
         listView = new ListView(getActivity());
         listView.setBackgroundColor(getResources().getColor(R.color.WHITE));
         layoutScore = (LinearLayout) rootView.findViewById(R.id.containerListSolution);
@@ -106,20 +125,28 @@ public class ScoreFragment extends Fragment {
             }
         });
 
+        buttonHome.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                gameManager.quit();
+            }
+        });
 
         return rootView;
     }
 
     private void showUserSolution(){
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(
-                getActivity(),
-                android.R.layout.simple_list_item_1,
-                android.R.id.text1, userSolutions);
+        if(userSolutions != null && userSolutions.length > 0) {
+            ArrayAdapter<String> adapter = new ArrayAdapter<String>(
+                    getActivity(),
+                    android.R.layout.simple_list_item_1,
+                    android.R.id.text1, userSolutions);
 
-        listView.setAdapter(adapter);
-        layoutScore.addView(listView);
-        layoutScore.setVisibility(View.VISIBLE);
+            listView.setAdapter(adapter);
+            layoutScore.addView(listView);
+            layoutScore.setVisibility(View.VISIBLE);
+        }
     }
 
     private Animator.AnimatorListener winnerAnimListener = new Animator.AnimatorListener() {

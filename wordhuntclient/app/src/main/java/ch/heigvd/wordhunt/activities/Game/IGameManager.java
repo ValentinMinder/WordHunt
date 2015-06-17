@@ -16,4 +16,6 @@ public interface IGameManager {
     void restartGame();
 
     void onGameStoped();
+
+    void quit();
 }

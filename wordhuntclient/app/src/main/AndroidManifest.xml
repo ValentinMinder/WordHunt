@@ -36,10 +36,6 @@
             android:label="@string/title_activity_game"
             android:parentActivityName="ch.heigvd.wordhunt.activities.MainActivity" />
         <activity
-            android:name="ch.heigvd.wordhunt.Interaction.AnimationActivity"
-            android:label="@string/title_activity_animation" >
-        </activity>
-        <activity
             android:name="ch.heigvd.wordhunt.activities.Login.LoginActivity"
             android:label="@string/title_activity_login"
             android:parentActivityName="ch.heigvd.wordhunt.activities.MainActivity" />
@@ -50,6 +46,7 @@
         <activity
             android:name="ch.heigvd.wordhunt.activities.Admin.CreateCompetition"
             android:label="@string/title_activity_create_competition" >
+            android:parentActivityName="ch.heigvd.wordhunt.activities.MainActivity" />
         </activity>
     </application>
 

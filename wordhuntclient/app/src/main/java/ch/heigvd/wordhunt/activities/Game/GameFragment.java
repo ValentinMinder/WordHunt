@@ -8,23 +8,23 @@ import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.AnticipateOvershootInterpolator;
 import android.view.animation.LayoutAnimationController;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextSwitcher;
 import android.widget.TextView;
 
-import ch.heigvd.wordhunt.Interaction.Animator.AnimatedToast;
 import ch.heigvd.wordhunt.Interaction.Animator.ScoreAnimator;
 import ch.heigvd.wordhunt.design.R;
 import whobjects.Grid;
+import whprotocol.WHProtocol;
 
 
 public class GameFragment extends Fragment{
@@ -37,19 +37,21 @@ public class GameFragment extends Fragment{
     private IGameManager gameManager;
     private ScoreAnimator scoreAnimator;
     private RelativeLayout rootView;
-    private AnimatedToast animatedToast;
     private CountDownTimer countDownTimer;
     private boolean started;
     private int mProgressStatus;
 
-    private LinearLayout bestScoreLayout;
     private ScoreAnimator bestScoreAnimator;
     private TextView bestScore;
     private TextView bestScoreLabel;
     private TextView userScoreLabel;
 
-    private Handler mHandler = new Handler();
+    private LinearLayout bestScoreLayout;
+    private LinearLayout gridNotFoundView;
+    private LinearLayout countDownLayout;
+    private LinearLayout scoreLayout;
 
+    private Handler mHandler = new Handler();
 
     @Override
     public void onAttach(Activity activity) {
@@ -109,7 +111,7 @@ public class GameFragment extends Fragment{
         debug("onCreateView");
         // Get the fragment layout
         rootView = (RelativeLayout) inflater.inflate(R.layout.game_fragment, container, false);
-        animatedToast = new AnimatedToast(rootView, getActivity());
+
 
         // Text result
         TextSwitcher textSwitcher = (TextSwitcher) rootView.findViewById(R.id.resultTextSwitcher);
@@ -131,6 +133,12 @@ public class GameFragment extends Fragment{
         bestScoreLayout = (LinearLayout) rootView.findViewById(R.id.bestScoreLayout);
         bestScore = (TextView) rootView.findViewById(R.id.bestScore);
         bestScoreLabel = (TextView) rootView.findViewById(R.id.bestScoreLabel);
+
+        // grid not found view
+        gridNotFoundView = (LinearLayout) rootView.findViewById(R.id.grid_not_found);
+        scoreLayout = (LinearLayout) rootView.findViewById(R.id.scoreLayout);
+        countDownLayout = (LinearLayout) rootView.findViewById(R.id.countDownLayout);
+
 
         debug("onCreatView Finish (createGrid is processing)");
 
@@ -166,19 +174,7 @@ public class GameFragment extends Fragment{
     @Override
     public void onResume() {
         super.onResume();
-        debug("onResume");
 
-        rootView.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-
-                if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                    Log.d("ANIM", "x: " + event.getX() + " y: " + event.getY());
-                    animatedToast.makeToast("+34", (int) event.getX(), 400, (int) event.getY(), 0);
-                }
-                return false;
-            }
-        });
     }
 
     public void showViewSmoothly(View v){
@@ -235,5 +231,27 @@ public class GameFragment extends Fragment{
     public void requestFinish(){
         countDownTimer.cancel();
         countDownTimer.onFinish();
+    }
+
+    public boolean isRunning(){
+        return started;
+    }
+
+    public void setError(WHProtocol.WHGameType type){
+
+        bestScoreLayout.setVisibility(View.GONE);
+        scoreLayout.setVisibility(View.GONE);
+        countDownLayout.setVisibility(View.GONE);
+
+        if(type == WHProtocol.WHGameType.COMPETITION){
+            ImageView image = (ImageView) gridNotFoundView.findViewById(R.id.image_error);
+            image.setImageResource(R.drawable.no_compete);
+        }
+
+        gridNotFoundView.setAlpha(0f);
+        gridNotFoundView.setVisibility(View.VISIBLE);
+        Animation anim = AnimationUtils.loadAnimation(getActivity(), R.anim.smooth_show);
+        gridNotFoundView.startAnimation(anim);
+
     }
 }

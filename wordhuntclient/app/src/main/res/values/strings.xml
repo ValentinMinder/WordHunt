@@ -38,7 +38,7 @@
     <string name="tournament">Competition</string>
     <string name="signup">Pas encore de compte ? \n Créer un compte</string>
     <string name="signup_label">s\'enregistrer</string>
-    <string name="signIn">Connection</string>
+    <string name="signIn">Connexion</string>
     <string name="gameFinished">game Finished</string>
     <string name="email_addresse">adresse email</string>
     <string name="title_activity_test">TestActivity</string>
@@ -56,7 +56,7 @@
     <string name="scoreLabel">Score</string>
     <string name="scoreValue">00</string>
     <string name="currentWord">WORDHUNT</string>
-    <string name="signOff">Deconnexion</string>
+    <string name="signOff">Déconnexion</string>
     <string name="connected">Connecté</string>
     <string name="server_error">Une erreur est survenue. Veuillez réessayer plus tard.</string>
     <string name="processing">Connexion en cours ..</string>
@@ -83,5 +83,5 @@
     <string name="serveur_port_label">Port</string>
     <string name="test_ping">Tester la connection</string>
     <string name="default_port">1234</string>
-
+    <string name="grid_number_info">Vous avez joué sur la grille no : %1$d</string>
 </resources>

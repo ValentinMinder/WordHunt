@@ -89,7 +89,7 @@
             android:layout_marginTop="10dp"
             android:layout_marginBottom="10dp"
             android:layout_gravity="center_horizontal"
-            android:textColor="@color/text_primary"
+            android:textColor="@color/accent"
             android:textSize="30sp"
             android:text="You Win !"
             android:layout_width="fill_parent"
@@ -133,5 +133,16 @@
             android:layout_marginBottom="10dp"
             android:layout_marginEnd="10dp"
             android:src="@drawable/ic_replay_white_24dp"/>
+
+
+        <TextView
+            android:layout_marginStart="@dimen/margin_small"
+            android:textStyle="italic"
+            android:layout_marginBottom="5dp"
+            android:layout_alignParentBottom="true"
+            android:id="@+id/infos_no_grid"
+            android:text="@string/grid_number_info"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
 
 </RelativeLayout>

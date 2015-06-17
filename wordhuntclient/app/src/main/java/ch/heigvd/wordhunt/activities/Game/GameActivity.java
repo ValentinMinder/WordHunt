@@ -36,7 +36,6 @@ public class GameActivity extends Activity implements IGameManager, IWHView {
     private static final String LOG = "GAMEACTIVITY";
     private boolean mShowingBack;
     private int GameLenght = 60*1000*2;
-//    private int GameLenght = 10000;
 
     // The game view
     public static String GAME_FRAGMENT_TAG = "gameView";
@@ -54,27 +53,6 @@ public class GameActivity extends Activity implements IGameManager, IWHView {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_card_flip);
-//        userSolution.add("MENTIT");
-//        userSolution.add("MENTIR");
-//        userSolution.add("MIT");
-//        userSolution.add("MIR");
-//        userSolution.add("MIT");
-//        userSolution.add("MITE");
-//        userSolution.add("MITEE");
-//        userSolution.add("MITEE");
-//        userSolution.add("EMPLI");
-//        userSolution.add("EMPLIE");
-//        userSolution.add("EMPLIE");
-//        userSolution.add("EMPILE");
-//        userSolution.add("EMPILEE");
-//        userSolution.add("EME");
-//        userSolution.add("EME");
-//        userSolution.add("EMIE");
-//        userSolution.add("EMIEE");
-//        userSolution.add("EMIT");
-//        userSolution.add("EMIR");
-//        userSolution.add("EMIT");
-//        userSolution.add("EMIT");
 
         Intent i = getIntent();
         int gameTypeid = i.getIntExtra(MainActivity.GAME_TYPE_ID, 0);
@@ -89,7 +67,6 @@ public class GameActivity extends Activity implements IGameManager, IWHView {
                     .commit();
         }
     }
-
 
     @Override
     public void onBackPressed() {
@@ -112,7 +89,7 @@ public class GameActivity extends Activity implements IGameManager, IWHView {
     public void getGrid(){
         Log.d("SERVEUR", "GET GRID gametype: " + gameType.toString());
         String token = MainActivity.preferences.getString(MainActivity.prefToken, "none");
-        if(token == "none"){
+        if(gameType != WHProtocol.WHGameType.OFFLINE && (token == null || token == "none")){
             debug("No token");
             return;
         }
@@ -122,6 +99,7 @@ public class GameActivity extends Activity implements IGameManager, IWHView {
                 setTitle("MODE HORS LIGNE");
                 new WordHuntASyncTask(this).execute(
                         new WHMessage(GRID_GET, "GET GRID")) ;
+
                 break;
             case TRAINING:
                 setTitle("MODE ENTRAINEMENT");
@@ -212,8 +190,11 @@ public class GameActivity extends Activity implements IGameManager, IWHView {
                 break;
 
             default:
-                Toast.makeText(this, message.getContent().toString(), Toast.LENGTH_LONG).show();
+                if(getGameFragment() != null){
+                    getGameFragment().setError(gameType);
+                }
 
+                Toast.makeText(this, message.getContent().toString(), Toast.LENGTH_LONG).show();
 
         }
     }
@@ -246,7 +227,11 @@ public class GameActivity extends Activity implements IGameManager, IWHView {
                         R.animator.card_flip_right_in, R.animator.card_flip_right_out,
                         R.animator.card_flip_left_in, R.animator.card_flip_left_out)
                 .replace(R.id.container, ScoreFragment.newInstance(
-                        score, dataGrid.getBestScore() ,userSolution.toArray(new String[userSolution.size()])), SCORE_FRAGMENT_TAG)
+                            score,
+                            dataGrid.getBestScore(),
+                            userSolution.toArray(new String[userSolution.size()]), dataGrid.getGridID(),
+                            gameType),
+                        SCORE_FRAGMENT_TAG)
                 .addToBackStack(null)
                 .commit();
     }
@@ -269,7 +254,7 @@ public class GameActivity extends Activity implements IGameManager, IWHView {
             case R.id.action_settings:
                 return true;
             case R.id.manualFinish:
-                if(getGameFragment() != null)
+                if(getGameFragment() != null && getGameFragment().isRunning())
                     getGameFragment().requestFinish();
                 return true;
             case android.R.id.home:
@@ -295,6 +280,11 @@ public class GameActivity extends Activity implements IGameManager, IWHView {
     @Override
     public void onGameStoped() {
 
+    }
+
+    @Override
+    public void quit() {
+        onBackPressed();
     }
 
     @Override

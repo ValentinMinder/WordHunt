@@ -7,6 +7,23 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+
+    <LinearLayout
+        android:id="@+id/grid_not_found"
+        android:visibility="gone"
+        android:layout_centerInParent="true"
+        android:paddingEnd="@dimen/margin_medium"
+        android:paddingStart="@dimen/margin_medium"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+    <ImageView
+        android:id="@+id/image_error"
+        android:src="@drawable/grid_not_found"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+    </LinearLayout>
+
     <ProgressBar
         android:max="100"
         android:elevation="2dp"
@@ -14,6 +31,8 @@
         android:background="@color/accent"
         android:layout_width="fill_parent"
         android:layout_height="12dp" />
+
+
 
     <LinearLayout
         android:id="@+id/scoreLayout"
@@ -140,7 +159,6 @@
         android:paddingEnd="20dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
-
     </LinearLayout>
 
 
